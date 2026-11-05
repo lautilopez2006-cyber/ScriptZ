@@ -1,0 +1,26 @@
+# Publica un release borrador y verifica la web (GitHub Pages).
+name: Publicar versión
+on:
+  workflow_dispatch:
+    inputs:
+      tag: { description: 'Etiqueta (ej. v0.2.1)', required: true }
+permissions:
+  contents: write
+  pages: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TAG: ${{ inputs.tag }}
+    steps:
+      - name: Publicar release
+        run: |
+          id=$(gh api repos/$GITHUB_REPOSITORY/releases --jq ".[] | select(.tag_name==\"$TAG\") | .id" | head -1)
+          gh api -X PATCH repos/$GITHUB_REPOSITORY/releases/$id -f draft=false -f make_latest=true -f target_commitish=main --jq '.html_url + " draft=" + (.draft|tostring)'
+      - name: Verificar web y descargas
+        run: |
+          gh api repos/$GITHUB_REPOSITORY/pages --jq '"pages: " + .status + " " + .html_url + " source=" + .source.branch' || echo "pages: NO ACTIVADO"
+          for u in https://lautilopez2006-cyber.github.io/ScriptZ/ https://lautilopez2006-cyber.github.io/ScriptZ/app/ https://lautilopez2006-cyber.github.io/ScriptZ/img/write.webp; do echo "$(curl -s -o /dev/null -w '%{http_code}' -L $u) $u"; done
+          ver=${TAG#v}
+          for f in ScriptZ_${ver}_x64-setup.exe ScriptZ_${ver}_universal.dmg ScriptZ_${ver}_amd64.AppImage; do echo "$(curl -s -o /dev/null -w '%{http_code}' -L https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/$f) $f"; done
