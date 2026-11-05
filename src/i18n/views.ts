@@ -9,7 +9,7 @@ export const VIEWS: Dict = {
   'home.stack.action': ['Mara enciende la lámpara. Al otro lado del mar, alguien responde.', 'Mara lights the lamp. Across the sea, someone answers.', 'Mara acende a lâmpada. Do outro lado do mar, alguém responde.'],
   'home.stack.line': ['Ya sé quién manda las señales.', 'I know who sends the signals.', 'Eu sei quem manda os sinais.'],
   'home.stack.rev': ['Revisión amarilla', 'Yellow revision', 'Revisão amarela'],
-  'home.corner.left': ['Versión 0.1', 'Version 0.1', 'Versão 0.1'],
+  'home.corner.left': ['Versión 0.1.1', 'Version 0.1.1', 'Versão 0.1.1'],
   'home.corner.right': ['Gratis · sin conexión', 'Free · works offline', 'Grátis · funciona offline'],
   'home.sample': ['Abrir el ejemplo guiado', 'Open the guided sample', 'Abrir o exemplo guiado'],
   'home.library': ['Tus guiones', 'Your scripts', 'Seus roteiros'],

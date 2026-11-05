@@ -1,6 +1,6 @@
 [package]
 name = "scriptz"
-version = "0.1.0"
+version = "0.1.1"
 description = "ScriptZ — free screenwriting studio"
 license = "MIT"
 authors = ["ScriptZ"]
