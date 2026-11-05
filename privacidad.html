@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacidad — ScriptZ</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+@font-face { font-family: 'Courier Prime'; src: url(fonts/CourierPrime-Bold.ttf) format('truetype'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Hanken Grotesk'; src: url(fonts/HankenGrotesk-Variable.ttf) format('truetype'); font-weight: 100 900; font-display: swap; }
+:root { --ink: #151b2b; --ink-2: #3a4258; --bg: #eceef3; --accent: #3247c9; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.65 'Hanken Grotesk', system-ui, sans-serif; }
+main { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+.page { background: #fff; border-radius: 4px; padding: clamp(28px, 6vw, 64px); box-shadow: 0 40px 80px -40px rgba(13, 17, 32, .45); }
+a { color: var(--accent); }
+.back { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; margin-bottom: 22px; color: var(--ink); }
+.back img { width: 26px; height: 26px; }
+h1 { font: 700 clamp(30px, 5vw, 44px)/1.1 'Courier Prime', monospace; margin: 0 0 8px; }
+h2 { font: 700 21px 'Courier Prime', monospace; margin: 34px 0 8px; }
+p, li { color: var(--ink-2); }
+small { color: #6a7389; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="./"><img src="img/mark.png" alt="">ScriptZ</a>
+  <article class="page">
+    <h1>Privacidad</h1>
+    <small>Última actualización: noviembre de 2026</small>
+    <h2>Resumen</h2>
+    <p>ScriptZ no recopila datos personales, no usa publicidad ni rastreo y no tiene cuentas de usuario. Tus guiones se guardan en tu equipo.</p>
+    <h2>Dónde quedan tus guiones</h2>
+    <p>En la versión de escritorio, en una carpeta de tu equipo. En la versión del navegador, en el almacenamiento del navegador de ese dispositivo. ScriptZ no los envía a ningún servidor.</p>
+    <h2>Funciones que usan internet (todas opcionales)</h2>
+    <ul>
+      <li><b>Colaboración en vivo:</b> solo si la activás. El guion se comparte con el servidor de colaboración que elijas y con las personas que invites.</li>
+      <li><b>Inteligencia artificial:</b> apagada de fábrica. Si la activás con tu propia clave, el texto que le pidas analizar se envía al proveedor que configures (por ejemplo Anthropic) según sus condiciones.</li>
+      <li><b>Aviso de nuevas versiones:</b> la versión de escritorio consulta una vez por día la lista pública de versiones en GitHub. No envía datos tuyos. Se puede apagar en Ajustes.</li>
+    </ul>
+    <h2>Contacto</h2>
+    <p>Para consultas sobre privacidad, abrí un tema en <a href="https://github.com/lautilopez2006-cyber/ScriptZ/issues">github.com/lautilopez2006-cyber/ScriptZ/issues</a>.</p>
+  </article>
+</main>
+</body>
+</html>

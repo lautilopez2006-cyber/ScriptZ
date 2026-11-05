@@ -1,0 +1,55 @@
+{
+  "name": "ScriptZ",
+  "short_name": "ScriptZ",
+  "description": "Escribí guiones de cine, series, teatro, radio y cómic. Gratis.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#eceef3",
+  "theme_color": "#3247c9",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": ".",
+      "accept": {
+        "application/json": [
+          ".scriptz"
+        ],
+        "application/xml": [
+          ".fdx"
+        ],
+        "text/plain": [
+          ".fountain"
+        ]
+      }
+    }
+  ],
+  "id": "scriptz",
+  "orientation": "any",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "categories": [
+    "productivity",
+    "entertainment"
+  ]
+}

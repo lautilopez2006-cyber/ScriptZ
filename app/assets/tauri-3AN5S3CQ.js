@@ -1,0 +1,1 @@
+import"./chunk-4OLRLSNZ.js";var e=()=>{throw new Error("Tauri API not available in this build")},o=e,t=e,r=e,n=e,i=e,s=e,p=e,x=e;export{o as invoke,t as open,x as openUrl,n as readFile,i as readTextFile,r as save,s as writeFile,p as writeTextFile};

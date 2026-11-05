@@ -1,0 +1,1 @@
+var e=new Map,r=new Set;function s(){let o=Date.now();return[...e.values()].filter(n=>o-n.at<6e4)}function i(o){e.set(o.id,o),t()}function u(o){e.delete(o),t()}function c(){e.clear(),t()}function m(o){return r.add(o),()=>r.delete(o)}function t(){for(let o of r)o()}export{s as a,i as b,u as c,c as d,m as e};
