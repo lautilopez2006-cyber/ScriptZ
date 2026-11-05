@@ -20,6 +20,10 @@ export interface PdfOptions {
   pages?: number[];
   /** Watermark override (e.g. per-recipient copies). */
   watermark?: string;
+  /** Sides: lines that do not belong to the selected scenes are crossed out. */
+  strike?: (line: LayoutLine) => boolean;
+  /** Extra line under the header (e.g. "Copia para Ana Díaz"). */
+  stamp?: string;
 }
 
 const PT = 72;
@@ -182,6 +186,18 @@ export async function scriptToPdf(p: Project, fonts: PdfFonts, opts: PdfOptions 
     const foot = opts.footer?.(pi, lp.label);
     if (foot) drawHF(page, foot, g.footerAt * PT);
     for (const line of lp.lines) drawLine(page, line, pi + offset);
+    if (opts.stamp) drawText(page, opts.stamp, 0, 0, { b: false, i: true, u: false }, undefined, x0, g.footerAt * PT - 12);
+    if (opts.strike) {
+      // Cross out each run of foreign lines with a big X, the way sides are marked by hand.
+      const rows = [...new Set(lp.lines.filter((l) => opts.strike!(l)).map((l) => l.row))].sort((a, b) => a - b);
+      const runs: [number, number][] = [];
+      for (const r of rows) { const last = runs[runs.length - 1]; if (last && r <= last[1] + 2) last[1] = r; else runs.push([r, r]); }
+      for (const [a, b] of runs) {
+        const top = rowTop(a) + 2, bot = rowTop(b) - LINE + 2, left = x0 - 6, right = x0 + 60 * CH + 6;
+        page.line(left, top, right, bot, 0.9);
+        page.line(left, bot, right, top, 0.9);
+      }
+    }
   });
 
   function drawLine(page: PdfPage, line: LayoutLine, pageNo: number) {

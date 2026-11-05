@@ -91,13 +91,22 @@ export const COMMANDS: Command[] = [
     updateProject((x) => ({ ...x, revisions: { ...x.revisions, active: !x.revisions.active, current: x.revisions.current || x.revisions.sets[x.revisions.sets.length - 1].id } }));
   }, when: hasProject },
   { id: 'collab', label: () => t('ed.collab'), icon: 'users', run: () => togglePanel('collab'), when: hasProject },
+  { id: 'suggestMode', label: () => t('sg.mode'), icon: 'compare', run: () => { void import('./actions').then((m) => m.setSuggesting(!getState().suggesting)); }, when: hasProject },
+  { id: 'suggestions', label: () => t('sg.title'), icon: 'compare', run: () => togglePanel('suggest'), when: hasProject },
+  { id: 'review', label: () => t('dr.title'), icon: 'check', run: () => togglePanel('review'), when: hasProject },
+  { id: 'altNew', label: () => t('al.new'), icon: 'shuffle', run: () => { void import('../views/write/ReviewPanels').then((m) => m.altCommand('new')); }, when: inWrite },
+  { id: 'altNext', label: () => t('al.next'), icon: 'shuffle', run: () => { void import('../views/write/ReviewPanels').then((m) => m.altCommand('next')); }, when: inWrite },
+  { id: 'altPrev', label: () => t('al.prev'), icon: 'shuffle', run: () => { void import('../views/write/ReviewPanels').then((m) => m.altCommand('prev')); }, when: inWrite },
+  { id: 'alts', label: () => t('al.title'), icon: 'shuffle', run: () => togglePanel('alts'), when: hasProject },
+  { id: 'refs', label: () => t('rs.panel'), icon: 'pin', run: () => togglePanel('refs'), when: hasProject },
+  { id: 'sides', label: () => t('sd.title'), icon: 'fileText', run: () => openModal('sides'), when: hasProject },
   { id: 'ai', label: () => t('ed.ai'), icon: 'sparkles', run: () => togglePanel('ai'), when: hasProject },
   { id: 'notes', label: () => t('ed.notes'), icon: 'clipboard', run: () => togglePanel('notes'), when: hasProject },
   { id: 'comments', label: () => t('w.comments'), icon: 'comment', run: () => togglePanel('comments'), when: hasProject },
   { id: 'closeProject', label: () => t('home.close'), icon: 'logout', run: () => void closeProject(), when: hasProject },
   { id: 'tour', label: () => t('tour.start'), icon: 'help', run: () => openModal('tour') },
   { id: 'settings', label: () => t('nav.settings'), icon: 'settings', run: () => setView('settings') },
-  ...(['home', 'write', 'cards', 'beats', 'timeline', 'characters', 'stats', 'revisions', 'production'] as const).map((v) => ({
+  ...(['home', 'write', 'cards', 'beats', 'timeline', 'characters', 'research', 'translation', 'stats', 'revisions', 'production'] as const).map((v) => ({
     id: 'view:' + v, label: () => t('act.goTo') + ': ' + t('nav.' + v), icon: 'arrowRight' as IconName, run: () => setView(v), when: v === 'home' ? undefined : hasProject, group: 'nav',
   })),
 ];

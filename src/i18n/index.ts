@@ -7,10 +7,11 @@ import { PRODUCTION } from './production';
 import { SETTINGS } from './settings';
 import { IO } from './io';
 import { STORY } from './story';
+import { REVIEW } from './review';
 
 export type Dict = Record<string, [string, string, string]>;
 
-const ALL: Dict = { ...COMMON, ...EDITOR, ...VIEWS, ...PRODUCTION, ...SETTINGS, ...IO, ...STORY };
+const ALL: Dict = { ...COMMON, ...EDITOR, ...VIEWS, ...PRODUCTION, ...SETTINGS, ...IO, ...STORY, ...REVIEW };
 let lang: UiLang = 'es';
 const IDX: Record<UiLang, 0 | 1 | 2> = { es: 0, en: 1, pt: 2 };
 

@@ -125,21 +125,20 @@ export function Icon({ name, size = 18, stroke = 1.75, className, style, title }
 }
 
 export function Logo({ size = 28, className }: { size?: number; className?: string }) {
-  // A bound script page (brass brads, blue-pencil lines) on the editor's blue.
+  // A bound script page: folded corner, brass brads, "SZ" underlined in blue pencil.
   return (
-    <svg className={className} width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
+    <svg className={className} width={size} height={size} viewBox="4 3.5 58 58" aria-hidden="true">
       <defs>
-        <linearGradient id="sz-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4258e0" /><stop offset="1" stopColor="#2536a4" /></linearGradient>
-        <radialGradient id="sz-brass" cx=".35" cy=".3" r=".8"><stop offset="0" stopColor="#f6e2a8" /><stop offset=".5" stopColor="#c39a45" /><stop offset="1" stopColor="#7a5a1f" /></radialGradient>
+        <radialGradient id="sz-brass" cx=".35" cy=".3" r=".8"><stop offset="0" stopColor="#fbe9b4" /><stop offset=".5" stopColor="#c79b42" /><stop offset="1" stopColor="#6e4f18" /></radialGradient>
+        <linearGradient id="sz-paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffffff" /><stop offset="1" stopColor="#f3efe4" /></linearGradient>
       </defs>
-      <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#sz-bg)" />
-      <g transform="rotate(-7 32 33)">
-        <rect x="17" y="10" width="31" height="43" rx="2" fill="#000" opacity=".22" transform="translate(1.5 2)" />
-        <rect x="17" y="10" width="31" height="43" rx="2" fill="#fff" />
-        <circle cx="22" cy="17.5" r="2.3" fill="url(#sz-brass)" />
-        <circle cx="22" cy="45.5" r="2.3" fill="url(#sz-brass)" />
-        <path d="M28 22.5h14M28 29h10M31.5 35.5h11M28 42h13" stroke="#3247c9" strokeWidth="2.6" strokeLinecap="round" opacity=".85" />
-      </g>
+      <path d="M11.5 6.5h31l11 11v43h-42z" fill="#0b1020" opacity=".22" transform="translate(1.6 1.8)" />
+      <path d="M11 5h32l11 11v44H11z" fill="url(#sz-paper)" stroke="#c9c1ad" strokeWidth=".7" strokeLinejoin="round" />
+      <path d="M43 5v11h11z" fill="#e4dccb" stroke="#c9c1ad" strokeWidth=".7" strokeLinejoin="round" />
+      <circle cx="17" cy="13.5" r="2.7" fill="url(#sz-brass)" />
+      <circle cx="17" cy="51.5" r="2.7" fill="url(#sz-brass)" />
+      <text x="35.5" y="40.2" textAnchor="middle" fontFamily="'SZ Mono', 'Courier Prime', monospace" fontWeight="700" fontSize="21.5" fill="#151b2b" letterSpacing="-.6">SZ</text>
+      <path d="M23.5 45.6c7.5-1.9 16-2.2 24.2-.6" fill="none" stroke="#3247c9" strokeWidth="3.4" strokeLinecap="round" />
     </svg>
   );
 }

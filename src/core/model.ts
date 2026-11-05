@@ -13,8 +13,11 @@ export const ALL_ELEMENT_TYPES: ElementType[] = [
 ];
 
 /** b bold · i italic · u underline · x strike · hl highlight (v=color) · tag breakdown (v=element id) · cmt comment (v=comment id) */
-export type MarkKind = 'b' | 'i' | 'u' | 'x' | 'hl' | 'tag' | 'cmt';
+/** si/sd: suggested insertion / deletion (v = suggestion id). */
+export type MarkKind = 'b' | 'i' | 'u' | 'x' | 'hl' | 'tag' | 'cmt' | 'si' | 'sd';
 export interface Mark { s: number; e: number; k: MarkKind; v?: string }
+
+export interface Alternate { text: string; marks?: Mark[] }
 
 export interface Block {
   id: string;
@@ -31,6 +34,10 @@ export interface Block {
   rev?: string;
   /** Bookmark label. */
   bookmark?: string;
+  /** Alternate versions of this paragraph (the current one is `text`). */
+  alts?: Alternate[];
+  /** Whole-paragraph suggestion: proposed new paragraph or proposed removal. */
+  sug?: { k: 'ins' | 'del'; id: string };
 }
 
 export type PaperSize = 'letter' | 'a4';
@@ -217,9 +224,33 @@ export interface Project {
   callSheets: Record<string, CallSheet>;
   /** Words written per local day ("YYYY-MM-DD"). */
   writingLog: Record<string, { words: number; seconds: number }>;
+  /** Pending suggestions (track changes), by id. */
+  suggestions: Record<string, Suggestion>;
+  /** Side-by-side translation, per paragraph id. */
+  translation: Translation | null;
+  /** Research board: images, links and notes linked to scenes, characters and locations. */
+  research: Record<string, ResearchItem>;
+  /** Only in a series bible (template "bible"). */
+  bible?: SeriesBible;
 }
 
-export interface ProjectSummary { id: string; title: string; updatedAt: string; scenes: number; words: number; template?: string; pages?: number }
+export interface Suggestion { id: string; author: string; color: string; at: string }
+export interface Translation { lang: string; blocks: Record<string, { text: string; src: string; at: string }> }
+export type ResearchKind = 'image' | 'link' | 'note';
+export interface ResearchItem {
+  id: string; kind: ResearchKind; title: string; note: string; url: string;
+  /** Downscaled image as a data URL (images only). */
+  image: string;
+  scenes: string[]; characters: string[]; locations: string[];
+  color: CardColor; createdAt: string;
+}
+export interface SeriesBible {
+  show: string; logline: string; premise: string; tone: string; world: string; arcs: string; notes: string;
+  characters: Record<string, { name: string; description: string; actor: string }>;
+  locations: Record<string, { name: string; description: string }>;
+}
+
+export interface ProjectSummary { id: string; title: string; updatedAt: string; scenes: number; words: number; template?: string; pages?: number; series?: SeriesInfo }
 
 // ---------------------------------------------------------------------------------------------
 
@@ -294,6 +325,9 @@ export function emptyProject(opts: { title?: string; author?: string; template?:
     budget: { currency: 'USD', fringePct: 0, contingencyPct: 10, lines: {} },
     callSheets: {},
     writingLog: {},
+    suggestions: {},
+    translation: null,
+    research: {},
   };
 }
 

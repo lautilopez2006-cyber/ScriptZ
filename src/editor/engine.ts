@@ -56,7 +56,8 @@ export interface EditorHooks {
   onLayout?: (layout: Layout) => void;
   /** Return true to swallow the key (autocomplete popups etc.). */
   keyHook?: (e: KeyboardEvent) => boolean;
-  transformCommit?: (prev: Block[], next: Block[]) => Block[];
+  /** May rewrite a commit (locked scenes, revision marks, suggestions); can also move the caret. */
+  transformCommit?: (prev: Block[], next: Block[], sel: Sel | null, before: Sel | null) => Block[] | { blocks: Block[]; sel: Sel | null };
   onElementMenu?: (rect: DOMRect, current: ElementType) => void;
   onContextMenu?: (e: MouseEvent, pos: Pos | null) => void;
   onMarkClick?: (kind: 'cmt' | 'tag', id: string, e: MouseEvent) => void;
@@ -570,6 +571,8 @@ export class ScriptEditor {
     el.className = cls + (keep.length ? ' ' + keep.join(' ') : '');
     if (b.dual) el.dataset.dual = b.dual; else delete el.dataset.dual;
     if (b.bookmark) el.dataset.bookmark = b.bookmark; else delete el.dataset.bookmark;
+    if (b.alts?.length) el.dataset.alts = String(b.alts.length + 1); else delete el.dataset.alts;
+    if (b.sug) el.dataset.sug = b.sug.k; else delete el.dataset.sug;
   }
 
   private renderAll(): void {
@@ -1016,7 +1019,11 @@ export class ScriptEditor {
   private commit(next: Block[], opts: { sel?: Sel | null; key: string; structural: boolean; fastText?: string }): void {
     const before = this.readSelection() ?? this.lastSel;
     let final = next;
-    if (this.hooks.transformCommit) final = this.hooks.transformCommit(this.blocks, next);
+    if (this.hooks.transformCommit) {
+      const r = this.hooks.transformCommit(this.blocks, next, opts.sel ?? null, before);
+      if (Array.isArray(r)) final = r;
+      else { final = r.blocks; opts = { ...opts, sel: r.sel ?? opts.sel }; }
+    }
     const ops = opts.fastText && final === next
       ? [{ t: 'set' as const, before: this.blocks[this.index.get(opts.fastText)!], after: final[this.index.get(opts.fastText)!] }]
       : diffBlocks(this.blocks, final);
@@ -1251,7 +1258,7 @@ export class ScriptEditor {
 
   /** Read a block back from the DOM after native editing (IME, deletions, spellcheck). */
   private syncFromDom(): void {
-    const sel = this.readSelection();
+    let sel = this.readSelection();
     const ids = new Set<string>();
     if (sel) { ids.add(sel.anchor.id); ids.add(sel.focus.id); }
     // Detect foreign nodes inserted by the browser at the top level.
@@ -1290,7 +1297,11 @@ export class ScriptEditor {
     const key = sel ? 'type:' + sel.focus.id : 'native';
     // Native edits are already in the DOM: commit without re-rendering canonical content.
     let final = next;
-    if (this.hooks.transformCommit) final = this.hooks.transformCommit(this.blocks, next);
+    if (this.hooks.transformCommit) {
+      const r = this.hooks.transformCommit(this.blocks, next, sel, this.lastSel);
+      if (Array.isArray(r)) final = r;
+      else { final = r.blocks; if (r.sel) sel = r.sel; }
+    }
     const ops = diffBlocks(this.blocks, final);
     this.pushHistory({ ops, before: this.lastSel, after: sel, key, time: Date.now() }, true);
     this.redoStack = [];

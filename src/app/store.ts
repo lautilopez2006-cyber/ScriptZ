@@ -4,8 +4,8 @@ import type { Project, ProjectSummary } from '../core/model';
 import type { AppSettings } from './settings';
 import { loadSettings } from './settings';
 
-export type View = 'home' | 'write' | 'cards' | 'beats' | 'timeline' | 'characters' | 'stats' | 'revisions' | 'production' | 'settings';
-export type RightPanel = 'comments' | 'find' | 'notes' | 'collab' | 'ai' | 'read' | 'sprint';
+export type View = 'home' | 'write' | 'cards' | 'beats' | 'timeline' | 'characters' | 'stats' | 'revisions' | 'production' | 'settings' | 'translation' | 'research' | 'series';
+export type RightPanel = 'comments' | 'find' | 'notes' | 'collab' | 'ai' | 'read' | 'sprint' | 'suggest' | 'review' | 'alts' | 'refs';
 
 export interface Toast { id: number; kind: 'info' | 'success' | 'error'; text: string; action?: { label: string; run: () => void }; ttl?: number }
 export interface ModalState { kind: string; props?: Record<string, unknown> }
@@ -32,6 +32,10 @@ export interface AppState {
   collab: CollabStatus;
   /** Bumped when the editor should re-read config (styles, template...). */
   editorEpoch: number;
+  /** Suggestion mode (track changes) for this session. */
+  suggesting: boolean;
+  /** Series opened in the series workspace (show name). */
+  series: string | null;
 }
 
 type Listener = () => void;
@@ -54,6 +58,8 @@ let state: AppState = {
   fullscreen: false,
   collab: { state: 'off', room: '', role: '', peers: [], message: '' },
   editorEpoch: 0,
+  suggesting: false,
+  series: null,
 };
 
 export function getState(): AppState { return state; }

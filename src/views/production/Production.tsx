@@ -208,6 +208,7 @@ function StripsTab({ lengths }: { lengths: Map<string, number> }) {
                 <span className="muted small">{eighths(d.pages)} {t('w.pages').toLowerCase()} · {d.scenes.length} {t('w.scenes').toLowerCase()}</span>
                 <span className="grow" />
                 <IconBtn small icon="clipboard" title={t('pd.callSheet')} onClick={() => openModal('callsheet', { dayId: day.id })} />
+                <IconBtn small icon="fileText" title={t('sd.title')} onClick={() => openModal('sides', { dayId: day.id })} />
                 <IconBtn small icon="trash" title={t('act.delete')} onClick={() => updateProject((x) => { const days = { ...x.schedule.days }; delete days[day.id]; return { ...x, schedule: { order: x.schedule.order.filter((o) => o !== 'day:' + day.id), days } }; })} />
               </header>
               {d.scenes.map(strip)}

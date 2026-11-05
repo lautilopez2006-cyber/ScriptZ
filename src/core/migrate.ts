@@ -1,7 +1,7 @@
 // Load any ScriptZ document (schema 1 from the 0.x/1.x drafts, or schema 2) into a valid v2 Project.
 import {
   ALL_ELEMENT_TYPES, BREAKDOWN_CATEGORIES, CARD_COLORS, defaultPage, defaultTitlePage, emptyProject, uid,
-  type Block, type BreakdownCategory, type CardColor, type ElementType, type Mark, type Project,
+  type Block, type BreakdownCategory, type CardColor, type ElementType, type Mark, type Project, type SeriesBible,
 } from './model';
 import { SCRIPT_LOCALES } from './format';
 
@@ -20,7 +20,7 @@ function safeId(v: unknown, seen: Set<string>): string {
   return id;
 }
 
-const MARK_KINDS = new Set(['b', 'i', 'u', 'x', 'hl', 'tag', 'cmt']);
+const MARK_KINDS = new Set(['b', 'i', 'u', 'x', 'hl', 'tag', 'cmt', 'si', 'sd']);
 
 function cleanMarks(v: unknown, len: number): Mark[] | undefined {
   const out: Mark[] = [];
@@ -52,6 +52,9 @@ export function normalizeBlocks(list: unknown): Block[] {
     if (raw.omitted === true) b.omitted = true;
     if (typeof raw.rev === 'string' && raw.rev) b.rev = raw.rev;
     if (typeof raw.bookmark === 'string' && raw.bookmark) b.bookmark = raw.bookmark.slice(0, 120);
+    const alts = arr(raw.alts).filter(isObj).map((a) => { const t = str(a.text).replace(/\r\n?/g, '\n'); const m = cleanMarks(a.marks, t.length); return m ? { text: t, marks: m } : { text: t }; }).slice(0, 20);
+    if (alts.length) b.alts = alts;
+    if (isObj(raw.sug) && (raw.sug.k === 'ins' || raw.sug.k === 'del') && typeof raw.sug.id === 'string') b.sug = { k: raw.sug.k, id: raw.sug.id };
     out.push(b);
   }
   if (!out.length) out.push({ id: uid(), type: 'scene', text: '' });
@@ -213,6 +216,27 @@ function fromV2(raw: Json): Project {
   p.budget = { currency: str(bu.currency, 'USD'), fringePct: num(bu.fringePct), contingencyPct: num(bu.contingencyPct, 10), lines: rec(bu.lines) as Project['budget']['lines'] };
   p.callSheets = rec(raw.callSheets) as Project['callSheets'];
   p.writingLog = rec(raw.writingLog) as Project['writingLog'];
+  p.suggestions = {};
+  for (const [k, v] of Object.entries(rec(raw.suggestions))) if (isObj(v)) p.suggestions[k] = { id: k, author: str(v.author), color: str(v.color, '#3247c9'), at: str(v.at) };
+  const tr = rec(raw.translation);
+  p.translation = isObj(raw.translation) ? { lang: str(tr.lang, 'en'), blocks: {} } : null;
+  if (p.translation) for (const [k, v] of Object.entries(rec(tr.blocks))) if (isObj(v)) p.translation.blocks[k] = { text: str(v.text), src: str(v.src), at: str(v.at) };
+  p.research = {};
+  for (const [k, v] of Object.entries(rec(raw.research))) {
+    if (!isObj(v)) continue;
+    const ids = (x: unknown) => arr(x).filter((y): y is string => typeof y === 'string');
+    const kind = v.kind === 'image' || v.kind === 'link' ? v.kind : 'note';
+    const image = str(v.image);
+    p.research[k] = { id: k, kind, title: str(v.title), note: str(v.note), url: str(v.url), image: /^data:image\/(png|jpeg|webp|gif);base64,/.test(image) ? image : '', scenes: ids(v.scenes), characters: ids(v.characters), locations: ids(v.locations), color: color(v.color), createdAt: str(v.createdAt) };
+  }
+  if (isObj(raw.bible)) {
+    const b = raw.bible;
+    const chars: SeriesBible['characters'] = {};
+    for (const [k, v] of Object.entries(rec(b.characters))) if (isObj(v)) chars[k] = { name: str(v.name, k), description: str(v.description), actor: str(v.actor) };
+    const locs: SeriesBible['locations'] = {};
+    for (const [k, v] of Object.entries(rec(b.locations))) if (isObj(v)) locs[k] = { name: str(v.name, k), description: str(v.description) };
+    p.bible = { show: str(b.show), logline: str(b.logline), premise: str(b.premise), tone: str(b.tone), world: str(b.world), arcs: str(b.arcs), notes: str(b.notes), characters: chars, locations: locs };
+  }
   return p;
 }
 

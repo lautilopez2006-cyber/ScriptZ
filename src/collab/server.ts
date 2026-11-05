@@ -1,6 +1,7 @@
 // ScriptZ collaboration server — Node 18+, no dependencies.
 // Build: npm run build:server  →  server/collab-server.mjs
 // Run:   node server/collab-server.mjs [--port 4735] [--host 0.0.0.0] [--data ./scriptz-rooms] [--cert cert.pem --key key.pem]
+import { officialProject } from '../core/suggest';
 import http from 'node:http';
 import https from 'node:https';
 import crypto from 'node:crypto';
@@ -181,7 +182,7 @@ async function handle(req: http.IncomingMessage, res: http.ServerResponse) {
   if (view && req.method === 'GET') {
     const r = loadRoom(view[1]);
     if (!r || !roleOf(r, url.searchParams.get('token') ?? '')) { res.writeHead(404, { 'content-type': 'text/plain' }); res.end('Not found'); return; }
-    const html = toHtml(docToProject(r.base, r.doc)).replace('</body>', `<script>setTimeout(()=>location.reload(),60000)</script></body>`);
+    const html = toHtml(officialProject(docToProject(r.base, r.doc))).replace('</body>', `<script>setTimeout(()=>location.reload(),60000)</script></body>`);
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
     res.end(html);
     return;

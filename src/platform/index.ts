@@ -28,7 +28,7 @@ export interface ProjectStore {
 }
 
 export function summarize(p: Project): ProjectSummary {
-  return { id: p.id, title: p.title, updatedAt: p.updatedAt, scenes: p.blocks.filter((b) => b.type === 'scene' && b.text.trim()).length, words: projectWords(p), template: p.template };
+  return { id: p.id, title: p.title, updatedAt: p.updatedAt, scenes: p.blocks.filter((b) => b.type === 'scene' && b.text.trim()).length, words: projectWords(p), template: p.template, ...(p.series ? { series: p.series } : {}) };
 }
 
 // ---------------------------------------------------------------- Tauri

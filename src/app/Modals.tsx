@@ -14,6 +14,7 @@ const TagDialog = lazy(() => import('../views/production/TagDialog'));
 const DocumentDialog = lazy(() => import('../views/document/DocumentDialog'));
 const Tour = lazy(() => import('../views/Tour'));
 const CallSheetModal = lazy(() => import('../views/production/CallSheetModal'));
+const SidesModal = lazy(() => import('../views/production/SidesModal'));
 
 function Prompt({ title, label, value, onSubmit, multiline }: { title: string; label: string; value?: string; onSubmit: (v: string) => void; multiline?: boolean }) {
   const [v, setV] = useState(value ?? '');
@@ -125,6 +126,18 @@ function Palette() {
   );
 }
 
+function Lightbox({ src, title }: { src: string; title: string }) {
+  return (
+    <div className="modal-back lightbox" onMouseDown={closeModal} onKeyDown={(e) => { if (e.key === 'Escape') closeModal(); }} role="dialog" aria-label={title} tabIndex={-1} ref={(el: HTMLDivElement | null) => el?.focus()}>
+      <figure onMouseDown={(e) => e.stopPropagation()}>
+        <img src={src} alt={title} />
+        {title ? <figcaption>{title}</figcaption> : null}
+      </figure>
+      <button type="button" className="lb-close" aria-label={t('act.close')} onClick={closeModal}><Icon name="x" size={18} /></button>
+    </div>
+  );
+}
+
 export function Modals() {
   const modal = useApp((s) => s.modal);
   if (!modal) return null;
@@ -139,6 +152,8 @@ export function Modals() {
       {modal.kind === 'tag' ? <TagDialog /> : null}
       {modal.kind === 'document' ? <DocumentDialog tab={(p as { tab?: string }).tab ?? 'format'} /> : null}
       {modal.kind === 'tour' ? <Tour /> : null}
+      {modal.kind === 'sides' ? <SidesModal dayId={(p as { dayId?: string }).dayId} /> : null}
+      {modal.kind === 'image' ? <Lightbox src={(p as { src?: string }).src ?? ''} title={(p as { title?: string }).title ?? ''} /> : null}
       {modal.kind === 'callsheet' ? <CallSheetModal dayId={(p as { dayId?: string }).dayId ?? ''} /> : null}
     </Suspense>
   );

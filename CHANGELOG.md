@@ -1,5 +1,45 @@
 # Cambios
 
+## 0.2.0 — noviembre 2026
+
+### Ocho funciones nuevas
+- **Revisor de guion.** Revisa el guion mientras escribís y marca:
+  - Personajes escritos de dos formas (MARÍA / MARIA).
+  - Locaciones duplicadas.
+  - Nombres de personaje sin diálogo y diálogos sin personaje.
+  - Encabezados sin INT./EXT. o sin DÍA/NOCHE.
+  - Personajes que hablan antes de ser presentados.
+  - Bloques demasiado largos.
+  - Comentarios y sugerencias pendientes.
+  
+  Muchos problemas se corrigen con un clic o todos juntos. Atajo: Ctrl+Shift+K.
+- **Modo sugerencias.** Funciona como el control de cambios: lo que escribís queda subrayado en verde y lo que borrás queda tachado en rojo, con autor y hora. Se aceptan o rechazan de a una o todas juntas. Los PDF y el enlace de lectura muestran siempre la versión oficial. Funciona también en colaboración en vivo. Atajo: Ctrl+Shift+E.
+- **Diálogos alternativos.** Guarda varias versiones de una línea y pasa de una a otra con Ctrl+Alt+← / →. Solo se exporta la que está en la página. Las líneas con versiones llevan una marca de bronce en el margen.
+- **Espacio para series.**
+  - Los episodios de una misma serie se agrupan en un estante en Inicio.
+  - Vista de la serie con:
+    - Los episodios por temporada.
+    - Un cuadro de qué personajes y locaciones aparecen en cada episodio.
+    - La biblia de la serie (logline, premisa, tono, mundo, arcos y fichas de personajes).
+  - Botón "Nuevo episodio" con el formato del anterior.
+- **Sides para actores.** Genera las páginas de una jornada de rodaje (o de las escenas que elijas) con todo lo que no se filma tachado. Se abre desde cada jornada en Producción o desde la paleta de comandos.
+- **Copias por destinatario.** Genera un PDF por persona, con su nombre en la marca de agua y al pie de cada página, todos en un .zip.
+- **Guion bilingüe.**
+  - El original y la traducción, párrafo por párrafo.
+  - Muestra el avance de la traducción.
+  - Detecta las traducciones que quedaron viejas cuando cambia el original.
+  - Filtros: pendientes y desactualizadas.
+  - Traducción con IA por escena (opcional).
+  - Exporta la versión traducida en cualquier formato o un documento bilingüe a dos columnas.
+- **Tablero de investigación.**
+  - Imágenes (se pegan con Ctrl+V o se arrastran), enlaces y notas.
+  - Se vinculan a escenas, personajes y locaciones.
+  - Mientras escribís, el panel "Referencias" muestra las de la escena en la que estás.
+
+### Instalador con identidad propia
+- Ícono nuevo: una página de guion encuadernada con broches de bronce y "SZ" subrayado en lápiz azul. Reemplaza al cuadrado violeta.
+- Instalador de Windows con imágenes propias de ScriptZ y selector de idioma (español, inglés, portugués).
+
 ## 0.1.1 — noviembre 2026
 
 ### Diseño nuevo

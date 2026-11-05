@@ -74,6 +74,7 @@ export function renderContent(el: HTMLElement, b: Block, ctx: RenderContext = {}
       else if (m.k === 'hl') cls.push('m-hl', 'hl-' + (HL_COLORS.includes(m.v ?? '') ? m.v : 'yellow'));
       else if (m.k === 'tag' && m.v) { tags.push(m.v); const cat = ctx.tagCategory?.(m.v); cls.push('m-tag'); if (cat) cls.push('cat-' + cat); }
       else if (m.k === 'cmt' && m.v) { cmts.push(m.v); cls.push('m-cmt'); }
+      else if ((m.k === 'si' || m.k === 'sd') && m.v) { cls.push('m-' + m.k); span.dataset[m.k] = m.v; }
     }
     if (cls.length) span.className = [...new Set(cls)].join(' ');
     if (tags.length) span.dataset.tags = tags.join(' ');
@@ -114,6 +115,8 @@ export function parseContent(el: HTMLElement): { text: string; marks: Mark[] | u
         if (cl.contains('m-hl')) own.push({ s: 0, e: 0, k: 'hl', v: e.dataset.hl || 'yellow' });
         for (const id of (e.dataset.tags ?? '').split(' ').filter(Boolean)) own.push({ s: 0, e: 0, k: 'tag', v: id });
         for (const id of (e.dataset.cmts ?? '').split(' ').filter(Boolean)) own.push({ s: 0, e: 0, k: 'cmt', v: id });
+        if (e.dataset.si) own.push({ s: 0, e: 0, k: 'si', v: e.dataset.si });
+        if (e.dataset.sd) own.push({ s: 0, e: 0, k: 'sd', v: e.dataset.sd });
         const isBlockish = e.tagName === 'DIV' || e.tagName === 'P';
         if (isBlockish && text.length && !text.endsWith('\n')) text += '\n';
         visit(e, [...inherited, ...own]);

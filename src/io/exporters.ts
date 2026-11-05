@@ -1,4 +1,6 @@
 // Export pipeline: format → bytes → save dialog.
+import { officialProject } from '../core/suggest';
+import { translatedProject, bilingualHtml } from '../core/translation';
 import type { Project } from '../core/model';
 import { saveFile, type FileFilter } from '../platform';
 import { toast } from '../app/store';
@@ -17,9 +19,9 @@ import boldItalicUrl from '../assets/fonts/CourierPrime-BoldItalic.ttf';
 import fallbackUrl from '../assets/fonts/DejaVuSansMono.ttf';
 import fallbackBoldUrl from '../assets/fonts/DejaVuSansMono-Bold.ttf';
 
-export type ExportFormat = 'pdf' | 'fdx' | 'fountain' | 'docx' | 'html' | 'epub' | 'md' | 'txt' | 'scriptz';
+export type ExportFormat = 'pdf' | 'fdx' | 'fountain' | 'docx' | 'html' | 'epub' | 'md' | 'txt' | 'scriptz' | 'bilingual';
 
-export const FORMAT_EXT: Record<ExportFormat, string> = { pdf: 'pdf', fdx: 'fdx', fountain: 'fountain', docx: 'docx', html: 'html', epub: 'epub', md: 'md', txt: 'txt', scriptz: 'scriptz' };
+export const FORMAT_EXT: Record<ExportFormat, string> = { pdf: 'pdf', fdx: 'fdx', fountain: 'fountain', docx: 'docx', html: 'html', epub: 'epub', md: 'md', txt: 'txt', scriptz: 'scriptz', bilingual: 'html' };
 
 export interface ExportOptions {
   titlePage?: boolean;
@@ -27,6 +29,12 @@ export interface ExportOptions {
   pages?: number[];
   docxMode?: 'flow' | 'exact';
   includeNotes?: boolean;
+  /** Export the translation instead of the original. */
+  version?: 'original' | 'translation';
+  /** One personalized PDF per name (watermark + stamp), delivered as a zip. */
+  recipients?: string[];
+  /** Internal: recipient for this copy. */
+  stamp?: string;
 }
 
 let fontCache: Promise<PdfFonts> | null = null;
@@ -63,7 +71,9 @@ export function rasterGlyph(g: string): RasterGlyph | null {
   } catch { return null; }
 }
 
-export async function buildExport(p: Project, format: ExportFormat, o: ExportOptions = {}): Promise<{ data: Uint8Array | string; missing?: string[] }> {
+export async function buildExport(p0: Project, format: ExportFormat, o: ExportOptions = {}): Promise<{ data: Uint8Array | string; missing?: string[] }> {
+  // Pending suggestions are proposals, not part of the script yet.
+  const p = o.version === 'translation' ? translatedProject(p0) : officialProject(p0);
   const proj = o.titlePage === undefined ? p : { ...p, titlePage: { ...p.titlePage, enabled: o.titlePage } };
   switch (format) {
     case 'pdf': {
@@ -75,6 +85,7 @@ export async function buildExport(p: Project, format: ExportFormat, o: ExportOpt
         raster: typeof document !== 'undefined' ? rasterGlyph : undefined,
         pages: o.pages,
         watermark: o.watermark,
+        stamp: o.stamp,
       });
       return { data: r.bytes, missing: r.missing };
     }
@@ -86,6 +97,7 @@ export async function buildExport(p: Project, format: ExportFormat, o: ExportOpt
     case 'md': return { data: toMarkdown(proj) };
     case 'txt': return { data: toPlainText(proj) };
     case 'scriptz': return { data: serializeProject(p) };
+    case 'bilingual': return { data: bilingualHtml(p0, { original: t('tr.original'), translation: t('tr.translation') }) };
   }
 }
 
@@ -95,6 +107,8 @@ export function fileName(p: Project, ext: string): string {
 
 export async function exportProject(p: Project, format: ExportFormat, o: ExportOptions = {}): Promise<boolean> {
   try {
+    const names = (o.recipients ?? []).map((n) => n.trim()).filter(Boolean);
+    if (format === 'pdf' && names.length) return await exportCopies(p, names, o);
     const { data, missing } = await buildExport(p, format, o);
     const ext = FORMAT_EXT[format];
     const filters: FileFilter[] = [{ name: format.toUpperCase(), extensions: [ext] }];
@@ -109,10 +123,48 @@ export async function exportProject(p: Project, format: ExportFormat, o: ExportO
   }
 }
 
+/** Personalized copies: each PDF carries its recipient in the watermark and on every page. */
+async function exportCopies(p: Project, names: string[], o: ExportOptions): Promise<boolean> {
+  const { writeZip } = await import('./zip');
+  const files: { name: string; data: Uint8Array }[] = [];
+  const base = fileName(p, 'pdf').replace(/\.pdf$/, '');
+  const used = new Set<string>();
+  for (const name of names) {
+    const label = t('ex.copyFor', { name });
+    const { data } = await buildExport(p, 'pdf', { ...o, recipients: undefined, watermark: (o.watermark ? o.watermark + ' · ' : '') + name, stamp: label });
+    let fn = `${base} - ${name.replace(/[\\/:*?"<>|]+/g, '_')}.pdf`;
+    for (let k = 2; used.has(fn); k++) fn = `${base} - ${name} (${k}).pdf`;
+    used.add(fn);
+    files.push({ name: fn, data: data as Uint8Array });
+  }
+  const zip = await writeZip(files);
+  const saved = await saveFile(`${base} - ${t('ex.copies')}.zip`, zip, [{ name: 'ZIP', extensions: ['zip'] }]);
+  if (!saved) return false;
+  toast(t('ex.copiesSaved', { n: names.length }), 'success');
+  return true;
+}
+
+export async function exportSides(p: Project, sceneIds: string[], title: string): Promise<boolean> {
+  try {
+    const { buildSides } = await import('./sides');
+    const data = await buildSides(p, { sceneIds, title });
+    const base = fileName(p, 'pdf').replace(/\.pdf$/, '');
+    const extra = title.replace(/[\\/:*?"<>|]+/g, '_').replace(p.title, '').replace(/^[\s·-]+/, '').trim();
+    const saved = await saveFile(`${base} - Sides${extra ? ' - ' + extra : ''}.pdf`, data, [{ name: 'PDF', extensions: ['pdf'] }]);
+    if (!saved) return false;
+    toast(t('ex.saved', { name: saved.split(/[\\/]/).pop() ?? saved }), 'success');
+    return true;
+  } catch (e) {
+    toast(t('err.generic', { msg: String((e as Error)?.message ?? e) }), 'error');
+    return false;
+  }
+}
+
 export async function exportScriptz(p: Project): Promise<void> { await exportProject(p, 'scriptz'); }
 
 /** Print through the browser's print dialog (exact pages, same layout as the PDF). */
-export async function printProject(p: Project): Promise<void> {
+export async function printProject(p0: Project): Promise<void> {
+  const p = officialProject(p0);
   const html = toHtml(p, { forPrint: true, header: (i, l) => headerFooterFor(p, 'header', i, l) });
   const frame = document.createElement('iframe');
   frame.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0';

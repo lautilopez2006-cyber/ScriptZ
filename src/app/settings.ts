@@ -43,6 +43,7 @@ export const DEFAULT_SHORTCUTS: Record<string, string> = {
   palette: 'Mod+K', focus: 'Mod+Shift+F', typewriter: 'Mod+Shift+T', fullscreen: 'F11', zoomIn: 'Mod+=', zoomOut: 'Mod+-', zoomReset: 'Mod+0',
   comment: 'Mod+Alt+M', highlight: 'Mod+Shift+H', tag: 'Mod+Alt+T', dual: 'Mod+D', bookmark: 'Mod+Shift+B', readAloud: 'Mod+Shift+R',
   nextScene: 'Alt+ArrowDown', prevScene: 'Alt+ArrowUp', navigator: 'Mod+\\', sprint: 'Mod+Alt+S', titlePage: 'Mod+Alt+P', revisionMode: 'Mod+Alt+R',
+  suggestMode: 'Mod+Shift+E', review: 'Mod+Shift+K', altNew: 'Mod+Alt+A', altNext: 'Mod+Alt+ArrowRight', altPrev: 'Mod+Alt+ArrowLeft',
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {

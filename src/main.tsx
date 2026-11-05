@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles/editor.css';
 import './styles/app.css';
 import './styles/views.css';
+import './styles/features.css';
 import { App } from './app/App';
 import { setLang } from './i18n';
 import { getState } from './app/store';

@@ -176,6 +176,8 @@ small { font-size: 12px; }
 .nav-btn[data-view='stats'] { --tab: var(--rv-gold); }
 .nav-btn[data-view='revisions'] { --tab: var(--rv-salmon); }
 .nav-btn[data-view='production'] { --tab: var(--rv-cherry); }
+.nav-btn[data-view='research'] { --tab: var(--rv-buff); }
+.nav-btn[data-view='translation'] { --tab: #bfe3ec; }
 .nav-btn[data-view='home'], .nav-btn[data-view='settings'], .nav-btn[data-view='palette'] { --tab: var(--line-2); }
 
 /* ---------------------------------------------------------------- controls */

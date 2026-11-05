@@ -11,6 +11,8 @@ import { IconBtn, MenuButton, Kbd, cx, Spinner, useDebounced, type MenuItem } fr
 import { Icon } from '../../ui/icons';
 import { EditorHost } from './EditorHost';
 import { Navigator } from './Navigator';
+import { ReviewPanel, SuggestPanel, AltsPanel } from './ReviewPanels';
+import { RefsPanel } from '../research/Research';
 import { FindPanel } from './FindPanel';
 import { CommentsPanel, NotesPanel } from './SidePanels';
 import { DictationButton } from './Dictation';
@@ -24,6 +26,9 @@ function Toolbar() {
   const template = useApp((s) => s.project!.template);
   const comments = useApp((s) => s.project!.comments);
   const revisions = useApp((s) => s.project!.revisions);
+  const suggesting = useApp((s) => s.suggesting);
+  const sugMeta = useApp((s) => s.project!.suggestions);
+  const pendingSug = Object.keys(sugMeta).length;
   const caret = useApp((s) => s.caret);
   const settings = useApp((s) => s.settings);
   const right = useApp((s) => s.right);
@@ -105,6 +110,17 @@ function Toolbar() {
         </button>
       ) : null}
       {readOnly ? <span className="chip"><Icon name="eye" size={14} />{t('ed.readOnly')}</span> : null}
+      {suggesting ? (
+        <button type="button" className="chip sug" onClick={() => togglePanel('suggest')} title={t('sg.mode')}>
+          <Icon name="pen" size={14} />{t('sg.chip')}{pendingSug ? <b>{pendingSug}</b> : null}
+        </button>
+      ) : null}
+      <div className="tb-group">
+        <IconBtn icon="check" title={t('dr.title') + ' (Ctrl+Shift+K)'} active={right === 'review'} onClick={() => togglePanel('review')} />
+        <IconBtn icon="compare" title={t('sg.title') + ' (Ctrl+Shift+E)'} active={right === 'suggest'} onClick={() => togglePanel('suggest')} badge={pendingSug || undefined} />
+        <IconBtn icon="shuffle" title={t('al.title')} active={right === 'alts'} onClick={() => togglePanel('alts')} />
+        <IconBtn icon="pin" title={t('rs.panel')} active={right === 'refs'} onClick={() => togglePanel('refs')} />
+      </div>
       <div className="tb-group">
         <DictationButton />
         <IconBtn icon="search" title={t('ed.find') + ' (Ctrl+F)'} active={right === 'find'} onClick={() => togglePanel('find')} />
@@ -155,7 +171,7 @@ export function WriteView() {
   const right = useApp((s) => s.right);
   const navOpen = useApp((s) => s.settings.navigatorOpen);
   const fullscreen = useApp((s) => s.fullscreen);
-  const panelTitle: Record<string, string> = { find: t('ed.find'), comments: t('w.comments'), notes: t('ed.notes'), read: t('ra.title'), sprint: t('ed.sprint'), collab: t('ed.collab'), ai: t('ed.ai') };
+  const panelTitle: Record<string, string> = { review: t('dr.title'), suggest: t('sg.title'), alts: t('al.title'), refs: t('rs.panel'), find: t('ed.find'), comments: t('w.comments'), notes: t('ed.notes'), read: t('ra.title'), sprint: t('ed.sprint'), collab: t('ed.collab'), ai: t('ed.ai') };
   return (
     <div className={cx('write', fullscreen && 'df')}>
       {!fullscreen ? <Toolbar /> : (
@@ -170,6 +186,10 @@ export function WriteView() {
           <aside className="side-panel" aria-label={panelTitle[right]}>
             <header className="side-h"><h3>{panelTitle[right]}</h3><IconBtn icon="x" small title={t('act.close')} onClick={() => { setState({ right: null }); getEditor()?.focus(); }} /></header>
             <Suspense fallback={<div className="pad"><Spinner /></div>}>
+              {right === 'review' ? <ReviewPanel /> : null}
+              {right === 'suggest' ? <SuggestPanel /> : null}
+              {right === 'alts' ? <AltsPanel /> : null}
+              {right === 'refs' ? <RefsPanel /> : null}
               {right === 'find' ? <FindPanel /> : null}
               {right === 'comments' ? <CommentsPanel /> : null}
               {right === 'notes' ? <NotesPanel /> : null}

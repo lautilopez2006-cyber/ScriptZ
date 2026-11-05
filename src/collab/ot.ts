@@ -119,7 +119,7 @@ export type MetaPath = [string] | [string, string];
 export type DocOp =
   | { t: 'text'; id: string; op: TextOp }
   | { t: 'marks'; id: string; marks: Mark[] | null }
-  | { t: 'attr'; id: string; attrs: Partial<Pick<Block, 'type' | 'dual' | 'num' | 'omitted' | 'rev' | 'bookmark'>> & Record<string, unknown> }
+  | { t: 'attr'; id: string; attrs: Partial<Pick<Block, 'type' | 'dual' | 'num' | 'omitted' | 'rev' | 'bookmark' | 'sug' | 'alts'>> & Record<string, unknown> }
   | { t: 'ins'; block: Block; after: string | null }
   | { t: 'del'; id: string }
   | { t: 'meta'; path: MetaPath; value: unknown };

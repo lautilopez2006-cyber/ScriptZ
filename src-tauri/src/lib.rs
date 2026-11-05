@@ -26,6 +26,10 @@ struct ProjectSummary {
     updated_at: String,
     scenes: usize,
     words: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    template: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    series: Option<Value>,
 }
 
 #[derive(Serialize)]
@@ -314,6 +318,8 @@ fn summary(id: &str, value: &Value) -> ProjectSummary {
         title: value["title"].as_str().unwrap_or("Sin título").to_owned(),
         updated_at: value["updatedAt"].as_str().unwrap_or("").to_owned(),
         scenes, words,
+        template: value["template"].as_str().map(str::to_owned),
+        series: value.get("series").filter(|s| s.is_object()).cloned(),
     }
 }
 

@@ -5,9 +5,9 @@ import { marksEqual } from '../core/marks';
 import { mapMarks, stableStringify, textDiff, type Change, type DocOp, type SyncDoc } from './ot';
 
 /** Top-level fields replaced as a whole. */
-const SCALARS = ['title', 'author', 'template', 'styleOverrides', 'locale', 'page', 'titlePage', 'logline', 'synopsis', 'theme', 'notes', 'series', 'beats', 'revisions', 'scheduleOrder', 'budgetSettings'] as const;
+const SCALARS = ['title', 'author', 'template', 'styleOverrides', 'locale', 'page', 'titlePage', 'logline', 'synopsis', 'theme', 'notes', 'series', 'beats', 'revisions', 'scheduleOrder', 'budgetSettings', 'translationLang', 'bible'] as const;
 /** Keyed collections merged per entry. */
-const COLLECTIONS = ['scenes', 'characters', 'locations', 'cards', 'comments', 'drafts', 'breakdownElements', 'scheduleDays', 'budgetLines', 'callSheets'] as const;
+const COLLECTIONS = ['scenes', 'characters', 'locations', 'cards', 'comments', 'drafts', 'breakdownElements', 'scheduleDays', 'budgetLines', 'callSheets', 'suggestions', 'translationBlocks', 'research'] as const;
 
 export function projectToDoc(p: Project): SyncDoc {
   return {
@@ -18,6 +18,7 @@ export function projectToDoc(p: Project): SyncDoc {
       scheduleOrder: p.schedule.order, budgetSettings: { currency: p.budget.currency, fringePct: p.budget.fringePct, contingencyPct: p.budget.contingencyPct },
       scenes: p.scenes, characters: p.characters, locations: p.locations, cards: p.cards, comments: p.comments, drafts: p.drafts,
       breakdownElements: p.breakdown.elements, scheduleDays: p.schedule.days, budgetLines: p.budget.lines, callSheets: p.callSheets,
+      suggestions: p.suggestions, translationLang: p.translation ? p.translation.lang : null, translationBlocks: p.translation?.blocks ?? {}, research: p.research, bible: p.bible ?? null,
     },
   };
 }
@@ -49,15 +50,19 @@ export function docToProject(base: Project, d: SyncDoc): Project {
     schedule: { order: (m.scheduleOrder as string[]) ?? [], days: (m.scheduleDays as Project['schedule']['days']) ?? {} },
     budget: { currency: bs.currency ?? 'USD', fringePct: bs.fringePct ?? 0, contingencyPct: bs.contingencyPct ?? 10, lines: (m.budgetLines as Project['budget']['lines']) ?? {} },
     callSheets: (m.callSheets as Project['callSheets']) ?? {},
+    suggestions: (m.suggestions as Project['suggestions']) ?? {},
+    translation: m.translationLang ? { lang: m.translationLang as string, blocks: (m.translationBlocks as NonNullable<Project['translation']>['blocks']) ?? {} } : null,
+    research: (m.research as Project['research']) ?? {},
+    bible: (m.bible as Project['bible']) ?? undefined,
   };
 }
 
-const ATTRS = ['type', 'dual', 'num', 'omitted', 'rev', 'bookmark'] as const;
+const ATTRS = ['type', 'dual', 'num', 'omitted', 'rev', 'bookmark', 'sug', 'alts'] as const;
 
 function blockOps(before: Block, after: Block): DocOp[] {
   const ops: DocOp[] = [];
   const attrs: Record<string, unknown> = {};
-  for (const k of ATTRS) if ((before[k] ?? null) !== (after[k] ?? null)) attrs[k] = after[k] ?? null;
+  for (const k of ATTRS) if (stableStringify(before[k] ?? null) !== stableStringify(after[k] ?? null)) attrs[k] = after[k] ?? null;
   if (Object.keys(attrs).length) ops.push({ t: 'attr', id: after.id, attrs });
   let shifted = before.marks;
   if (before.text !== after.text) {

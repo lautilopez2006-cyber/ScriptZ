@@ -3,6 +3,8 @@ import { getState, setState, toast, closeModal } from './store';
 import { saveSettings, loadLog, saveLog, type AppSettings } from './settings';
 import { projectStore, summarize, chooseScriptzPath, isTauri } from '../platform';
 import { coverToPage, transition } from '../ui/motion';
+import { suggestCommit, resolveSuggestion, listSuggestions } from '../core/suggest';
+import type { Sel } from '../editor/engine';
 import { emptyProject, block, localDay, projectWords, uid, type Block, type Project, type ElementType, type ScriptLocale, type PaperSize } from '../core/model';
 import { preserveLockedScenes, stampRevisions } from '../core/revisions';
 import { getTemplate, localeTokens } from '../core/format';
@@ -23,14 +25,74 @@ export function blocksFromEditor(blocks: Block[]): void {
   markDirty();
 }
 
-/** Apply revision stamping / locked scene preservation to editor commits. */
-export function transformCommit(prev: Block[], next: Block[]): Block[] {
+/** Apply suggestion mode, locked scene preservation and revision stamping to editor commits. */
+export function transformCommit(prev: Block[], next: Block[], sel: Sel | null, before?: Sel | null): Block[] | { blocks: Block[]; sel: Sel | null } {
   const p = getState().project;
   if (!p) return next;
   let out = next;
+  let caret = sel;
+  if (getState().suggesting && getState().collab.role !== 'viewer') {
+    const r = suggestCommit(prev, next, sel, before ?? null, { author: suggestAuthor().name, idFor: (id) => suggestionIdFor(id) });
+    out = r.blocks;
+    caret = r.sel;
+    registerSuggestions(r.used);
+  }
   if (p.revisions.scenesLocked) out = preserveLockedScenes(prev, out);
   if (p.revisions.active && p.revisions.current) out = stampRevisions(prev, out, p.revisions.current);
-  return out;
+  return caret === sel ? out : { blocks: out, sel: caret };
+}
+
+// ---------------------------------------------------------------- suggestions
+
+const sugByBlock = new Map<string, string>();
+export function suggestAuthor(): { name: string; color: string } {
+  const s = getState().settings;
+  return { name: s.collab.name || s.author || t('co.anon'), color: s.collab.color || '#3247c9' };
+}
+/** One suggestion per paragraph and session: consecutive edits to the same paragraph are reviewed together. */
+function suggestionIdFor(blockId: string): string {
+  const known = sugByBlock.get(blockId);
+  const p = getState().project;
+  if (known && (!p || p.suggestions[known] || pendingSug.has(known) || minted.has(known))) return known;
+  const id = 'sg' + uid().slice(0, 10);
+  sugByBlock.set(blockId, id);
+  minted.add(id);
+  return id;
+}
+const pendingSug = new Set<string>();
+/** Ids handed out during the current commit, not registered yet. */
+const minted = new Set<string>();
+function registerSuggestions(ids: Set<string>): void {
+  const p = getState().project;
+  if (!p) return;
+  const fresh = [...ids].filter((id) => !p.suggestions[id] && !pendingSug.has(id));
+  if (!fresh.length) return;
+  for (const id of fresh) { pendingSug.add(id); minted.delete(id); }
+  queueMicrotask(() => {
+    const a = suggestAuthor();
+    const at = new Date().toISOString();
+    const cur = getState().project;
+    if (!cur) return;
+    const sugs = { ...cur.suggestions };
+    for (const id of fresh) { sugs[id] = { id, author: a.name, color: a.color, at }; pendingSug.delete(id); }
+    setState({ project: { ...cur, suggestions: sugs } });
+    markDirty();
+  });
+}
+/** Accept or reject one suggestion (or all with id = null). */
+export function resolveSuggestions(id: string | null, accept: boolean): void {
+  updateProject((p) => {
+    const blocks = resolveSuggestion(p.blocks, id, accept);
+    const left = new Set(listSuggestions(blocks, {}).map((x) => x.id));
+    const suggestions: Project['suggestions'] = {};
+    for (const [k, v] of Object.entries(p.suggestions)) if (left.has(k)) suggestions[k] = v;
+    return { ...p, blocks, suggestions };
+  });
+  if (id === null) sugByBlock.clear(); else for (const [k, v] of sugByBlock) if (v === id) sugByBlock.delete(k);
+}
+export function setSuggesting(on: boolean): void {
+  setState({ suggesting: on });
+  toast(on ? t('sg.on') : t('sg.off'), 'info', undefined, 2200);
 }
 
 /** Update the project from any view. Blocks changes are pushed into the editor (undoable). */
@@ -269,7 +331,7 @@ export function setSettings(patch: Partial<AppSettings>): void {
 }
 
 export function setView(view: AppStateView): void {
-  if (view !== 'home' && view !== 'settings' && !getState().project) { setState({ view: 'home' }); return; }
+  if (view !== 'home' && view !== 'settings' && view !== 'series' && !getState().project) { setState({ view: 'home' }); return; }
   if (getState().view === view) return;
   void transition(() => setState({ view }));
 }

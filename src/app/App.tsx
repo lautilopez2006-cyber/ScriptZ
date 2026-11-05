@@ -20,6 +20,9 @@ const StatsView = lazy(() => import('../views/stats/Stats'));
 const RevisionsView = lazy(() => import('../views/revisions/Revisions'));
 const ProductionView = lazy(() => import('../views/production/Production'));
 const SettingsView = lazy(() => import('../views/settings/Settings'));
+const ResearchView = lazy(() => import('../views/research/Research'));
+const TranslationView = lazy(() => import('../views/translation/Translation'));
+const SeriesView = lazy(() => import('../views/series/Series'));
 
 const NAV: { view: View; icon: string; needsProject: boolean }[] = [
   { view: 'home', icon: 'home', needsProject: false },
@@ -28,6 +31,8 @@ const NAV: { view: View; icon: string; needsProject: boolean }[] = [
   { view: 'beats', icon: 'structure', needsProject: true },
   { view: 'timeline', icon: 'timeline', needsProject: true },
   { view: 'characters', icon: 'users', needsProject: true },
+  { view: 'research', icon: 'pin', needsProject: true },
+  { view: 'translation', icon: 'globe', needsProject: true },
   { view: 'stats', icon: 'chart', needsProject: true },
   { view: 'revisions', icon: 'revisions', needsProject: true },
   { view: 'production', icon: 'clapper', needsProject: true },
@@ -159,7 +164,12 @@ export function App() {
     document.title = project ? `${title || t('w.untitled')} — ScriptZ` : 'ScriptZ';
   }, [project, title]);
   useEffect(() => { if (view !== 'write') void saveNow(); }, [view]);
-  const active = project ? view : view === 'settings' ? 'settings' : 'home';
+  const active = project ? view : view === 'settings' || view === 'series' ? view : 'home';
+  useEffect(() => {
+    const onPanel = (e: Event) => { const p = (e as CustomEvent<string>).detail; void import('./commands').then((m) => m.togglePanel(p as never)); };
+    document.addEventListener('sz-panel', onPanel);
+    return () => document.removeEventListener('sz-panel', onPanel);
+  }, []);
   return (
     <div className={cx('app', fullscreen && 'df')} data-view={active}>
       {!fullscreen ? <Sidebar /> : null}
@@ -175,6 +185,9 @@ export function App() {
           {active === 'revisions' ? <RevisionsView /> : null}
           {active === 'production' ? <ProductionView /> : null}
           {active === 'settings' ? <SettingsView /> : null}
+          {active === 'research' ? <ResearchView /> : null}
+          {active === 'translation' ? <TranslationView /> : null}
+          {active === 'series' ? <SeriesView /> : null}
         </Suspense>
       </main>
       <Modals />

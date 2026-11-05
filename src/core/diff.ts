@@ -10,7 +10,14 @@ export type BlockOp =
 export function blockEqual(a: Block, b: Block): boolean {
   if (a === b) return true;
   return a.id === b.id && a.type === b.type && a.text === b.text && (a.dual ?? '') === (b.dual ?? '') && (a.num ?? '') === (b.num ?? '') &&
-    !!a.omitted === !!b.omitted && (a.rev ?? '') === (b.rev ?? '') && (a.bookmark ?? '') === (b.bookmark ?? '') && marksEqual(a.marks, b.marks);
+    !!a.omitted === !!b.omitted && (a.rev ?? '') === (b.rev ?? '') && (a.bookmark ?? '') === (b.bookmark ?? '') && marksEqual(a.marks, b.marks) &&
+    (a.sug?.k ?? '') === (b.sug?.k ?? '') && (a.sug?.id ?? '') === (b.sug?.id ?? '') && altsEqual(a.alts, b.alts);
+}
+
+function altsEqual(a: Block['alts'], b: Block['alts']): boolean {
+  if (a === b) return true;
+  if ((a?.length ?? 0) !== (b?.length ?? 0)) return false;
+  return (a ?? []).every((x, i) => x.text === b![i].text && marksEqual(x.marks, b![i].marks));
 }
 
 /** Myers diff on sequences of ids; returns the longest common subsequence as a set of kept ids. */

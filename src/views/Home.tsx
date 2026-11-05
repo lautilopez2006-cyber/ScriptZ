@@ -1,8 +1,9 @@
 // Home: library of projects, new project wizard entry, import, sample, tour.
 import { useEffect, useMemo, useState } from 'react';
-import { useApp, openModal, toast } from '../app/store';
-import { deleteProject, duplicateProject, openProject, renameProject } from '../app/actions';
-import { t, relTime, fmtNum } from '../i18n';
+import { useApp, openModal, toast, setState } from '../app/store';
+import { deleteProject, duplicateProject, openProject, renameProject, setView } from '../app/actions';
+import { t, tn, relTime, fmtNum } from '../i18n';
+import { epCode, isBible, seriesShelf } from '../core/series';
 import { Button, Empty, MenuButton, Spinner, cx } from '../ui/kit';
 import { Icon } from '../ui/icons';
 import { getTemplate } from '../core/format';
@@ -49,9 +50,10 @@ export function HomeView() {
   const [sort, setSort] = useState<'recent' | 'title'>('recent');
   const list = useMemo(() => {
     const f = q.trim().toLowerCase();
-    const l = library.filter((p) => !f || (p.title || '').toLowerCase().includes(f));
+    const l = library.filter((p) => !isBible(p) && (!f || (p.title || '').toLowerCase().includes(f) || (p.series?.show ?? '').toLowerCase().includes(f)));
     return sort === 'title' ? [...l].sort((a, b) => (a.title || '').localeCompare(b.title || '')) : l;
   }, [library, q, sort]);
+  const shelf = useMemo(() => seriesShelf(library), [library]);
   const openSample = async () => { const m = await import('../io/sample'); await m.openSample(); };
   const importFile = async () => { const m = await import('../io/importers'); await m.importWithPicker(); };
   const intro = useMemo(() => { try { const seen = sessionStorage.getItem('sz-intro'); sessionStorage.setItem('sz-intro', '1'); return !seen; } catch { return false; } }, []);
@@ -85,6 +87,23 @@ export function HomeView() {
           </div>
         </figure>
       </section>
+      {shelf.length ? (
+        <section className="series-shelf" aria-label={t('se.shelf')}>
+          <header className="lib-h"><h2>{t('se.shelf')}</h2></header>
+          <div className="shelf">
+            {shelf.map((s, i) => (
+              <button key={s.show} type="button" className="show" style={{ ['--i' as string]: Math.min(i, 8) }} onClick={() => { setState({ series: s.show }); setView('series'); }}>
+                <div className="show-spines" aria-hidden="true">
+                  {s.episodes.slice(0, 7).map((e) => <i key={e.id}><span>{epCode(e.series)}</span></i>)}
+                  <em className="show-cover"><span className="brads"><i className="brad" /><i className="brad" /></span><span className="sc-t">{s.show}</span><span className="sc-k">{t('se.tab.bible')}</span></em>
+                </div>
+                <b>{s.show}</b>
+                <small className="muted">{tn('se.episodes', s.episodes.length)}{s.bible ? ' · ' + t('se.tab.bible') : ''}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
       <section className="library">
         <header className="lib-h">
           <h2>{t('home.library')}</h2>
@@ -110,6 +129,7 @@ export function HomeView() {
                     <div className="front">
                       <div className="brads"><i className="brad" /><i className="hole" /><i className="brad" /></div>
                       <span className="cv-title">{(p.title || t('w.untitled')).toUpperCase()}</span>
+                      {p.series?.show ? <span className="cv-ep">{p.series.show} · {epCode(p.series)}</span> : null}
                       <span className="cv-kind">{t(getTemplate(p.template ?? 'feature').name)}</span>
                     </div>
                   </div>
