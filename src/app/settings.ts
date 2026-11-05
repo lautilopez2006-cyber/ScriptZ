@@ -65,7 +65,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   sprintMinutes: 25,
   ai: { enabled: false, provider: 'anthropic', apiKey: '', baseUrl: 'http://localhost:11434/v1', model: 'claude-haiku-5-5' },
   collab: { server: 'ws://127.0.0.1:4735', name: '', color: '#e8590c' },
-  update: { repo: 'lautilopez2006-cyber/scriptz-web', auto: true, lastCheck: 0 },
+  update: { repo: 'lautilopez2006-cyber/ScriptZ', auto: true, lastCheck: 0 },
   readAloud: { narrator: '', rate: 1, readActions: true, readHeadings: true, readParentheticals: false, voices: {} },
   tourDone: false,
   defaultLocale: 'es-LA',
