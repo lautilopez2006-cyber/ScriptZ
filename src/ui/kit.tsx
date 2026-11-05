@@ -220,3 +220,26 @@ export function useDebounced<T>(value: T, ms: number): T {
   useEffect(() => { const id = setTimeout(() => setV(value), ms); return () => clearTimeout(id); }, [value, ms]);
   return v;
 }
+
+/** Counts up to `value` when it first appears (respects reduced motion). */
+export function CountUp({ value, format = (n: number) => fmtNumLocal(n), ms = 900 }: { value: number; format?: (n: number) => string; ms?: number }) {
+  const [v, setV] = useState(() => (prefersReduced() ? value : 0));
+  const from = useRef(0);
+  useEffect(() => {
+    if (prefersReduced()) { setV(value); return; }
+    const start = performance.now();
+    const a = from.current;
+    let raf = 0;
+    const step = (now: number) => {
+      const k = Math.min(1, (now - start) / ms);
+      const e = 1 - Math.pow(1 - k, 4);
+      setV(a + (value - a) * e);
+      if (k < 1) raf = requestAnimationFrame(step); else from.current = value;
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [value, ms]);
+  return <>{format(Math.round(v))}</>;
+}
+function prefersReduced(): boolean { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; } }
+function fmtNumLocal(n: number): string { try { return new Intl.NumberFormat(document.documentElement.lang || 'es').format(n); } catch { return String(n); } }

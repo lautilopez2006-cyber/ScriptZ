@@ -58,15 +58,16 @@ function Sidebar() {
       </button>
       <div className="nav-items">
         {NAV.map((n) => (
-          <button key={n.view} type="button" className={cx('nav-btn', view === n.view && 'on')} disabled={n.needsProject && !project} onClick={() => setView(n.view)} title={t('nav.' + n.view)} aria-current={view === n.view ? 'page' : undefined}>
+          <button key={n.view} type="button" data-view={n.view} className={cx('nav-btn', view === n.view && 'on')} disabled={n.needsProject && !project} onClick={() => setView(n.view)} title={t('nav.' + n.view)} aria-current={view === n.view ? 'page' : undefined}>
+            {view === n.view ? <i className="nav-ind" /> : null}
             <Icon name={n.icon} size={20} />
             <span>{t('nav.' + n.view)}</span>
           </button>
         ))}
       </div>
       <div className="nav-bottom">
-        <button type="button" className="nav-btn" onClick={() => runCommand('palette')} title={t('pal.title') + ' (Ctrl+K)'}><Icon name="command" size={20} /><span>{t('pal.title')}</span></button>
-        <button type="button" className={cx('nav-btn', view === 'settings' && 'on')} onClick={() => setView('settings')} title={t('nav.settings')}><Icon name="settings" size={20} /><span>{t('nav.settings')}</span></button>
+        <button type="button" data-view="palette" className="nav-btn" onClick={() => runCommand('palette')} title={t('pal.title') + ' (Ctrl+K)'}><Icon name="command" size={20} /><span>{t('pal.title')}</span></button>
+        <button type="button" data-view="settings" className={cx('nav-btn', view === 'settings' && 'on')} onClick={() => setView('settings')} title={t('nav.settings')}>{view === 'settings' ? <i className="nav-ind" /> : null}<Icon name="settings" size={20} /><span>{t('nav.settings')}</span></button>
       </div>
     </nav>
   );

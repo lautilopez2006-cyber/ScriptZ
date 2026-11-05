@@ -58,7 +58,7 @@ test('HTML, Markdown and plain text exports contain the script', () => {
 
 test('PDF export: valid file with one page per layout page', async () => {
   const font = (f: string) => new Uint8Array(readFileSync(join(process.cwd(), 'src/assets/fonts', f)));
-  const fonts = { regular: font('LiberationMono-Regular.ttf'), bold: font('LiberationMono-Bold.ttf'), italic: font('LiberationMono-Italic.ttf'), boldItalic: font('LiberationMono-BoldItalic.ttf'), fallback: font('DejaVuSansMono.ttf'), fallbackBold: font('DejaVuSansMono-Bold.ttf') };
+  const fonts = { regular: font('CourierPrime-Regular.ttf'), bold: font('CourierPrime-Bold.ttf'), italic: font('CourierPrime-Italic.ttf'), boldItalic: font('CourierPrime-BoldItalic.ttf'), fallback: font('DejaVuSansMono.ttf'), fallbackBold: font('DejaVuSansMono-Bold.ttf') };
   const t0 = performance.now();
   const r = await scriptToPdf(big, fonts as never, { titlePage: false });
   const ms = performance.now() - t0;

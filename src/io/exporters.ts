@@ -10,10 +10,10 @@ import { toEpub, toHtml, toMarkdown, toPlainText } from './text';
 import { headerFooterFor } from '../views/write/EditorHost';
 import { t } from '../i18n';
 import type { PdfFonts, RasterGlyph } from './pdf/script';
-import regularUrl from '../assets/fonts/LiberationMono-Regular.ttf';
-import boldUrl from '../assets/fonts/LiberationMono-Bold.ttf';
-import italicUrl from '../assets/fonts/LiberationMono-Italic.ttf';
-import boldItalicUrl from '../assets/fonts/LiberationMono-BoldItalic.ttf';
+import regularUrl from '../assets/fonts/CourierPrime-Regular.ttf';
+import boldUrl from '../assets/fonts/CourierPrime-Bold.ttf';
+import italicUrl from '../assets/fonts/CourierPrime-Italic.ttf';
+import boldItalicUrl from '../assets/fonts/CourierPrime-BoldItalic.ttf';
 import fallbackUrl from '../assets/fonts/DejaVuSansMono.ttf';
 import fallbackBoldUrl from '../assets/fonts/DejaVuSansMono-Bold.ttf';
 

@@ -6,6 +6,8 @@ import { t } from '../i18n';
 import { Button, Modal } from '../ui/kit';
 import { Icon, Logo } from '../ui/icons';
 
+// Each step sits on the next revision page color: white, blue, pink, yellow, green, goldenrod, buff.
+const PAGE_COLORS = ['var(--rv-white)', 'var(--rv-blue)', 'var(--rv-pink)', 'var(--rv-yellow)', 'var(--rv-green)', 'var(--rv-gold)', 'var(--rv-buff)'];
 const STEPS: { icon: string }[] = [{ icon: 'logo' }, { icon: 'pen' }, { icon: 'wand' }, { icon: 'pageView' }, { icon: 'cards' }, { icon: 'clapper' }, { icon: 'command' }];
 
 export default function Tour() {
@@ -27,9 +29,16 @@ export default function Tour() {
       </>
     }>
       <div className="tour">
-        <div className="tour-ic">{STEPS[i].icon === 'logo' ? <Logo size={64} /> : <Icon name={STEPS[i].icon} size={40} />}</div>
-        <h2>{t(`tour.${i + 1}.t`)}</h2>
-        <p>{t(`tour.${i + 1}.d`)}</p>
+        <div className="tour-deck" aria-hidden="true">
+          {STEPS.map((st, k) => (
+            <div key={k} className={'tour-page ' + (k < i ? 'gone' : k === i ? 'top' : 'under')} style={{ ['--k' as string]: k - i, ['--c' as string]: PAGE_COLORS[k % PAGE_COLORS.length], zIndex: STEPS.length - k }}>
+              <span className="tp-n">{k + 1}.</span>
+              {st.icon === 'logo' ? <Logo size={58} /> : <Icon name={st.icon} size={42} stroke={1.6} />}
+            </div>
+          ))}
+        </div>
+        <h2 key={'h' + i}>{t(`tour.${i + 1}.t`)}</h2>
+        <p key={'p' + i}>{t(`tour.${i + 1}.d`)}</p>
         <div className="tour-dots">{STEPS.map((_, k) => <button key={k} type="button" className={k === i ? 'on' : ''} aria-label={String(k + 1)} onClick={() => setI(k)} />)}</div>
       </div>
     </Modal>

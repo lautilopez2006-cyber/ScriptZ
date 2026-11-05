@@ -1,5 +1,36 @@
 # Cambios
 
+## 0.1.1 — noviembre 2026
+
+### Diseño nuevo
+- Identidad visual propia basada en el oficio: portadas encuadernadas con broches de bronce, páginas de revisión de colores de la industria y el "lápiz azul" del editor.
+- Courier Prime, la tipografía diseñada para guiones, en el editor y en el PDF. Tiene las mismas medidas que Courier, así que la paginación no cambia.
+- Hanken Grotesk para la interfaz.
+- Cada sección lleva el color de su página de revisión.
+- Temas nuevos: Estudio (claro), Sala de proyección (oscuro), Archivo (sepia) y Medianoche.
+- Animaciones:
+  - Al abrir un guion, la portada se transforma en la página del editor.
+  - El menú lateral se desliza entre secciones.
+  - Las tarjetas se reparten como un mazo.
+  - Las líneas de tiempo y el arco del personaje se dibujan.
+  - Las estadísticas cuentan hasta su valor.
+  - El recorrido guiado es un mazo de páginas de revisión.
+- Se respeta "reducir movimiento" del sistema.
+- Logo e íconos nuevos.
+
+### Importación probada con archivos reales
+- Fade In:
+  - Acotaciones con paréntesis.
+  - Mayúsculas de estilo.
+  - Texto centrado.
+  - Sin párrafos vacíos.
+  - Coincide exactamente con Final Draft en 6 guiones de prueba.
+- Celtx: portada y mayúsculas.
+- Highland: paquetes TextBundle.
+- Fountain: salto de página pegado al diálogo.
+- Final Draft: párrafo vacío final.
+
+
 ## 0.1.0 — noviembre 2026
 
 Reescritura completa sobre una base nueva. Los proyectos `.scriptz` de la 0.0.x se abren y se migran solos.

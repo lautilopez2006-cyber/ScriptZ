@@ -1,8 +1,10 @@
-/* Page-accurate screenplay editor. 1 line = 12pt = 16px at 100%. 1in = 96px. */
-@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/LiberationMono-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
-@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/LiberationMono-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
-@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/LiberationMono-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: block; }
-@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/LiberationMono-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: block; }
+/* Page-accurate screenplay editor. 1 line = 12pt = 16px at 100%. 1in = 96px.
+   Courier Prime (OFL) has the exact Courier metrics (600/1000 em), so pagination is unchanged. */
+@font-face { font-family: 'SZ Liberation'; src: url('../assets/fonts/LiberationMono-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/CourierPrime-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/CourierPrime-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/CourierPrime-Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; font-display: block; }
+@font-face { font-family: 'SZ Mono'; src: url('../assets/fonts/CourierPrime-BoldItalic.ttf') format('truetype'); font-weight: 700; font-style: italic; font-display: block; }
 
 .sz-paper {
   --z: 1;

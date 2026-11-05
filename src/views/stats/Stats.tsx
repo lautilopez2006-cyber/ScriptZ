@@ -8,7 +8,7 @@ import { projectWords, localDay } from '../../core/model';
 import { loadLog } from '../../app/settings';
 import { saveCsv } from '../../io/exporters';
 import { t, fmtNum, fmtDate } from '../../i18n';
-import { Button, COLOR_HEX } from '../../ui/kit';
+import { Button, COLOR_HEX, CountUp } from '../../ui/kit';
 
 function Bars({ rows, max, unit, onClick }: { rows: { label: string; value: number; color?: string; id?: string }[]; max?: number; unit?: (v: number) => string; onClick?: (id: string) => void }) {
   const m = max ?? Math.max(1, ...rows.map((r) => r.value));
@@ -98,23 +98,23 @@ export default function StatsView() {
       <header className="view-h"><h2>{t('nav.stats')}</h2><span className="grow" /><Button small icon="download" onClick={exportScenes}>{t('stats.csvScenes')}</Button><Button small icon="download" onClick={exportChars}>{t('stats.csvChars')}</Button></header>
       <div className="view-b">
         <div className="cards-row">
-          <div className="card stat"><b>{pages}</b><span>{t('w.pages')}</span></div>
-          <div className="card stat"><b>{Math.floor(minutes / 60) ? `${Math.floor(minutes / 60)} h ${Math.round(minutes % 60)} min` : `${Math.round(minutes)} min`}</b><span>{t('stats.duration')}</span></div>
-          <div className="card stat"><b>{scenes.length}</b><span>{t('w.scenes')}</span></div>
-          <div className="card stat"><b>{fmtNum(words)}</b><span>{t('w.words')}</span></div>
-          <div className="card stat"><b>{chars.length}</b><span>{t('w.characters')}</span></div>
-          <div className="card stat"><b>{locs.length}</b><span>{t('w.locations')}</span></div>
+          <div className="card stat"><b><CountUp value={pages} /></b><span>{t('w.pages')}</span></div>
+          <div className="card stat"><b><CountUp value={Math.round(minutes)} format={(m) => (Math.floor(m / 60) ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`)} /></b><span>{t('stats.duration')}</span></div>
+          <div className="card stat"><b><CountUp value={scenes.length} /></b><span>{t('w.scenes')}</span></div>
+          <div className="card stat"><b><CountUp value={words} /></b><span>{t('w.words')}</span></div>
+          <div className="card stat"><b><CountUp value={chars.length} /></b><span>{t('w.characters')}</span></div>
+          <div className="card stat"><b><CountUp value={locs.length} /></b><span>{t('w.locations')}</span></div>
         </div>
         <div className="grid2 mt">
           <div className="card"><h3>{t('stats.balance')}</h3>
-            <Split parts={[{ label: t('stats.dialogue'), value: dlg, color: '#3e63dd' }, { label: t('stats.action'), value: act, color: '#f76b15' }]} />
-            <Split parts={[{ label: 'INT.', value: ie.int, color: '#8e4ec6' }, { label: 'EXT.', value: ie.ext, color: '#30a46c' }, { label: 'INT./EXT.', value: ie.both, color: '#8b8d98' }]} />
+            <Split parts={[{ label: t('stats.dialogue'), value: dlg, color: 'var(--accent)' }, { label: t('stats.action'), value: act, color: 'var(--rv-gold)' }]} />
+            <Split parts={[{ label: 'INT.', value: ie.int, color: '#6b5bd2' }, { label: 'EXT.', value: ie.ext, color: '#4c9a6a' }, { label: 'INT./EXT.', value: ie.both, color: 'var(--line-2)' }]} />
             <Split parts={[{ label: t('w.day'), value: dn.day, color: '#f5b800' }, { label: t('w.night'), value: dn.night, color: '#1f2a5c' }, { label: t('w.other'), value: dn.other, color: '#b9bbc6' }]} />
           </div>
           <div className="card"><h3>{t('stats.writing')}</h3>
             <div className="cards-row tight">
-              <div className="stat"><b>{fmtNum(today)}</b><span>{t('stats.today', { goal: fmtNum(goals.dailyWords) })}</span></div>
-              <div className="stat"><b>{streak}</b><span>{t('stats.streak')}</span></div>
+              <div className="stat"><b><CountUp value={today} /></b><span>{t('stats.today', { goal: fmtNum(goals.dailyWords) })}</span></div>
+              <div className="stat"><b><CountUp value={streak} /></b><span>{t('stats.streak')}</span></div>
               <div className="stat"><b>{fmtNum(Object.values(p.writingLog).reduce((a, x) => a + x.words, 0))}</b><span>{t('stats.projectWords')}</span></div>
             </div>
             <div className="bar mt"><i style={{ width: `${Math.min(100, (today / Math.max(1, goals.dailyWords)) * 100)}%` }} /></div>

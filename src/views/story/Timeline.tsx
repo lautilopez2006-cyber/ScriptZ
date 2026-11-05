@@ -51,7 +51,7 @@ export default function TimelineView() {
                 const y1 = 28 + i * ROW + ROW / 2, y2 = 28 + j * ROW + ROW / 2;
                 const col = p.scenes[s.id]?.color;
                 const stroke = col && col !== 'none' ? COLOR_HEX[col] : i === j ? 'var(--line-2)' : 'var(--accent)';
-                return <path key={s.id} d={`M0 ${y1} C 70 ${y1}, 70 ${y2}, 140 ${y2}`} fill="none" stroke={stroke} strokeWidth={i === j ? 1.5 : 2.5} opacity={i === j ? 0.6 : 0.95} />;
+                return <path key={s.id} className="draw" pathLength={1} style={{ animationDelay: `${Math.min(i, 30) * 25}ms` }} d={`M0 ${y1} C 70 ${y1}, 70 ${y2}, 140 ${y2}`} fill="none" stroke={stroke} strokeWidth={i === j ? 1.5 : 2.5} opacity={i === j ? 0.6 : 0.95} />;
               })}
             </svg>
             <div className="tl-col">

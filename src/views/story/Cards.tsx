@@ -17,14 +17,14 @@ function goToScene(id: string) {
   setTimeout(() => getEditor()?.scrollToBlock(id, { select: true }), 80);
 }
 
-function SceneCard({ s, pages, draggable, onDragStart, onDragOver, onDrop, dropBefore }: { s: SceneInfo; pages: number; draggable?: boolean; onDragStart?: (e: DragEvent) => void; onDragOver?: (e: DragEvent) => void; onDrop?: (e: DragEvent) => void; dropBefore?: boolean }) {
+function SceneCard({ s, i, pages, draggable, onDragStart, onDragOver, onDrop, dropBefore }: { s: SceneInfo; i?: number; pages: number; draggable?: boolean; onDragStart?: (e: DragEvent) => void; onDragOver?: (e: DragEvent) => void; onDrop?: (e: DragEvent) => void; dropBefore?: boolean }) {
   const p = useApp((st) => st.project)!;
   const meta = p.scenes[s.id] ?? {};
   const [editing, setEditing] = useState(false);
   const color = meta.color && meta.color !== 'none' ? COLOR_HEX[meta.color] : 'var(--line-2)';
   const setMeta = (patch: object) => updateProject((x) => ({ ...x, scenes: { ...x.scenes, [s.id]: { ...(x.scenes[s.id] ?? {}), ...patch } } }));
   return (
-    <article className={cx('icard', dropBefore && 'drop-before', s.omitted && 'omitted')} draggable={draggable} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} style={{ ['--cc' as string]: color }}>
+    <article className={cx('icard', dropBefore && 'drop-before', s.omitted && 'omitted')} draggable={draggable} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} style={{ ['--cc' as string]: color, ['--i' as string]: Math.min(i ?? 0, 24) }}>
       <header>
         <span className="icard-num">{s.label}</span>
         <b className="icard-h" title={s.heading}>{s.heading.toUpperCase() || '—'}</b>
@@ -139,8 +139,8 @@ export default function CardsView() {
           {!scenes.length ? <p className="muted">{t('nv.noScenes')}</p> : null}
           <p className="muted small">{t('cd.gridHint')}</p>
           <div className="card-grid" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); if (!over) drop(null); }}>
-            {visible.map((s) => (
-              <SceneCard key={s.id} s={s} pages={lengths.get(s.id) ?? 0} draggable={!colorFilter} dropBefore={over === s.id}
+            {visible.map((s, i) => (
+              <SceneCard key={s.id} i={i} s={s} pages={lengths.get(s.id) ?? 0} draggable={!colorFilter} dropBefore={over === s.id}
                 onDragStart={(e) => { dragId.current = s.id; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', s.id); }}
                 onDragOver={(e) => { e.preventDefault(); setOver(s.id); }}
                 onDrop={(e) => { e.preventDefault(); e.stopPropagation(); drop(s.id); }} />

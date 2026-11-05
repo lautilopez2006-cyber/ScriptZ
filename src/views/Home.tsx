@@ -1,10 +1,10 @@
 // Home: library of projects, new project wizard entry, import, sample, tour.
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useApp, openModal, toast } from '../app/store';
 import { deleteProject, duplicateProject, openProject, renameProject } from '../app/actions';
 import { t, relTime, fmtNum } from '../i18n';
 import { Button, Empty, MenuButton, Spinner, cx } from '../ui/kit';
-import { Icon, Logo } from '../ui/icons';
+import { Icon } from '../ui/icons';
 import { getTemplate } from '../core/format';
 
 function joinSession() {
@@ -20,6 +20,27 @@ function joinSession() {
   });
 }
 
+/** Opening a script: its cover is named for the view transition, so it grows into the editor page. */
+function open(id: string, el: HTMLElement) {
+  const front = el.querySelector<HTMLElement>('.front');
+  if (front) front.style.viewTransitionName = 'script-page';
+  void openProject(id).finally(() => { if (front) front.style.viewTransitionName = ''; });
+}
+
+/** The tagline types itself once per session, like a page in the typewriter. */
+function Typed({ text, animate }: { text: string; animate: boolean }) {
+  const [n, setN] = useState(animate ? 0 : text.length);
+  useEffect(() => {
+    if (!animate) { setN(text.length); return; }
+    let i = 0;
+    let id = 0;
+    const tick = () => { i++; setN(i); if (i < text.length) id = window.setTimeout(tick, 22 + Math.random() * 38); };
+    id = window.setTimeout(tick, 650);
+    return () => clearTimeout(id);
+  }, [text, animate]);
+  return <p className="ts-typed" aria-label={text}><span aria-hidden="true">{text.slice(0, n)}</span><i className="tw-caret" aria-hidden="true" /></p>;
+}
+
 export function HomeView() {
   const library = useApp((s) => s.library);
   const loaded = useApp((s) => s.libraryLoaded);
@@ -33,18 +54,36 @@ export function HomeView() {
   }, [library, q, sort]);
   const openSample = async () => { const m = await import('../io/sample'); await m.openSample(); };
   const importFile = async () => { const m = await import('../io/importers'); await m.importWithPicker(); };
+  const intro = useMemo(() => { try { const seen = sessionStorage.getItem('sz-intro'); sessionStorage.setItem('sz-intro', '1'); return !seen; } catch { return false; } }, []);
   return (
     <div className="home">
-      <section className="hero">
-        <div className="hero-brand"><Logo size={56} /><div><h1>ScriptZ</h1><p>{t('app.tagline')}</p></div></div>
-        <div className="hero-actions">
-          <Button kind="primary" icon="plus" onClick={() => openModal('newProject')}>{t('home.new')}</Button>
-          <Button icon="upload" onClick={importFile}>{t('home.import')}</Button>
-          <Button kind="ghost" icon="book" onClick={openSample}>{t('home.sample')}</Button>
-          <Button kind="ghost" icon="users" onClick={joinSession}>{t('co.join')}</Button>
-          <Button kind="ghost" icon="help" onClick={() => openModal('tour')}>{t('tour.start')}</Button>
+      <section className="title-sheet" aria-label="ScriptZ">
+        <div className={cx('ts-paper', intro && 'intro')}>
+          <div className="brads" aria-hidden="true"><i className="brad" /><i className="hole" /><i className="brad" /></div>
+          <h1 className="ts-title">ScriptZ</h1>
+          <Typed text={t('app.tagline')} animate={intro} />
+          <div className="ts-actions">
+            <Button kind="primary" icon="plus" onClick={() => openModal('newProject')}>{t('home.new')}</Button>
+            <Button icon="upload" onClick={importFile}>{t('home.import')}</Button>
+          </div>
+          <div className="ts-corner" aria-hidden="true"><span>{t('home.corner.left')}</span><span>{t('home.corner.right')}</span></div>
+          <div className="ts-links">
+            <button type="button" onClick={openSample}><Icon name="book" size={15} />{t('home.sample')}</button>
+            <button type="button" onClick={joinSession}><Icon name="users" size={15} />{t('co.join')}</button>
+            <button type="button" onClick={() => openModal('tour')}><Icon name="help" size={15} />{t('tour.start')}</button>
+          </div>
         </div>
-        <p className="hero-formats muted">{t('home.formats')}</p>
+        <figure className={cx('ts-stack', intro && 'intro')} aria-hidden="true">
+          <i /><i /><i />
+          <div className="rv-page">
+            <span className="rv-num">12A.</span>
+            <p className="rv-scene">{t('home.stack.scene')}<b>*</b></p>
+            <p className="rv-act">{t('home.stack.action')}<b>*</b></p>
+            <p className="rv-char">MARA</p>
+            <p className="rv-dlg">{t('home.stack.line')}<b>*</b></p>
+            <span className="rv-foot">{t('home.stack.rev')}</span>
+          </div>
+        </figure>
       </section>
       <section className="library">
         <header className="lib-h">
@@ -62,16 +101,21 @@ export function HomeView() {
           </Empty>
         ) : (
           <div className="lib-grid">
-            {list.map((p) => (
-              <article key={p.id} className={cx('proj', current === p.id && 'current')}>
-                <button type="button" className="proj-open" onClick={() => openProject(p.id)}>
-                  <div className="proj-page" aria-hidden="true">
-                    <span className="pp-title">{(p.title || t('w.untitled')).toUpperCase()}</span>
-                    <span className="pp-lines"><i /><i /><i /><i /><i /></span>
+            {list.map((p, i) => (
+              <article key={p.id} className={cx('proj', current === p.id && 'current')} style={{ ['--i' as string]: Math.min(i, 12) }}>
+                <button type="button" className="proj-open" onClick={(e) => open(p.id, e.currentTarget)}>
+                  <div className="cover" aria-hidden="true">
+                    {p.words > 4000 ? <i className="sheet s3" /> : null}
+                    {p.words > 400 ? <i className="sheet s2" /> : null}
+                    <div className="front">
+                      <div className="brads"><i className="brad" /><i className="hole" /><i className="brad" /></div>
+                      <span className="cv-title">{(p.title || t('w.untitled')).toUpperCase()}</span>
+                      <span className="cv-kind">{t(getTemplate(p.template ?? 'feature').name)}</span>
+                    </div>
                   </div>
                   <div className="proj-meta">
                     <h3>{p.title || t('w.untitled')}</h3>
-                    <small>{t(getTemplate(p.template ?? 'feature').name)} · {t('home.scenesWords', { s: p.scenes, w: fmtNum(p.words) })}</small>
+                    <small>{t('home.scenesWords', { s: p.scenes, w: fmtNum(p.words) })}</small>
                     <small className="muted">{p.updatedAt ? relTime(Date.parse(p.updatedAt)) : ''}</small>
                   </div>
                 </button>
@@ -87,6 +131,7 @@ export function HomeView() {
           </div>
         )}
       </section>
+      <p className="home-formats muted">{t('home.formats')}</p>
       <footer className="home-foot muted">
         <span><Icon name="info" size={14} /> {t('home.privacy')}</span>
       </footer>

@@ -335,14 +335,20 @@ input[type='range'] { accent-color: var(--accent); }
 .peers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .peers li { display: flex; align-items: center; gap: 8px; }
 
-/* ---------------------------------------------------------------- tour */
-.tour { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 14px 10px 4px; }
-.tour-ic { width: 92px; height: 92px; border-radius: 24px; background: var(--accent-bg); color: var(--accent); display: grid; place-items: center; }
-.tour h2 { font-size: 22px; }
-.tour p { margin: 0; max-width: 440px; color: var(--text-2); font-size: 14.5px; line-height: 1.55; }
-.tour-dots { display: flex; gap: 6px; margin-top: 6px; }
-.tour-dots button { width: 8px; height: 8px; border-radius: 4px; border: 0; padding: 0; background: var(--line-2); transition: width var(--t), background var(--t); }
-.tour-dots button.on { width: 22px; background: var(--accent); }
+/* ---------------------------------------------------------------- tour: a deck of revision pages */
+.tour { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 12px 10px 4px; }
+.tour-deck { position: relative; width: 150px; height: 190px; margin: 6px 0 14px; perspective: 900px; }
+.tour-page { position: absolute; inset: 0; border-radius: var(--r-paper); background: var(--c); color: #1c2333; display: grid; place-items: center; box-shadow: 0 1px 2px rgba(0, 0, 0, .14), 0 16px 30px -14px rgba(0, 0, 0, .4); transition: transform 620ms var(--spring), opacity 420ms var(--ease); transform-origin: 20% 110%; }
+.tour-page.top { transform: rotate(-2deg); }
+.tour-page.under { transform: translate(calc(var(--k) * 7px), calc(var(--k) * -5px)) rotate(calc(var(--k) * 3deg)); }
+.tour-page.under > * { opacity: 0; }
+.tour-page.gone { transform: translate(-150%, 30px) rotate(-28deg); opacity: 0; pointer-events: none; }
+.tp-n { position: absolute; top: 10px; right: 12px; font: 12px var(--display); opacity: .65; }
+.tour h2 { font: 700 22px/1.25 var(--display); letter-spacing: 0; animation: rise 420ms var(--ease-out) both; }
+.tour p { margin: 0; max-width: 440px; color: var(--text-2); font-size: 14.5px; line-height: 1.6; animation: rise 420ms 60ms var(--ease-out) both; }
+.tour-dots { display: flex; gap: 6px; margin-top: 8px; }
+.tour-dots button { width: 8px; height: 8px; border-radius: 4px; border: 0; padding: 0; background: var(--line-2); transition: width 320ms var(--spring), background var(--t); }
+.tour-dots button.on { width: 24px; background: var(--accent); }
 
 @media (max-width: 900px) {
   .ch-list, .bd-list { width: 200px; }
@@ -365,3 +371,43 @@ input[type='range'] { accent-color: var(--accent); }
 .styles-tbl .select { width: 122px; }
 .styles-tbl .num-in, .styles-tbl .input { width: 58px; }
 input[type='color'].input { width: 64px; padding: 3px; cursor: pointer; }
+
+/* ---------------------------------------------------------------- entrances that show what each view is about */
+/* Cards are dealt onto the table. */
+.card-grid > .icard:not(.end-slot) { animation: deal 560ms var(--spring) both; animation-delay: calc(var(--i, 0) * 38ms); }
+@keyframes deal { from { opacity: 0; transform: translateY(-26px) rotate(calc(-4deg + var(--i, 0) * 1.3deg)) scale(.96); } }
+.icard { transition: box-shadow var(--t), transform 300ms var(--spring); }
+.card-grid > .icard:not(.end-slot):hover { transform: translateY(-3px) rotate(-.4deg); }
+/* Lines are drawn (timeline links, character arc). */
+svg .draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw-line 1100ms var(--ease-out) forwards; }
+@keyframes draw-line { to { stroke-dashoffset: 0; } }
+.arc-chart .pt { animation: pop 420ms var(--spring) both; animation-delay: 700ms; }
+/* Measurements grow from zero. */
+.hb-t i, .split-bar i { transform-origin: left; animation: grow-x 900ms var(--ease-out) both; }
+.split-bar i:nth-child(2) { animation-delay: 80ms; } .split-bar i:nth-child(3) { animation-delay: 160ms; }
+.hbar:nth-child(n) .hb-t i { animation-delay: calc(var(--n, 0) * 30ms); }
+.scene-strip button { transform-origin: bottom; animation: grow-y 700ms var(--ease-out) both; }
+@keyframes grow-y { from { transform: scaleY(0); } }
+.heat i { animation: fade 500ms var(--ease) both; }
+.ring { transition: background 600ms var(--ease-out); }
+/* Beats: the ruler fills, then beat markers drop in like pins. */
+.rs-seg { animation: grow-x 700ms var(--ease-out) both; transform-origin: left; }
+.rs-beat { animation: pin 520ms var(--spring) both; animation-delay: 380ms; }
+@keyframes pin { from { opacity: 0; transform: translate(-50%, -14px); } to { transform: translateX(-50%); } }
+.beat { animation: rise 460ms var(--ease-out) both; }
+/* Production: strips slide onto the board. */
+.strip { animation: strip-in 420ms var(--ease-out) both; }
+@keyframes strip-in { from { opacity: 0; transform: translateX(-18px); } }
+.bd-cat { transition: transform 260ms var(--spring), box-shadow var(--t); }
+.bd-cat:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
+/* Stats cards lift a little on hover; numbers count up in code. */
+.cards-row .card.stat { transition: transform 300ms var(--spring), box-shadow var(--t); }
+.cards-row .card.stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+/* Settings sections slide in when switching tabs. */
+.st-content > .st-sec { animation: rise 360ms var(--ease-out) both; }
+.st-tab { transition: background var(--t), color var(--t); }
+/* Revision sets show their paper color. */
+.rev-set .sw { transition: transform 260ms var(--spring); }
+.rev-set .sw:hover { transform: rotate(-8deg) scale(1.12); }
+/* Display type for view-level headings inside cards. */
+.card > h3, .ch-detail h2, .bd-sheet h3 { font-family: var(--display); letter-spacing: 0; }

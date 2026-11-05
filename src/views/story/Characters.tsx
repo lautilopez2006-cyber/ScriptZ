@@ -35,7 +35,7 @@ function ArcChart({ points }: { points: { label: string; v: number; present: boo
       <line x1={pad} x2={W - pad} y1={H / 2} y2={H / 2} className="axis" />
       <text x={4} y={pad + 4} className="lbl">+5</text><text x={4} y={H - pad + 4} className="lbl">−5</text>
       {points.map((_, i) => <line key={i} x1={x(i)} x2={x(i)} y1={pad / 2} y2={H - pad / 2} className="grid" />)}
-      <path d={d} className="arc" />
+      <path d={d} className="arc draw" pathLength={1} />
       {present.map((pt) => <circle key={pt.i} cx={x(pt.i)} cy={y(pt.v)} r={4.5} className="pt"><title>{`${pt.label}: ${pt.v}`}</title></circle>)}
       {points.map((pt, i) => (points.length <= 40 || i % Math.ceil(points.length / 40) === 0) ? <text key={'l' + i} x={x(i)} y={H - 4} className="lbl" textAnchor="middle">{pt.label}</text> : null)}
     </svg>

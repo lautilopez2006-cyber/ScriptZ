@@ -124,18 +124,22 @@ export function Icon({ name, size = 18, stroke = 1.75, className, style, title }
   );
 }
 
-export function Logo({ size = 28 }: { size?: number }) {
+export function Logo({ size = 28, className }: { size?: number; className?: string }) {
+  // A bound script page (brass brads, blue-pencil lines) on the editor's blue.
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
+    <svg className={className} width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
       <defs>
-        <linearGradient id="szg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ff7a45" />
-          <stop offset="1" stopColor="#d4380d" />
-        </linearGradient>
+        <linearGradient id="sz-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4258e0" /><stop offset="1" stopColor="#2536a4" /></linearGradient>
+        <radialGradient id="sz-brass" cx=".35" cy=".3" r=".8"><stop offset="0" stopColor="#f6e2a8" /><stop offset=".5" stopColor="#c39a45" /><stop offset="1" stopColor="#7a5a1f" /></radialGradient>
       </defs>
-      <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#szg)" />
-      <path d="M41 19.5c-2.1-1.9-5.2-3-8.6-3-6.1 0-10.1 3.2-10.1 7.8 0 10.4 18.9 6.6 18.9 15.6 0 4.6-4.1 7.7-10.3 7.7-3.9 0-7.4-1.3-9.8-3.6" fill="none" stroke="#fff" strokeWidth="5.2" strokeLinecap="round" />
-      <path d="M44 33h9l-9 12h9" fill="none" stroke="#fff" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" opacity=".92" />
+      <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#sz-bg)" />
+      <g transform="rotate(-7 32 33)">
+        <rect x="17" y="10" width="31" height="43" rx="2" fill="#000" opacity=".22" transform="translate(1.5 2)" />
+        <rect x="17" y="10" width="31" height="43" rx="2" fill="#fff" />
+        <circle cx="22" cy="17.5" r="2.3" fill="url(#sz-brass)" />
+        <circle cx="22" cy="45.5" r="2.3" fill="url(#sz-brass)" />
+        <path d="M28 22.5h14M28 29h10M31.5 35.5h11M28 42h13" stroke="#3247c9" strokeWidth="2.6" strokeLinecap="round" opacity=".85" />
+      </g>
     </svg>
   );
 }

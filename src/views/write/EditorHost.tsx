@@ -1,5 +1,5 @@
 // Mounts the ScriptEditor for the current project and keeps it in sync with settings/project format.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ScriptEditor, type EditorConfig } from '../../editor/engine';
 import { resolveStyles, localeTokens, getTemplate } from '../../core/format';
 import type { Block, ElementType, Project } from '../../core/model';
@@ -83,8 +83,8 @@ export function EditorHost() {
     return smartRef.current.ctx;
   };
 
-  // Create the editor once per project.
-  useEffect(() => {
+  // Create the editor once per project (synchronously, so view transitions can land on the real page).
+  useLayoutEffect(() => {
     const p = getState().project;
     if (!p || !hostRef.current) return;
     const ed = new ScriptEditor(hostRef.current, p.blocks, editorConfigFor(p), {

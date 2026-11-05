@@ -61,14 +61,15 @@ function General({ s }: { s: AppSettings }) {
   );
 }
 
-const FONTS = ['SZ Mono', 'Courier Prime', 'Courier New', 'Cousine', 'Courier', 'Consolas', 'Menlo'];
+const FONTS = ['SZ Mono', 'SZ Liberation', 'Courier New', 'Cousine', 'Courier', 'Consolas', 'Menlo'];
+const FONT_LABEL: Record<string, string> = { 'SZ Mono': 'Courier Prime', 'SZ Liberation': 'Liberation Mono' };
 
 function Editor({ s }: { s: AppSettings }) {
   return (
     <div className="st-sec">
       <Field label={t('st.scriptFont')} hint={t('st.scriptFont.h')}>
         <div className="font-list">
-          {FONTS.map((f) => <button key={f} type="button" className={'font-it' + (s.scriptFont === f ? ' on' : '')} onClick={() => setSettings({ scriptFont: f })}><b>{f === 'SZ Mono' ? 'Liberation Mono (ScriptZ)' : f}</b><span style={{ fontFamily: f === 'SZ Mono' ? "'SZ Mono'" : `'${f}', 'SZ Mono'` }}>INT. FARO - NOCHE</span></button>)}
+          {FONTS.map((f) => <button key={f} type="button" className={'font-it' + (s.scriptFont === f ? ' on' : '')} onClick={() => setSettings({ scriptFont: f })}><b>{FONT_LABEL[f] ?? f}</b><span style={{ fontFamily: `'${f}', 'SZ Mono'` }}>INT. FARO - NOCHE</span></button>)}
         </div>
       </Field>
       <Field label={t('st.zoom')}><div className="row"><input className="grow" type="range" min={0.5} max={2} step={0.05} value={s.zoom} onChange={(e) => setSettings({ zoom: Number(e.target.value) })} /><span className="muted zoom-pct">{Math.round(s.zoom * 100)}%</span></div></Field>

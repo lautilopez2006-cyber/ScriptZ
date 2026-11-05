@@ -21,7 +21,7 @@ export const SETTINGS: Dict = {
   'st.author': ['Tu nombre', 'Your name', 'Seu nome'],
   'st.author.h': ['Se usa en portadas, comentarios y colaboración.', 'Used on title pages, comments and collaboration.', 'Usado em folhas de rosto, comentários e colaboração.'],
   'st.scriptFont': ['Tipografía del guion en pantalla', 'On-screen script font', 'Fonte do roteiro na tela'],
-  'st.scriptFont.h': ['El PDF siempre usa Liberation Mono (mismas medidas que Courier). Las demás se usan solo si están instaladas.', 'PDFs always use Liberation Mono (Courier metrics). Others are used only if installed.', 'O PDF sempre usa Liberation Mono (medidas do Courier). As demais só se estiverem instaladas.'],
+  'st.scriptFont.h': ['El PDF usa siempre Courier Prime, la tipografía estándar de guion. Las demás solo cambian cómo lo ves en pantalla y se usan si están instaladas.', 'PDFs always use Courier Prime, the standard screenplay typeface. The others only change how it looks on screen and are used if installed.', 'O PDF sempre usa Courier Prime, a fonte padrão de roteiro. As outras só mudam a exibição na tela e são usadas se estiverem instaladas.'],
   'st.zoom': ['Zoom', 'Zoom', 'Zoom'],
   'st.keys.elements': ['Elementos', 'Elements', 'Elementos'],
   'st.keys.commands': ['Comandos', 'Commands', 'Comandos'],

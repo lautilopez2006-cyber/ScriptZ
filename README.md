@@ -71,4 +71,4 @@ tests/        pruebas automáticas
 Documentación: [Guía de uso](docs/GUIA.md) · [Formatos](docs/FORMATOS.md) · [Colaboración](docs/COLABORACION.md) · [Limitaciones conocidas](docs/LIMITACIONES.md) · [Cambios](CHANGELOG.md)
 
 ## Licencia
-MIT. Tipografías: Liberation Mono (SIL OFL 1.1) y DejaVu Sans Mono (licencia Bitstream Vera), ver `src/assets/fonts/`.
+MIT. Tipografías: Courier Prime y Hanken Grotesk (SIL OFL 1.1), Liberation Mono (SIL OFL 1.1) y DejaVu Sans Mono (licencia Bitstream Vera); ver `src/assets/fonts/`.

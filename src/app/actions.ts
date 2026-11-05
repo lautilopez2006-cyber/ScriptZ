@@ -2,6 +2,7 @@
 import { getState, setState, toast, closeModal } from './store';
 import { saveSettings, loadLog, saveLog, type AppSettings } from './settings';
 import { projectStore, summarize, chooseScriptzPath, isTauri } from '../platform';
+import { coverToPage, transition } from '../ui/motion';
 import { emptyProject, block, localDay, projectWords, uid, type Block, type Project, type ElementType, type ScriptLocale, type PaperSize } from '../core/model';
 import { preserveLockedScenes, stampRevisions } from '../core/revisions';
 import { getTemplate, localeTokens } from '../core/format';
@@ -143,7 +144,9 @@ export async function openProject(id: string, view: AppStateView = 'write'): Pro
     lastWords = projectWords(p);
     let linkedPath: string | null = null;
     try { linkedPath = await projectStore().linkedFile(id); } catch { linkedPath = null; }
-    setState({ project: p, view, saveState: 'saved', linkedPath, caret: null, right: null });
+    const apply = () => setState({ project: p, view, saveState: 'saved', linkedPath, caret: null, right: null });
+    if (view === 'write' && document.querySelector('[style*="script-page"]')) await coverToPage(apply);
+    else await transition(apply);
     rememberRecent(id);
   } catch (e) {
     toast(t('err.generic', { msg: String((e as Error)?.message ?? e) }), 'error');
@@ -155,7 +158,7 @@ type AppStateView = ReturnType<typeof getState>['view'];
 export async function adoptProject(p: Project, opts: { view?: AppStateView; message?: string } = {}): Promise<void> {
   await saveNow();
   lastWords = projectWords(p);
-  setState({ project: p, view: opts.view ?? 'write', saveState: 'dirty', linkedPath: null, caret: null, right: null });
+  await transition(() => setState({ project: p, view: opts.view ?? 'write', saveState: 'dirty', linkedPath: null, caret: null, right: null }));
   await saveNow();
   await refreshLibrary();
   rememberRecent(p.id);
@@ -267,5 +270,6 @@ export function setSettings(patch: Partial<AppSettings>): void {
 
 export function setView(view: AppStateView): void {
   if (view !== 'home' && view !== 'settings' && !getState().project) { setState({ view: 'home' }); return; }
-  setState({ view });
+  if (getState().view === view) return;
+  void transition(() => setState({ view }));
 }
