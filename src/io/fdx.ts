@@ -194,5 +194,7 @@ export function parseFdx(src: string): FdxImport {
     const right = lines.filter((l) => l.align === 'right');
     if (right.length) title.draft = right.map((l) => l.text).join('\n');
   }
+  // Final Draft documents usually end with an empty paragraph.
+  while (blocks.length > 1 && !blocks[blocks.length - 1].text.trim()) blocks.pop();
   return { title, blocks: blocks.length ? blocks : [block('scene', '')], summaries, revisions };
 }

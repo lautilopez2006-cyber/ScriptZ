@@ -160,7 +160,7 @@ export function parseFountain(source: string): FountainDoc {
       i++;
       let dialogue: string[] = [];
       const flush = () => { if (dialogue.length) { push('dialogue', dialogue.join('\n'), dual ? { dual } : {}); dialogue = []; } };
-      while (i < lines.length && lines[i].trim()) {
+      while (i < lines.length && lines[i].trim() && !/^={3,}$/.test(lines[i].trim())) {
         const l = lines[i].trim();
         if (/^\(.*\)$/.test(l)) { flush(); push('parenthetical', l, dual ? { dual } : {}); }
         else if (/^~/.test(l)) { flush(); push('lyrics', l.slice(1).trim()); }
@@ -184,7 +184,7 @@ export function parseFountain(source: string): FountainDoc {
     }
     // Action paragraph (until a blank line); forced with "!"
     const para: string[] = [];
-    while (i < lines.length && lines[i].trim()) {
+    while (i < lines.length && lines[i].trim() && !(para.length && /^={3,}$/.test(lines[i].trim()))) {
       let l = lines[i];
       if (para.length === 0 && /^\s*!/.test(l)) l = l.replace(/^\s*!/, '');
       para.push(l.replace(/\t/g, '    ').trimEnd());

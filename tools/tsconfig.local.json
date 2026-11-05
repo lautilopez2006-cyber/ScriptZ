@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "jsx": "preserve", "types": [], "typeRoots": [] },
+  "include": ["../src", "./types/shims.d.ts"],
+  "exclude": ["../src/dev", "../src/collab/server.ts"]
+}

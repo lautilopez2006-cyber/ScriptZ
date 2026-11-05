@@ -69,3 +69,22 @@ test('PDF export: valid file with one page per layout page', async () => {
   eq(pages, layoutProject(big).pages.length, 'page count');
   ok(ms < 4000, 'pdf too slow ' + ms);
 });
+
+// Packages from other screenwriting apps (structure mirrors real Fade In, Celtx and Highland files).
+import { parseFile } from '../src/io/importers';
+const EXPECTED = [['scene', 'INT. FARO - NOCHE'], ['action', 'MARA sube la escalera.'], ['character', 'MARA'], ['parenthetical', '(sin aliento)'], ['dialogue', 'No puede ser.'], ['transition', 'CORTE A:']];
+for (const [file, last] of [['demo.fadein', 'centered'], ['demo.celtx', null], ['demo.highland', 'centered']] as const) {
+  test(`imports ${file} like the original app shows it`, async () => {
+    const p = await parseFile(file, new Uint8Array(readFileSync(join(process.cwd(), 'tests/fixtures', file))));
+    const got = p.blocks.map((b) => [b.type, b.text]);
+    eq(got.slice(0, EXPECTED.length), EXPECTED);
+    if (last) eq(got[EXPECTED.length], [last, 'FIN.']);
+    eq(got.length, EXPECTED.length + (last ? 1 : 0), 'no empty paragraphs');
+    eq(p.titlePage.title, 'La última luz');
+  });
+}
+
+test('Fountain page break right after dialogue is not part of the speech', () => {
+  const d = parseFountain('INT. A - DÍA\n\nMARA\nHola.\n===\n\nEXT. B - NOCHE\n');
+  eq(d.blocks.map((b) => [b.type, b.text]), [['scene', 'INT. A - DÍA'], ['character', 'MARA'], ['dialogue', 'Hola.'], ['scene', 'EXT. B - NOCHE']]);
+});

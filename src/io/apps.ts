@@ -1,4 +1,5 @@
 // Imports from other screenwriting apps: Fade In (.fadein / OSF), Celtx (.celtx), Highland (.highland), WriterDuet (.wdz).
+import { upperSameLength } from '../core/text';
 import { block, type Block, type ElementType, type Mark, type TitlePage } from '../core/model';
 import { normalizeMarks } from '../core/marks';
 import { decodeEntities, findAll, first, kids, parseXml, textOf } from './xml';
@@ -26,7 +27,8 @@ export function parseOsf(xml: string): Imported {
     const st = first(para, 'style');
     let base = (st?.attrs.basestyle ?? st?.attrs.basestylename ?? st?.attrs.name ?? para.attrs.style ?? 'action').toLowerCase();
     base = styleMap.get(base) ?? base;
-    const type: ElementType = OSF[base] ?? 'action';
+    let type: ElementType = OSF[base] ?? 'action';
+    if (type === 'action' && (st?.attrs.align ?? '').toLowerCase() === 'center') type = 'centered';
     let text = '';
     const marks: Mark[] = [];
     for (const t of kids(para, 'text')) {
@@ -40,7 +42,12 @@ export function parseOsf(xml: string): Imported {
         if (t.attrs.strikeout === '1') marks.push({ s, e, k: 'x' });
       }
     }
-    const b = block(type, text.replace(/\r\n?/g, '\n'));
+    text = text.replace(/\r\n?/g, '\n');
+    if (!text.trim()) continue; // Fade In stores blank lines as empty paragraphs
+    // Fade In keeps the typed case and adds parentheses through the style; store what is printed.
+    if (type === 'scene' || type === 'character' || type === 'transition') text = upperSameLength(text);
+    if (type === 'parenthetical' && !/^\s*\(/.test(text)) { text = '(' + text.trim() + ')'; marks.length = 0; }
+    const b = block(type, text);
     const m = normalizeMarks(marks, b.text.length);
     if (m) b.marks = m;
     if (type === 'scene' && para.attrs.number) b.num = para.attrs.number;
@@ -57,7 +64,11 @@ export function parseOsf(xml: string): Imported {
   }
   const info = first(docNode, 'info');
   if (info?.attrs.title && !title.title) title.title = info.attrs.title;
-  if (info?.attrs.written_by && !title.authors) title.authors = info.attrs.written_by;
+  if (info?.attrs.written_by && !title.credit) title.credit = info.attrs.written_by; // the credit label ("Written by")
+  if (info?.attrs.author && !title.authors) title.authors = info.attrs.author;
+  if (info?.attrs.contact && !title.contact) title.contact = info.attrs.contact;
+  if (info?.attrs.copyright && !title.copyright && !/^copyright \(c\)$/i.test(info.attrs.copyright)) title.copyright = info.attrs.copyright;
+  if (info?.attrs.drafts && !title.draft) title.draft = info.attrs.drafts;
   return { title, blocks: blocks.length ? blocks : [block('scene', '')] };
 }
 
@@ -72,10 +83,21 @@ export function parseCeltxHtml(html: string): Imported {
   for (const m of html.matchAll(/<p\b[^>]*class="([^"]+)"[^>]*>([\s\S]*?)<\/p>/gi)) {
     const cls = m[1].toLowerCase().split(/\s+/).find((c) => c in CELTX) ?? 'action';
     const text = decodeEntities(m[2].replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '')).replace(/ /g, ' ').trim();
-    if (!text && cls !== 'action') continue;
-    blocks.push(block(CELTX[cls] ?? 'action', text));
+    if (!text) continue;
+    const type = CELTX[cls] ?? 'action';
+    // Celtx keeps the typed case and capitalizes these elements through CSS.
+    blocks.push(block(type, type === 'scene' || type === 'character' || type === 'transition' || type === 'act' ? upperSameLength(text) : text));
   }
-  return { title: {}, blocks: blocks.length ? blocks : [block('scene', '')] };
+  const meta = (n: string) => decodeEntities(new RegExp(`<meta[^>]*content="([^"]*)"[^>]*name="${n}"`, 'i').exec(html)?.[1] ?? new RegExp(`<meta[^>]*name="${n}"[^>]*content="([^"]*)"`, 'i').exec(html)?.[1] ?? '');
+  const title: Partial<TitlePage> = {};
+  const tt = decodeEntities(/<title>([\s\S]*?)<\/title>/i.exec(html)?.[1] ?? '').trim();
+  if (tt) title.title = tt;
+  if (meta('Author')) title.authors = meta('Author');
+  if (meta('CX.byline')) title.credit = meta('CX.byline');
+  if (meta('CX.contact')) title.contact = meta('CX.contact');
+  if (meta('DC.source')) title.source = meta('DC.source');
+  if (meta('DC.rights')) title.copyright = meta('DC.rights');
+  return { title, blocks: blocks.length ? blocks : [block('scene', '')] };
 }
 
 export async function importZipApp(name: string, bytes: Uint8Array): Promise<Imported> {

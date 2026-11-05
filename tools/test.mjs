@@ -3,5 +3,6 @@ import { build } from 'esbuild';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 mkdirSync('tests/.out', { recursive: true });
-await build({ entryPoints: ['tests/run.ts'], bundle: true, platform: 'node', format: 'esm', outfile: 'tests/.out/run.mjs', logLevel: 'error', target: 'node20' });
+await build({ entryPoints: ['tests/run.ts'], bundle: true, platform: 'node', format: 'esm', outfile: 'tests/.out/run.mjs', logLevel: 'error', target: 'node20',
+  inject: ['tests/node-shim.js'], loader: { '.ttf': 'file', '.png': 'file' }, external: ['@tauri-apps/*', 'pdfjs-dist', 'pdfjs-dist/*'] });
 execFileSync(process.execPath, ['tests/.out/run.mjs'], { stdio: 'inherit' });

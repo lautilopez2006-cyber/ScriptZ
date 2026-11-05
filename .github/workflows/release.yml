@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
-      - run: npm ci || npm install
+        with: { node-version: 22 }
+      - run: npm install --no-audit --no-fund
       - run: npm test
       - run: npm run typecheck
         continue-on-error: true
@@ -29,12 +29,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
+        with: { node-version: 22 }
       - uses: dtolnay/rust-toolchain@stable
         with: { targets: "${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}" }
       - if: matrix.os == 'ubuntu-22.04'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-      - run: npm ci || npm install
+      - run: npm install --no-audit --no-fund
       - run: npm run build:server
       - run: cargo test --manifest-path src-tauri/Cargo.toml --lib
       - uses: tauri-apps/tauri-action@v0
@@ -51,8 +51,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
-      - run: npm ci || npm install
+        with: { node-version: 22 }
+      - run: npm install --no-audit --no-fund
       - run: npm run build && npm run build:server
       - uses: actions/upload-artifact@v4
         with: { name: scriptz-web, path: dist }
