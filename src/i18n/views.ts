@@ -1,0 +1,52 @@
+import type { Dict } from './index';
+
+export const VIEWS: Dict = {
+  // Home
+  'home.new': ['Nuevo guion', 'New script', 'Novo roteiro'],
+  'home.import': ['Abrir o importar', 'Open or import', 'Abrir ou importar'],
+  'home.sampleOpened': ['Ejemplo abierto: probá las Tarjetas, la Estructura y la Producción', 'Sample opened: try Cards, Structure and Production', 'Exemplo aberto: experimente os Cartões, a Estrutura e a Produção'],
+  'home.sample': ['Abrir el ejemplo guiado', 'Open the guided sample', 'Abrir o exemplo guiado'],
+  'home.library': ['Tus guiones', 'Your scripts', 'Seus roteiros'],
+  'home.sort': ['Ordenar', 'Sort', 'Ordenar'],
+  'home.sort.recent': ['Recientes', 'Recent', 'Recentes'],
+  'home.sort.title': ['Por título', 'By title', 'Por título'],
+  'home.empty.title': ['Tu primera historia empieza acá', 'Your first story starts here', 'Sua primeira história começa aqui'],
+  'home.empty.text': ['Creá un guion nuevo, importá uno de Final Draft, Fade In, Celtx, Highland, Fountain o PDF, o abrí el ejemplo para conocer todas las funciones.', 'Create a new script, import one from Final Draft, Fade In, Celtx, Highland, Fountain or PDF, or open the sample to discover every feature.', 'Crie um roteiro novo, importe um do Final Draft, Fade In, Celtx, Highland, Fountain ou PDF, ou abra o exemplo para conhecer todas as funções.'],
+  'home.scenesWords': ['{s} escenas · {w} palabras', '{s} scenes · {w} words', '{s} cenas · {w} palavras'],
+  'home.deleteText': ['Se eliminará «{title}» y su historial de versiones de esta biblioteca. Los archivos .scriptz que hayas guardado aparte no se tocan.', '“{title}” and its version history will be removed from this library. .scriptz files you saved elsewhere are not touched.', '“{title}” e seu histórico serão removidos desta biblioteca. Arquivos .scriptz salvos em outro lugar não são afetados.'],
+  'home.formats': ['Abre .scriptz, Final Draft (.fdx), Fountain, Fade In (.fadein), Celtx, Highland, PDF, Word (.docx) y texto. Podés arrastrar el archivo a la ventana.', 'Opens .scriptz, Final Draft (.fdx), Fountain, Fade In (.fadein), Celtx, Highland, PDF, Word (.docx) and text. You can drop files onto the window.', 'Abre .scriptz, Final Draft (.fdx), Fountain, Fade In (.fadein), Celtx, Highland, PDF, Word (.docx) e texto. Você pode arrastar arquivos para a janela.'],
+  'home.privacy': ['Tus guiones se guardan en este equipo. Nada se envía a internet salvo que actives la colaboración o la IA.', 'Your scripts are stored on this device. Nothing is sent online unless you turn on collaboration or AI.', 'Seus roteiros ficam neste dispositivo. Nada é enviado à internet, a menos que você ative a colaboração ou a IA.'],
+  'home.dropHint': ['Soltá el archivo para importarlo', 'Drop the file to import it', 'Solte o arquivo para importar'],
+  'home.close': ['Cerrar el guion', 'Close script', 'Fechar roteiro'],
+  'home.imported': ['«{title}» importado', '“{title}” imported', '“{title}” importado'],
+
+  // New project
+  'np.format': ['Formato', 'Format', 'Formato'],
+  'np.locale': ['Idioma y convenciones del guion', 'Script language and conventions', 'Idioma e convenções do roteiro'],
+  'np.locale.hint': ['Usa {contd} y {more} al cortar diálogos · transiciones como {tr}', 'Uses {contd} and {more} on dialogue breaks · transitions like {tr}', 'Usa {contd} e {more} ao quebrar diálogos · transições como {tr}'],
+  'np.paper': ['Papel', 'Paper', 'Papel'],
+  'np.show': ['Serie', 'Show', 'Série'],
+  'np.season': ['Temporada', 'Season', 'Temporada'],
+  'np.episode': ['Episodio', 'Episode', 'Episódio'],
+  'np.episodeTitle': ['Título del episodio', 'Episode title', 'Título do episódio'],
+
+  // Tour
+  'tour.start': ['Recorrido guiado', 'Guided tour', 'Tour guiado'],
+  'tour.skip': ['Saltar', 'Skip', 'Pular'],
+  'tour.finish': ['¡A escribir!', 'Start writing!', 'Vamos escrever!'],
+  'tour.step': ['Paso {n} de {total}', 'Step {n} of {total}', 'Passo {n} de {total}'],
+  'tour.1.t': ['Bienvenido a ScriptZ', 'Welcome to ScriptZ', 'Bem-vindo ao ScriptZ'],
+  'tour.1.d': ['Un estudio completo para guionistas: escribís sobre la página real, con el formato profesional aplicado solo. Todo es gratis y funciona sin conexión.', 'A complete studio for screenwriters: you write on the real page with professional formatting applied for you. Everything is free and works offline.', 'Um estúdio completo para roteiristas: você escreve na página real, com o formato profissional aplicado sozinho. Tudo é grátis e funciona offline.'],
+  'tour.2.t': ['Escribí sin pensar en el formato', 'Write without thinking about format', 'Escreva sem pensar no formato'],
+  'tour.2.d': ['Enter pasa al elemento lógico siguiente (personaje → diálogo → personaje). Tab cambia el tipo: acción ⇄ personaje, diálogo ⇄ acotación. Ctrl+1…9 elige un elemento directamente. Escribí «int.» y ScriptZ entiende que es un encabezado.', 'Enter moves to the next logical element (character → dialogue → character). Tab changes the type: action ⇄ character, dialogue ⇄ parenthetical. Ctrl+1…9 picks an element directly. Type “int.” and ScriptZ knows it is a heading.', 'Enter vai para o próximo elemento lógico (personagem → diálogo → personagem). Tab muda o tipo: ação ⇄ personagem, diálogo ⇄ rubrica. Ctrl+1…9 escolhe um elemento. Digite “int.” e o ScriptZ entende que é um cabeçalho.'],
+  'tour.3.t': ['Autocompletado inteligente', 'Smart completion', 'Autocompletar inteligente'],
+  'tour.3.d': ['Al escribir encabezados, personajes y transiciones aparecen sugerencias con tus locaciones, horarios y nombres. Tab o Enter las aceptan.', 'While typing headings, characters and transitions you get suggestions from your locations, times and names. Tab or Enter accepts.', 'Ao escrever cabeçalhos, personagens e transições surgem sugestões com suas locações, horários e nomes. Tab ou Enter aceitam.'],
+  'tour.4.t': ['Páginas exactas', 'Exact pages', 'Páginas exatas'],
+  'tour.4.d': ['Lo que ves es lo que se imprime: saltos de página, (MORE) y (CONT\'D) se calculan en vivo con las mismas reglas que el PDF.', 'What you see is what prints: page breaks, (MORE) and (CONT\'D) are computed live with the same rules as the PDF.', 'O que você vê é o que imprime: quebras de página, (MORE) e (CONT\'D) são calculados ao vivo com as mesmas regras do PDF.'],
+  'tour.5.t': ['Toda la historia a la vista', 'The whole story at a glance', 'A história toda à vista'],
+  'tour.5.d': ['Tarjetas, estructura con beat sheets, línea de tiempo, arcos de personaje y estadísticas: todo se alimenta del mismo guion.', 'Index cards, structure with beat sheets, timeline, character arcs and statistics: all fed by the same script.', 'Cartões, estrutura com beat sheets, linha do tempo, arcos de personagem e estatísticas: tudo alimentado pelo mesmo roteiro.'],
+  'tour.6.t': ['Listo para producción', 'Ready for production', 'Pronto para produção'],
+  'tour.6.d': ['Revisiones con colores y asteriscos, páginas y escenas bloqueadas, desglose con etiquetas, plan de rodaje, hojas de llamado y presupuesto.', 'Color revisions with asterisks, locked pages and scenes, tagged breakdown, stripboard, call sheets and budget.', 'Revisões coloridas com asteriscos, páginas e cenas travadas, decupagem com etiquetas, plano de filmagem, ordens do dia e orçamento.'],
+  'tour.7.t': ['Atajos para todo', 'Shortcuts for everything', 'Atalhos para tudo'],
+  'tour.7.d': ['Ctrl+K abre la paleta de comandos. Todos los atajos y macros se pueden cambiar en Ajustes.', 'Ctrl+K opens the command palette. Every shortcut and macro can be changed in Settings.', 'Ctrl+K abre a paleta de comandos. Todos os atalhos e macros podem ser alterados nos Ajustes.'],
+};

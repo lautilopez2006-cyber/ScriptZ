@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "ScriptZ",
+  "version": "0.1.0",
+  "identifier": "com.scriptz.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "ScriptZ",
+        "width": 1480,
+        "height": 940,
+        "minWidth": 860,
+        "minHeight": 670,
+        "center": true,
+        "backgroundColor": "#f4f3ef",
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; font-src 'self' data:; media-src 'self' blob: data:; worker-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost http: https: ws: wss:; frame-src 'self' blob:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico",
+      "icons/icon.png"
+    ],
+    "windows": {
+      "nsis": {
+        "displayLanguageSelector": false,
+        "languages": [
+          "Spanish",
+          "English"
+        ]
+      }
+    },
+    "category": "Productivity",
+    "shortDescription": "Screenwriting studio — free",
+    "longDescription": "ScriptZ is a free, offline-first screenwriting app: industry formatting, Final Draft/Fountain/PDF interchange, revisions, story tools, production breakdowns and real-time collaboration.",
+    "copyright": "ScriptZ contributors",
+    "fileAssociations": [
+      {
+        "ext": [
+          "scriptz"
+        ],
+        "name": "ScriptZ project",
+        "description": "ScriptZ screenplay",
+        "role": "Editor",
+        "mimeType": "application/x-scriptz"
+      }
+    ],
+    "macOS": {
+      "minimumSystemVersion": "11.0"
+    },
+    "linux": {
+      "deb": {
+        "depends": []
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No" Version="5">
+  <TitlePage><Content><Paragraph Type="Title"><Text>La última luz</Text></Paragraph><Paragraph Type="Author"><Text>Equipo ScriptZ</Text></Paragraph></Content></TitlePage>
+  <Content>
+    <Paragraph Type="Scene Heading"><Text>EXT. FARO - AMANECER</Text></Paragraph>
+    <Paragraph Type="Action"><Text>El mar golpea los escalones del faro.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>MARA</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>La señal volvió a encenderse.</Text></Paragraph>
+  </Content>
+</FinalDraft>

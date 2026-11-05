@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "id": "86d6eff5-67a7-4428-b21f-a2eec5d22581",
+  "title": "La última luz — demostración",
+  "author": "Equipo ScriptZ",
+  "description": "Proyecto de muestra para probar ScriptZ 1.0; no se guarda automáticamente al instalar.",
+  "createdAt": "2026-10-09T19:56:29.363736Z",
+  "updatedAt": "2026-10-09T19:56:29.363736Z",
+  "revision": 4,
+  "blocks": [
+    {
+      "id": "b59e2d1c-33b3-426d-a7a5-a0dc2ad1327c",
+      "kind": "scene",
+      "text": "EXT. FARO - AMANECER"
+    },
+    {
+      "id": "443532be-fb07-4116-a23a-90a754325f32",
+      "kind": "action",
+      "text": "El mar golpea los escalones del faro. MARA observa una luz intermitente."
+    },
+    {
+      "id": "a9dbe58b-0ff5-4cfa-b1ed-7b502f132fa2",
+      "kind": "character",
+      "text": "MARA"
+    },
+    {
+      "id": "88d3c71d-ae13-426c-8e36-1615e8006e82",
+      "kind": "dialogue",
+      "text": "La señal volvió a encenderse."
+    },
+    {
+      "id": "dc683fb2-09bf-436b-9c7f-57094222b938",
+      "kind": "scene",
+      "text": "INT. FARO - MAÑANA"
+    },
+    {
+      "id": "fab8e344-a950-4352-8b9e-5b75542b0822",
+      "kind": "action",
+      "text": "TOMÁS revisa una radio cubierta de polvo."
+    },
+    {
+      "id": "b15ea5ce-5667-40ed-a0f6-918b205f7200",
+      "kind": "character",
+      "text": "TOMÁS"
+    },
+    {
+      "id": "ecb5e196-c654-4cf7-b766-1ad5e13f46d3",
+      "kind": "parenthetical",
+      "text": "(sin levantar la vista)"
+    },
+    {
+      "id": "4bde1e92-f8ed-4925-aee9-2ea7efaae7ea",
+      "kind": "dialogue",
+      "text": "Si seguimos esa frecuencia, encontraremos la respuesta."
+    },
+    {
+      "id": "5f704de6-cbb5-41b7-9fd6-253569018f98",
+      "kind": "scene",
+      "text": "EXT. ACANTILADO - ATARDECER"
+    },
+    {
+      "id": "df4ff3ce-5d84-49c2-8c59-8e8445ca79cf",
+      "kind": "action",
+      "text": "MARA y TOMÁS salen del faro. A lo lejos, una segunda luz responde."
+    },
+    {
+      "id": "e974906e-6fdf-423b-b6ab-15b2b22fdcca",
+      "kind": "transition",
+      "text": "CORTE A:"
+    }
+  ],
+  "documentSettings": {
+    "paperSize": "a4",
+    "includeCover": true
+  },
+  "cover": {
+    "contact": "scriptz@example.invalid",
+    "copyright": "Ejemplo ficticio · Solo para pruebas",
+    "draftLabel": "Borrador de demostración"
+  },
+  "story": {
+    "logline": "Dos jóvenes descubren que un faro abandonado todavía recibe señales de una costa desaparecida.",
+    "synopsis": "Mara y Tomás investigan una frecuencia misteriosa y descubren que no están solos.",
+    "theme": "La memoria sobrevive a la distancia.",
+    "entries": [
+      {
+        "id": "1a010e8b-eb33-4be6-8cfa-720cfe255cdb",
+        "kind": "character",
+        "name": "MARA",
+        "subtitle": "Protagonista",
+        "description": "Observadora y obstinada. Busca a su padre desaparecido.",
+        "tags": "investigación, protagonista"
+      },
+      {
+        "id": "b8c919ef-a734-480e-a7ab-3cc77b160d95",
+        "kind": "character",
+        "name": "TOMÁS",
+        "subtitle": "Aliado",
+        "description": "Radioaficionado prudente, obsesionado con los detalles.",
+        "tags": "radio, ciencia"
+      },
+      {
+        "id": "66f3e15f-c53c-459b-90db-202674d54ecb",
+        "kind": "location",
+        "name": "FARO",
+        "subtitle": "Costa sur",
+        "description": "Edificio deteriorado con una lámpara automatizada.",
+        "tags": "principal, exterior, interior"
+      },
+      {
+        "id": "d9bb8c85-5787-4126-aea7-902be9edf4e3",
+        "kind": "note",
+        "name": "Frecuencia 104.7",
+        "subtitle": "Pista clave",
+        "description": "La frecuencia que conecta las dos luces.",
+        "tags": "pista"
+      }
+    ],
+    "sequences": [
+      {
+        "id": "04020c29-9d98-4e28-adab-ca166c9dc235",
+        "title": "La señal",
+        "act": "one",
+        "goal": "Introducir el misterio",
+        "summary": "Aparecen la señal y la primera pista."
+      }
+    ],
+    "plots": [
+      {
+        "id": "fc7842eb-5352-4819-8f7c-3f8876cd0e12",
+        "title": "Misterio del faro",
+        "kind": "main",
+        "color": "amber",
+        "description": "Identificar el origen de la señal."
+      },
+      {
+        "id": "910f2223-dd04-42ab-9431-a6ef5ab29208",
+        "title": "Confianza entre Mara y Tomás",
+        "kind": "subplot",
+        "color": "teal",
+        "description": "Aprenden a trabajar juntos."
+      }
+    ],
+    "scenes": {
+      "b59e2d1c-33b3-426d-a7a5-a0dc2ad1327c": {
+        "act": "one",
+        "status": "ready",
+        "synopsis": "Mara descubre la señal.",
+        "sequenceId": "04020c29-9d98-4e28-adab-ca166c9dc235",
+        "plotIds": [
+          "fc7842eb-5352-4819-8f7c-3f8876cd0e12"
+        ],
+        "characterIds": [
+          "1a010e8b-eb33-4be6-8cfa-720cfe255cdb"
+        ],
+        "noteIds": [],
+        "locationId": "66f3e15f-c53c-459b-90db-202674d54ecb",
+        "beat": "La luz vuelve",
+        "conflict": "El pasado reaparece",
+        "outcome": "Decide investigar"
+      },
+      "dc683fb2-09bf-436b-9c7f-57094222b938": {
+        "act": "one",
+        "status": "draft",
+        "synopsis": "Tomás identifica la frecuencia.",
+        "sequenceId": "04020c29-9d98-4e28-adab-ca166c9dc235",
+        "plotIds": [
+          "fc7842eb-5352-4819-8f7c-3f8876cd0e12",
+          "910f2223-dd04-42ab-9431-a6ef5ab29208"
+        ],
+        "characterIds": [
+          "b8c919ef-a734-480e-a7ab-3cc77b160d95"
+        ],
+        "noteIds": [],
+        "locationId": "66f3e15f-c53c-459b-90db-202674d54ecb",
+        "beat": "Una pista",
+        "conflict": "La señal es inestable",
+        "outcome": "Descubren el patrón"
+      },
+      "5f704de6-cbb5-41b7-9fd6-253569018f98": {
+        "act": "two",
+        "status": "idea",
+        "synopsis": "La señal encuentra respuesta.",
+        "sequenceId": "",
+        "plotIds": [
+          "fc7842eb-5352-4819-8f7c-3f8876cd0e12",
+          "910f2223-dd04-42ab-9431-a6ef5ab29208"
+        ],
+        "characterIds": [
+          "1a010e8b-eb33-4be6-8cfa-720cfe255cdb",
+          "b8c919ef-a734-480e-a7ab-3cc77b160d95"
+        ],
+        "noteIds": [],
+        "locationId": "",
+        "beat": "Segunda luz",
+        "conflict": "Hay otra persona",
+        "outcome": "Se abre una nueva búsqueda"
+      }
+    }
+  },
+  "editorial": {
+    "comments": [
+      {
+        "id": "2184ffdd-a949-4896-9501-18ec05b81a30",
+        "blockId": "443532be-fb07-4116-a23a-90a754325f32",
+        "excerpt": "El mar golpea los escalones del faro. MARA observa una luz intermitente.",
+        "body": "¿Podemos reforzar el misterio del primer destello?",
+        "status": "open",
+        "createdAt": "2026-10-09T19:56:29.363736Z",
+        "updatedAt": "2026-10-09T19:56:29.363736Z"
+      }
+    ],
+    "drafts": [
+      {
+        "id": "f7580bce-c60c-4309-b5d0-7fbbce3bd812",
+        "name": "Primera lectura",
+        "createdAt": "2026-10-09T19:56:29.363736Z",
+        "revision": 2,
+        "blocks": [
+          {
+            "id": "b59e2d1c-33b3-426d-a7a5-a0dc2ad1327c",
+            "kind": "scene",
+            "text": "EXT. FARO - AMANECER"
+          },
+          {
+            "id": "443532be-fb07-4116-a23a-90a754325f32",
+            "kind": "action",
+            "text": "El mar golpea los escalones del faro. MARA observa una luz intermitente."
+          },
+          {
+            "id": "a9dbe58b-0ff5-4cfa-b1ed-7b502f132fa2",
+            "kind": "character",
+            "text": "MARA"
+          },
+          {
+            "id": "88d3c71d-ae13-426c-8e36-1615e8006e82",
+            "kind": "dialogue",
+            "text": "La señal volvió a encenderse."
+          },
+          {
+            "id": "dc683fb2-09bf-436b-9c7f-57094222b938",
+            "kind": "scene",
+            "text": "INT. FARO - MAÑANA"
+          },
+          {
+            "id": "fab8e344-a950-4352-8b9e-5b75542b0822",
+            "kind": "action",
+            "text": "TOMÁS revisa una radio cubierta de polvo."
+          },
+          {
+            "id": "b15ea5ce-5667-40ed-a0f6-918b205f7200",
+            "kind": "character",
+            "text": "TOMÁS"
+          },
+          {
+            "id": "ecb5e196-c654-4cf7-b766-1ad5e13f46d3",
+            "kind": "parenthetical",
+            "text": "(sin levantar la vista)"
+          },
+          {
+            "id": "4bde1e92-f8ed-4925-aee9-2ea7efaae7ea",
+            "kind": "dialogue",
+            "text": "Si seguimos esa frecuencia, encontraremos la respuesta."
+          }
+        ]
+      }
+    ]
+  }
+}
