@@ -46,6 +46,32 @@ jobs:
           args: ${{ matrix.args }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Microsoft Store package. Set the repository variables MSIX_IDENTITY_NAME, MSIX_PUBLISHER and
+      # MSIX_PUBLISHER_DISPLAY_NAME to the values shown in Partner Center → Product identity.
+      - if: matrix.os == 'windows-latest'
+        shell: pwsh
+        env:
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
+          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          ./src-tauri/msix/build-msix.ps1 -Version $version -IdentityName "$env:MSIX_IDENTITY_NAME" -Publisher "$env:MSIX_PUBLISHER" -PublisherDisplayName "$env:MSIX_PUBLISHER_DISPLAY_NAME"
+      - if: matrix.os == 'windows-latest'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Attach the MSIX to the draft release created by tauri-action (drafts have no tag yet, so look it up by name).
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github+json' }
+          $rel = (Invoke-RestMethod -Headers $headers "https://api.github.com/repos/$env:GITHUB_REPOSITORY/releases?per_page=20") | Where-Object { $_.tag_name -eq "v$version" } | Select-Object -First 1
+          if (-not $rel) { Write-Warning 'No hay release borrador para adjuntar el MSIX'; exit 0 }
+          $name = Split-Path $env:MSIX_PATH -Leaf
+          $old = $rel.assets | Where-Object { $_.name -eq $name }
+          if ($old) { Invoke-RestMethod -Method Delete -Headers $headers $old.url | Out-Null }
+          Invoke-RestMethod -Method Post -Headers ($headers + @{ 'Content-Type' = 'application/octet-stream' }) -InFile $env:MSIX_PATH "https://uploads.github.com/repos/$env:GITHUB_REPOSITORY/releases/$($rel.id)/assets?name=$name" | Out-Null
+          Write-Host "Adjuntado $name"
       - uses: actions/upload-artifact@v4
         with:
           name: scriptz-${{ matrix.os }}
@@ -57,6 +83,7 @@ jobs:
             src-tauri/target/**/release/bundle/deb/*.deb
             src-tauri/target/**/release/bundle/appimage/*.AppImage
             src-tauri/target/**/release/bundle/rpm/*.rpm
+            src-tauri/target/msix/*.msix
   web:
     needs: test
     runs-on: ubuntu-latest

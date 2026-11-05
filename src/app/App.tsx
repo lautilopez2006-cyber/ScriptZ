@@ -1,5 +1,5 @@
 // App shell: sidebar navigation, views, modals, toasts, global shortcuts, theme.
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useApp, setState, getState, dismissToast, openModal, toast } from './store';
 import { refreshLibrary, setView, saveNow, setSettings } from './actions';
 import { COMMANDS, runCommand } from './commands';
@@ -10,6 +10,7 @@ import { cx, Spinner } from '../ui/kit';
 import { WriteView } from '../views/write/Write';
 import { HomeView } from '../views/Home';
 import { Modals } from './Modals';
+import { isTauri } from '../platform';
 import type { View } from './store';
 
 const CardsView = lazy(() => import('../views/story/Cards'));
@@ -53,9 +54,40 @@ function useTheme() {
   }, [theme]);
 }
 
+/** Shown in the phone's bottom bar; the rest live in the "More" sheet. */
+const PRIMARY = new Set<View>(['home', 'write', 'cards', 'characters']);
+
+function NavSheet({ onClose }: { onClose: () => void }) {
+  const view = useApp((s) => s.view);
+  const project = useApp((s) => !!s.project);
+  const go = (fn: () => void) => { onClose(); fn(); };
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', k);
+    return () => window.removeEventListener('keydown', k);
+  }, [onClose]);
+  return (
+    <div className="sheet-back" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="nav-sheet" role="dialog" aria-label={t('nav.more')}>
+        <i className="grab" aria-hidden="true" />
+        <div className="ns-grid">
+          {NAV.map((n, i) => (
+            <button key={n.view} type="button" data-view={n.view} className={cx('ns-it', view === n.view && 'on')} disabled={n.needsProject && !project} style={{ ['--i' as string]: i }} onClick={() => go(() => setView(n.view))}>
+              <span className="ns-ic"><Icon name={n.icon} size={22} /></span>{t('nav.' + n.view)}
+            </button>
+          ))}
+          <button type="button" className="ns-it" style={{ ['--i' as string]: NAV.length }} onClick={() => go(() => runCommand('palette'))}><span className="ns-ic"><Icon name="command" size={22} /></span>{t('pal.title')}</button>
+          <button type="button" className={cx('ns-it', view === 'settings' && 'on')} style={{ ['--i' as string]: NAV.length + 1 }} onClick={() => go(() => setView('settings'))}><span className="ns-ic"><Icon name="settings" size={22} /></span>{t('nav.settings')}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Sidebar() {
   const view = useApp((s) => s.view);
   const project = useApp((s) => !!s.project);
+  const [moreOpen, setMoreOpen] = useState(false);
   return (
     <nav className="sidebar" aria-label="ScriptZ">
       <button type="button" className="brand" onClick={() => setView('home')} title="ScriptZ">
@@ -63,13 +95,17 @@ function Sidebar() {
       </button>
       <div className="nav-items">
         {NAV.map((n) => (
-          <button key={n.view} type="button" data-view={n.view} className={cx('nav-btn', view === n.view && 'on')} disabled={n.needsProject && !project} onClick={() => setView(n.view)} title={t('nav.' + n.view)} aria-current={view === n.view ? 'page' : undefined}>
+          <button key={n.view} type="button" data-view={n.view} className={cx('nav-btn', view === n.view && 'on', !PRIMARY.has(n.view) && 'secondary')} disabled={n.needsProject && !project} onClick={() => setView(n.view)} title={t('nav.' + n.view)} aria-current={view === n.view ? 'page' : undefined}>
             {view === n.view ? <i className="nav-ind" /> : null}
             <Icon name={n.icon} size={20} />
             <span>{t('nav.' + n.view)}</span>
           </button>
         ))}
       </div>
+      <button type="button" className={cx('nav-btn', 'nav-more', !PRIMARY.has(view) && view !== 'home' && 'on')} onClick={() => setMoreOpen(true)} title={t('nav.more')} aria-haspopup="dialog">
+        {!PRIMARY.has(view) && view !== 'home' ? <i className="nav-ind" /> : null}<Icon name="grid" size={20} /><span>{t('nav.more')}</span>
+      </button>
+      {moreOpen ? <NavSheet onClose={() => setMoreOpen(false)} /> : null}
       <div className="nav-bottom">
         <button type="button" data-view="palette" className="nav-btn" onClick={() => runCommand('palette')} title={t('pal.title') + ' (Ctrl+K)'}><Icon name="command" size={20} /><span>{t('pal.title')}</span></button>
         <button type="button" data-view="settings" className={cx('nav-btn', view === 'settings' && 'on')} onClick={() => setView('settings')} title={t('nav.settings')}>{view === 'settings' ? <i className="nav-ind" /> : null}<Icon name="settings" size={20} /><span>{t('nav.settings')}</span></button>
@@ -151,7 +187,7 @@ export function App() {
     void refreshLibrary().then(() => {
       const st = getState();
       if (!st.settings.tourDone && !st.library.length) openModal('tour');
-      if (st.settings.update.auto && st.settings.update.repo && Date.now() - st.settings.update.lastCheck > 86400000) void import('../platform/update').then(async (m) => {
+      if (isTauri() && st.settings.update.auto && st.settings.update.repo && Date.now() - st.settings.update.lastCheck > 86400000) void import('../platform/update').then(async (m) => {
         try {
           const u = await m.checkForUpdate(st.settings.update.repo);
           setSettings({ update: { ...getState().settings.update, lastCheck: Date.now() } });

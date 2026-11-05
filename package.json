@@ -1,7 +1,7 @@
 {
   "name": "scriptz",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "ScriptZ — free screenwriting studio (desktop, web and PWA)",
   "license": "MIT",
   "type": "module",

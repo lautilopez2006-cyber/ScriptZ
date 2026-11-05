@@ -34,6 +34,8 @@ export interface AppState {
   editorEpoch: number;
   /** Suggestion mode (track changes) for this session. */
   suggesting: boolean;
+  /** Scene navigator as an overlay on phones and tablets. */
+  mobileNav: boolean;
   /** Series opened in the series workspace (show name). */
   series: string | null;
 }
@@ -59,6 +61,7 @@ let state: AppState = {
   collab: { state: 'off', room: '', role: '', peers: [], message: '' },
   editorEpoch: 0,
   suggesting: false,
+  mobileNav: false,
   series: null,
 };
 

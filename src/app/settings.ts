@@ -65,7 +65,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   sprintMinutes: 25,
   ai: { enabled: false, provider: 'anthropic', apiKey: '', baseUrl: 'http://localhost:11434/v1', model: 'claude-haiku-5-5' },
   collab: { server: 'ws://127.0.0.1:4735', name: '', color: '#e8590c' },
-  update: { repo: '', auto: true, lastCheck: 0 },
+  update: { repo: 'lautilopez2006-cyber/scriptz-web', auto: true, lastCheck: 0 },
   readAloud: { narrator: '', rate: 1, readActions: true, readHeadings: true, readParentheticals: false, voices: {} },
   tourDone: false,
   defaultLocale: 'es-LA',
@@ -85,6 +85,7 @@ export function loadSettings(): AppSettings {
   s.ai = { ...DEFAULT_SETTINGS.ai, ...(raw.ai ?? {}) };
   s.collab = { ...DEFAULT_SETTINGS.collab, ...(raw.collab ?? {}) };
   s.update = { ...DEFAULT_SETTINGS.update, ...(raw.update ?? {}) };
+  if (!s.update.repo) s.update.repo = DEFAULT_SETTINGS.update.repo;
   s.readAloud = { ...DEFAULT_SETTINGS.readAloud, ...(raw.readAloud ?? {}), voices: { ...(raw.readAloud?.voices ?? {}) } };
   if (!['es', 'en', 'pt'].includes(s.uiLang)) {
     const nav = (typeof navigator !== 'undefined' ? navigator.language : 'es').toLowerCase();

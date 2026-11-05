@@ -1,0 +1,164 @@
+/* Phones and tablets. The device class is set on <html data-device> by ui/device.ts. */
+
+.nav-more, .tb-mobile, .el-bar, .nav-scrim { display: none; }
+
+/* ---------------------------------------------------------------- touch: shared */
+@media (pointer: coarse) {
+  .ibtn { min-width: 40px; min-height: 40px; }
+  .btn { min-height: 40px; }
+  .input, .select { min-height: 40px; font-size: 16px; } /* 16px avoids the zoom-on-focus in iOS Safari */
+  .pal-it, .menu button { min-height: 44px; }
+}
+
+/* ---------------------------------------------------------------- phone + tablet: editor */
+[data-device='phone'] .tb-mobile, [data-device='tablet'] .tb-mobile { display: flex; }
+[data-device='tablet'] .toolbar > .tb-group:nth-child(3),
+[data-device='tablet'] .toolbar > .tb-group.zoom,
+[data-device='tablet'] .toolbar > .tb-group:nth-last-child(-n + 2):not(.tb-mobile) { display: none; }
+[data-device='tablet'] .toolbar > .tb-group:nth-child(4) { display: none; } /* undo/redo live in the mobile group */
+
+[data-device='phone'] .el-bar, [data-device='tablet'] .el-bar {
+  display: flex; gap: 6px; padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px)); overflow-x: auto; scrollbar-width: none;
+  position: fixed; left: var(--sidebar-w); right: 0; bottom: calc(var(--sb-h) + var(--kb, 0px)); z-index: 55;
+  background: var(--glass); backdrop-filter: blur(18px) saturate(1.4); border-top: 1px solid var(--line);
+  animation: rise 360ms var(--ease-out) both;
+}
+.el-bar::-webkit-scrollbar { display: none; }
+.el-chip { flex: none; display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: 18px; border: 1px solid var(--line-2); background: var(--panel); color: var(--text); font-size: 13px; font-weight: 600; transition: transform 200ms var(--spring), background var(--t), color var(--t); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.el-chip:active { transform: scale(.94); }
+.el-chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 6px 16px -8px var(--accent); }
+.el-ic { width: 14px; height: 10px; border-radius: 2px; background: linear-gradient(currentColor 0 0) no-repeat; opacity: .55; }
+.el-ic.t-scene { background-size: 100% 3px; background-position: 0 3px; opacity: .9; }
+.el-ic.t-action { background: repeating-linear-gradient(currentColor 0 1.6px, transparent 1.6px 4px); }
+.el-ic.t-character { background-size: 50% 2.4px; background-position: 50% 4px; opacity: .9; }
+.el-ic.t-dialogue { background: repeating-linear-gradient(currentColor 0 1.6px, transparent 1.6px 4px) 3px 0 / 8px 100% no-repeat; }
+.el-ic.t-parenthetical { background-size: 60% 1.6px; background-position: 50% 4px; border-left: 1.6px solid currentColor; border-right: 1.6px solid currentColor; border-radius: 4px; }
+.el-ic.t-transition { background-size: 55% 2px; background-position: 100% 4px; }
+.el-chip.on .el-ic { opacity: 1; }
+[data-device='phone'] .editor-scroll, [data-device='tablet'] .editor-scroll { padding-bottom: 64px; }
+
+/* Navigator as an overlay that slides in. */
+[data-device='phone'] .navigator, [data-device='tablet'] .navigator {
+  position: absolute; left: 0; top: 0; bottom: 0; z-index: 40; width: min(330px, 88vw);
+  box-shadow: var(--shadow-3); animation: slide-in-left 320ms var(--ease-out) both;
+}
+@keyframes slide-in-left { from { transform: translateX(-24px); opacity: 0; } }
+[data-device='phone'] .nav-scrim, [data-device='tablet'] .nav-scrim { display: block; position: absolute; inset: 0; z-index: 35; border: 0; background: rgba(8, 10, 20, .32); animation: fade 200ms ease both; }
+.write-body { position: relative; }
+
+/* Tablet side panels float over the page. */
+[data-device='tablet'] .side-panel { position: absolute; right: 0; top: 0; bottom: 0; z-index: 45; box-shadow: var(--shadow-3); width: min(380px, 70vw); }
+
+/* ---------------------------------------------------------------- phone: shell */
+[data-device='phone'] {
+  --sidebar-w: 0px;
+  --nav-h: calc(62px + env(safe-area-inset-bottom, 0px));
+}
+[data-device='phone'] .sidebar {
+  position: fixed; bottom: 0; left: 0; right: 0; width: auto; height: var(--nav-h); z-index: 60;
+  flex-direction: row; align-items: stretch; padding: 4px 6px env(safe-area-inset-bottom, 0px); gap: 0;
+  border-right: 0; border-top: 1px solid var(--line); background: var(--glass); backdrop-filter: blur(18px) saturate(1.4);
+}
+[data-device='phone'] .brand, [data-device='phone'] .nav-bottom, [data-device='phone'] .nav-btn.secondary { display: none; }
+[data-device='phone'] .nav-items { flex: 4; flex-direction: row; overflow: visible; gap: 0; }
+[data-device='phone'] .nav-more { display: flex; }
+[data-device='phone'] .nav-btn { flex: 1; min-width: 0; padding: 8px 2px 6px; font-size: 10.5px; }
+[data-device='phone'] .nav-btn span { max-width: 100%; white-space: nowrap; }
+[data-device='phone'] .nav-btn::before { left: 30%; right: 30%; top: auto; bottom: auto; top: -4px; width: auto; height: 3px; border-radius: 0 0 3px 3px; transform: scaleX(.3); }
+[data-device='phone'] .nav-btn.on::before { transform: scaleX(1); }
+[data-device='phone'] .main { padding-bottom: var(--nav-h); }
+[data-device='phone'].kb-open .sidebar { display: none; }
+[data-device='phone'].kb-open .main { padding-bottom: 0; }
+
+/* "More" sheet */
+.sheet-back { position: fixed; inset: 0; z-index: 950; background: rgba(8, 10, 20, .38); backdrop-filter: blur(3px); display: flex; align-items: flex-end; animation: fade 180ms ease both; }
+.nav-sheet { width: 100%; background: var(--panel); border-radius: 22px 22px 0 0; padding: 10px 14px calc(18px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -20px 60px -20px rgba(0, 0, 0, .4); animation: sheet-up 380ms var(--ease-out) both; }
+@keyframes sheet-up { from { transform: translateY(40%); opacity: 0; } }
+.grab { display: block; width: 42px; height: 5px; border-radius: 3px; background: var(--line-2); margin: 0 auto 14px; }
+.ns-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 6px; }
+.ns-it { --tab: var(--line-2); display: flex; flex-direction: column; align-items: center; gap: 7px; border: 0; background: none; color: var(--text); font-size: 11.5px; font-weight: 600; padding: 4px 0; animation: rise 420ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 22ms); -webkit-tap-highlight-color: transparent; }
+.ns-it:disabled { opacity: .35; }
+.ns-ic { width: 54px; height: 54px; border-radius: 17px; display: grid; place-items: center; background: color-mix(in srgb, var(--tab) 45%, var(--panel)); color: var(--text); transition: transform 220ms var(--spring); }
+[data-theme='dark'] .ns-ic, [data-theme='night'] .ns-ic { background: color-mix(in srgb, var(--tab) 18%, var(--panel-2)); }
+.ns-it:active .ns-ic { transform: scale(.9); }
+.ns-it.on .ns-ic { box-shadow: 0 0 0 2px var(--accent); }
+
+/* ---------------------------------------------------------------- phone: editor */
+[data-device='phone'] .toolbar { gap: 4px; padding: 0 6px; }
+[data-device='phone'] .toolbar > .tb-group:not(:first-child):not(.tb-mobile) { display: none; }
+[data-device='phone'] .toolbar > .tb-group { padding: 0 2px; border: 0; }
+[data-device='phone'] .toolbar .chip { height: 30px; padding: 0 9px; font-size: 11px; }
+[data-device='phone'] .el-select { max-width: 46vw; }
+[data-device='phone'] .statusbar { display: none; }
+[data-device='phone'] .el-bar { left: 0; bottom: calc(var(--nav-h) + var(--kb, 0px)); padding-bottom: 8px; }
+[data-device='phone'].kb-open .el-bar { bottom: var(--kb, 0px); }
+[data-device='phone'] .editor-scroll { background: var(--page); }
+
+/* Reflowed script: full width, proportional indents, readable type. */
+.sz-paper.reflow { width: auto; margin: 0; container-type: inline-size; }
+.sz-paper.reflow .sz-doc { --ml: 18px; --cw: calc((100cqw - 36px) / 60); padding: 22px 0 40vh; box-shadow: none; min-height: 70vh; }
+.sz-paper.reflow .sz-doc .b { max-width: calc(100cqw - var(--ml) - 14px); }
+.sz-paper.reflow .t-scene { margin-top: calc(var(--ln) * 1.6) !important; }
+
+/* Side panels become bottom sheets. */
+[data-device='phone'] .side-panel {
+  position: fixed; left: 0; right: 0; bottom: 0; top: auto; width: auto; height: min(78vh, 680px); z-index: 70;
+  border: 0; border-radius: 22px 22px 0 0; box-shadow: 0 -24px 60px -20px rgba(0, 0, 0, .45);
+  animation: sheet-up 380ms var(--ease-out) both; padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+[data-device='phone'] .side-h { padding-top: 16px; position: relative; }
+[data-device='phone'] .side-h::before { content: ''; position: absolute; top: 6px; left: 50%; width: 42px; height: 5px; margin-left: -21px; border-radius: 3px; background: var(--line-2); }
+
+/* ---------------------------------------------------------------- phone: dialogs, toasts, menus */
+[data-device='phone'] .modal-back { align-items: end; padding: 0; place-items: end stretch; }
+[data-device='phone'] .modal, [data-device='phone'] .modal.m-sm, [data-device='phone'] .modal.m-lg, [data-device='phone'] .modal.m-xl, [data-device='phone'] .modal.wide {
+  width: 100%; max-height: 92vh; height: auto; border-radius: 22px 22px 0 0; animation: sheet-up 380ms var(--ease-out) both;
+}
+[data-device='phone'] .modal-f { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); flex-wrap: wrap; }
+[data-device='phone'] .palette-back { align-items: flex-start; padding: 12px; }
+[data-device='phone'] .palette { width: 100%; }
+[data-device='phone'] .toasts { bottom: calc(var(--nav-h) + 12px + var(--kb, 0px)); left: 12px; right: 12px; transform: none; }
+[data-device='phone'] .toast { max-width: 100%; }
+[data-device='phone'] .menu { max-width: calc(100vw - 16px); max-height: 70vh; overflow: auto; }
+[data-device='tablet'] .toasts { bottom: calc(var(--sb-h) + 70px); }
+
+/* ---------------------------------------------------------------- phone: views */
+[data-device='phone'] .home { padding: 18px 14px 28px; gap: 26px; }
+[data-device='phone'] .title-sheet { grid-template-columns: 1fr; }
+[data-device='phone'] .ts-stack, [data-device='phone'] .ts-corner { display: none; }
+[data-device='phone'] .ts-paper { padding: 30px 20px 24px 52px; }
+[data-device='phone'] .ts-title { font-size: 38px; }
+[data-device='phone'] .ts-paper .brads { left: 16px; }
+[data-device='phone'] .ts-actions { flex-direction: column; align-items: stretch; }
+[data-device='phone'] .ts-links { flex-direction: column; align-items: flex-start; gap: 10px; }
+[data-device='phone'] .lib-h { flex-wrap: wrap; }
+[data-device='phone'] .lib-h h2 { flex-basis: 100%; }
+[data-device='phone'] .lib-h .input { flex: 1; }
+[data-device='phone'] .lib-grid { grid-template-columns: repeat(2, 1fr); gap: 22px 16px; }
+[data-device='phone'] .shelf { margin-right: -14px; padding-right: 14px; }
+[data-device='phone'] .show { width: 230px; }
+[data-device='phone'] .view-h { padding: 12px 14px; gap: 8px; min-height: 0; }
+[data-device='phone'] .view-h h2 { font-size: 18px; flex-basis: 100%; }
+[data-device='phone'] .view-b { padding: 14px 14px 30px; }
+[data-device='phone'] .tabs { overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+[data-device='phone'] .tabs > * { flex: none; }
+[data-device='phone'] .grid2, [data-device='phone'] .grid3, [data-device='phone'] .grid4 { grid-template-columns: 1fr; }
+[data-device='phone'] .se-head { padding: 44px 16px 14px; }
+[data-device='phone'] .tr-head { padding: 10px 14px; }
+[data-device='phone'] .tr-body { padding: 4px 8px 80px; }
+[data-device='phone'] .tr-scene { padding: 10px 0 12px; }
+[data-device='phone'] .tr-row { padding: 3px 10px; font-size: 13px; }
+[data-device='phone'] .tr-row.t-character .tr-src, [data-device='phone'] .tr-row.t-character textarea { padding-left: 24%; }
+[data-device='phone'] .rs-grid { columns: 1; }
+[data-device='phone'] .ch-body, [data-device='phone'] .bd { flex-direction: column; }
+[data-device='phone'] .ch-list, [data-device='phone'] .bd-list { width: auto; max-height: 34vh; border-right: 0; border-bottom: 1px solid var(--line); }
+[data-device='phone'] .board-add { bottom: calc(var(--nav-h) + 14px); }
+[data-device='phone'] .fmt-grid { grid-template-columns: repeat(2, 1fr); }
+[data-device='phone'] .tpl-grid { grid-template-columns: repeat(2, 1fr); }
+
+/* Tablet: a slimmer rail. */
+[data-device='tablet'] { --sidebar-w: 76px; }
+[data-device='tablet'] .nav-btn span { font-size: 10px; }
+[data-device='phone'] .bd-sheet > .row.between { flex-wrap: wrap; gap: 10px; }
+[data-device='phone'] .bd-sheet > .row.between h3 { flex-basis: 100%; }
+[data-device='phone'] .view.write ~ .toasts, [data-device='phone'] .toasts { bottom: calc(var(--nav-h) + 64px + var(--kb, 0px)); }

@@ -10,6 +10,7 @@ import { characterStats } from '../../core/scenes';
 import { t, fmtDate } from '../../i18n';
 import { Kbd, cx } from '../../ui/kit';
 import { openCommentFor } from './comments';
+import { getDevice, useDevice } from '../../ui/device';
 import { RemoteCursors } from './RemoteCursors';
 
 export function headerFooterFor(p: Project, which: 'header' | 'footer', pageIndex: number, label: string): { left: string; center: string; right: string } {
@@ -28,8 +29,21 @@ export function headerFooterFor(p: Project, which: 'header' | 'footer', pageInde
   return { left: fill(hf.left), center: fill(hf.center), right: fill(hf.right) };
 }
 
+/** Width of the editor's scroll area, measured by the host (0 until mounted). */
+let hostWidth = 0;
+
+/** Zoom that keeps the whole page visible, and reflow on phones. */
+function fitFor(p: Project, zoom: number): { zoom: number; reflow: boolean } {
+  if (getDevice() === 'phone') return { zoom: Math.min(1.25, Math.max(0.85, zoom)), reflow: true };
+  const pagePx = (p.page.paper === 'a4' ? 8.27 : 8.5) * 96;
+  if (!hostWidth) return { zoom, reflow: false };
+  const fit = (hostWidth - 28) / pagePx;
+  return { zoom: fit < zoom ? Math.max(0.45, Math.floor(fit * 100) / 100) : zoom, reflow: false };
+}
+
 export function editorConfigFor(p: Project): EditorConfig {
   const s = getState().settings;
+  const fit = fitFor(p, s.zoom);
   const tokens = localeTokens(p.locale);
   const revSets = new Set(p.revisions.sets.map((x) => x.id));
   const tags = p.breakdown.elements;
@@ -43,8 +57,9 @@ export function editorConfigFor(p: Project): EditorConfig {
     scenesLocked: p.revisions.scenesLocked,
     lang: tokens.lang,
     readOnly: getState().collab.role === 'viewer',
-    zoom: s.zoom,
+    zoom: fit.zoom,
     pageView: s.pageView,
+    reflow: fit.reflow,
     showSceneNumbers: s.showSceneNumbers,
     focusMode: s.focusMode,
     typewriter: s.typewriter,
@@ -76,6 +91,19 @@ export function EditorHost() {
   elMenuRef.current = elMenu;
   const smartRef = useRef<{ ctx: SmartContext; at: number } | null>(null);
   const projectId = project?.id;
+  const { device } = useDevice();
+  const [fitKey, setFitKey] = useState('');
+  useLayoutEffect(() => {
+    const el = hostRef.current?.closest('.editor-scroll') as HTMLElement | null;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      hostWidth = el.clientWidth;
+      const p = getState().project;
+      if (p) { const f = fitFor(p, getState().settings.zoom); setFitKey(`${f.zoom}|${f.reflow}`); }
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [projectId]);
 
   const smart = (): SmartContext => {
     const p = getState().project!;
@@ -144,7 +172,7 @@ export function EditorHost() {
 
   // Keep config in sync.
   const fmtKey = project ? `${project.template}|${project.locale}|${JSON.stringify(project.styleOverrides)}|${JSON.stringify(project.page)}|${JSON.stringify(project.revisions)}|${Object.keys(project.breakdown.elements).length}` : '';
-  const cfgKey = useMemo(() => fmtKey + `|${settings.zoom}|${settings.pageView}|${settings.showSceneNumbers}|${settings.focusMode}|${settings.typewriter}|${JSON.stringify(settings.elementKeys)}|${JSON.stringify(settings.macros)}|${epoch}|${role}`, [fmtKey, settings, epoch, role]);
+  const cfgKey = useMemo(() => fmtKey + `|${settings.zoom}|${settings.pageView}|${settings.showSceneNumbers}|${settings.focusMode}|${settings.typewriter}|${JSON.stringify(settings.elementKeys)}|${JSON.stringify(settings.macros)}|${epoch}|${role}|${device}|${fitKey}`, [fmtKey, settings, epoch, role, device, fitKey]);
   useEffect(() => {
     const ed = edRef.current;
     const p = getState().project;

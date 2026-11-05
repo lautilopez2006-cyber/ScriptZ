@@ -7,10 +7,11 @@ import { t, tn } from '../../i18n';
 import { COLOR_HEX, Segmented, cx, useDebounced } from '../../ui/kit';
 import { Icon } from '../../ui/icons';
 import { findPrefill } from './FindPanel';
+import { getDevice } from '../../ui/device';
 
 type Tab = 'scenes' | 'characters' | 'locations' | 'bookmarks';
 
-const jump = (id: string) => { getEditor()?.scrollToBlock(id, { select: true }); };
+const jump = (id: string) => { getEditor()?.scrollToBlock(id, { select: true }); if (getDevice() !== 'desktop') setState({ mobileNav: false }); };
 
 export function Navigator() {
   // Subscribe to the pieces we show; scene/character lists follow the text with a short delay

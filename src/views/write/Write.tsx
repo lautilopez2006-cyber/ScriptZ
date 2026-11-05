@@ -16,6 +16,7 @@ import { RefsPanel } from '../research/Research';
 import { FindPanel } from './FindPanel';
 import { CommentsPanel, NotesPanel } from './SidePanels';
 import { DictationButton } from './Dictation';
+import { useDevice } from '../../ui/device';
 
 const ReadPanel = lazy(() => import('./ReadPanel'));
 const SprintPanel = lazy(() => import('../stats/SprintPanel'));
@@ -33,6 +34,8 @@ function Toolbar() {
   const settings = useApp((s) => s.settings);
   const right = useApp((s) => s.right);
   const readOnly = useApp((s) => s.collab.role === 'viewer');
+  const mobileNav = useApp((s) => s.mobileNav);
+  const { device } = useDevice();
   const order = getTemplate(template).order;
   const ed = getEditor();
   const marks = caret?.marks ?? [];
@@ -71,10 +74,31 @@ function Toolbar() {
     { label: t('act.export'), icon: 'upload', onClick: () => runCommand('export'), shortcut: sc.export },
     { label: t('act.print'), icon: 'printer', onClick: () => runCommand('print'), shortcut: sc.print },
   ];
+  const panel = (id: string, label: string, icon: MenuItem['icon']): MenuItem => ({ label, icon, checked: right === id, onClick: () => togglePanel(id as never) });
+  const mobileItems: MenuItem[] = [
+    { label: t('ed.bold'), icon: 'bold', checked: marks.includes('b'), onClick: () => ed?.toggleMark('b') },
+    { label: t('ed.italic'), icon: 'italic', checked: marks.includes('i'), onClick: () => ed?.toggleMark('i') },
+    { label: t('ed.underline'), icon: 'underline', checked: marks.includes('u'), onClick: () => ed?.toggleMark('u') },
+    { label: t('ed.comment'), icon: 'comment', onClick: () => runCommand('comment') },
+    { separator: true },
+    panel('review', t('dr.title'), 'check'),
+    panel('suggest', t('sg.title'), 'compare'),
+    panel('alts', t('al.title'), 'shuffle'),
+    panel('refs', t('rs.panel'), 'pin'),
+    panel('find', t('ed.find'), 'search'),
+    panel('comments', t('w.comments'), 'comment'),
+    panel('notes', t('ed.notes'), 'clipboard'),
+    panel('read', t('ed.readAloud'), 'speaker'),
+    panel('sprint', t('ed.sprint'), 'timer'),
+    panel('collab', t('ed.collab'), 'users'),
+    panel('ai', t('ed.ai'), 'sparkles'),
+    { separator: true },
+    ...moreItems,
+  ];
   return (
     <div className="toolbar" role="toolbar" aria-label={t('nav.write')}>
       <div className="tb-group">
-        <IconBtn icon="sidebar" title={t('ed.navigator')} active={settings.navigatorOpen} onClick={() => setSettings({ navigatorOpen: !settings.navigatorOpen })} />
+        <IconBtn icon="sidebar" title={t('ed.navigator')} active={device === 'desktop' ? settings.navigatorOpen : mobileNav} onClick={() => (device === 'desktop' ? setSettings({ navigatorOpen: !settings.navigatorOpen }) : setState({ mobileNav: !mobileNav }))} />
         <select className="select el-select" value={caret?.type ?? ''} aria-label={t('ed.element')} disabled={readOnly}
           onChange={(e) => { ed?.setType(e.target.value as ElementType); setTimeout(() => ed?.focus(), 0); }}>
           {!caret ? <option value="">{t('ed.element')}</option> : null}
@@ -104,6 +128,11 @@ function Toolbar() {
         <MenuButton icon="eye" title={t('ed.view')} items={viewItems} />
       </div>
       <span className="grow" />
+      <div className="tb-group tb-mobile">
+        <IconBtn icon="undo" title={t('act.undo')} onClick={() => ed?.undo()} disabled={readOnly} />
+        <IconBtn icon="redo" title={t('act.redo')} onClick={() => ed?.redo()} disabled={readOnly} />
+        <MenuButton icon="more" title={t('act.more')} items={mobileItems} align="right" />
+      </div>
       {revisions.active ? (
         <button type="button" className="chip rev" onClick={() => runCommand('revisionMode')} title={t('ed.revMode')}>
           <Icon name="revisions" size={14} />{revisions.sets.find((s) => s.id === revisions.current)?.name ?? t('ed.revMode')}
@@ -167,10 +196,33 @@ function StatusBar() {
   );
 }
 
+/** Touch screens have no Tab key: a bar of elements right above the keyboard. */
+function ElementBar() {
+  const template = useApp((s) => s.project!.template);
+  const caret = useApp((s) => s.caret);
+  const readOnly = useApp((s) => s.collab.role === 'viewer');
+  if (readOnly) return null;
+  const order = getTemplate(template).order.slice(0, 8);
+  const keep = (e: { preventDefault: () => void }) => e.preventDefault();
+  return (
+    <div className="el-bar" role="toolbar" aria-label={t('ed.element')}>
+      {order.map((type) => (
+        <button key={type} type="button" className={cx('el-chip', caret?.type === type && 'on')} onMouseDown={keep} onPointerDown={keep}
+          onClick={() => { getEditor()?.setType(type); getEditor()?.focus(); }}>
+          <i className={'el-ic t-' + type} aria-hidden="true" />{t('el.' + type)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function WriteView() {
   const right = useApp((s) => s.right);
   const navOpen = useApp((s) => s.settings.navigatorOpen);
   const fullscreen = useApp((s) => s.fullscreen);
+  const mobileNav = useApp((s) => s.mobileNav);
+  const { device } = useDevice();
+  const showNav = device === 'desktop' ? navOpen : mobileNav;
   const panelTitle: Record<string, string> = { review: t('dr.title'), suggest: t('sg.title'), alts: t('al.title'), refs: t('rs.panel'), find: t('ed.find'), comments: t('w.comments'), notes: t('ed.notes'), read: t('ra.title'), sprint: t('ed.sprint'), collab: t('ed.collab'), ai: t('ed.ai') };
   return (
     <div className={cx('write', fullscreen && 'df')}>
@@ -178,10 +230,12 @@ export function WriteView() {
         <div className="df-bar"><button type="button" className="btn btn-ghost btn-sm" onClick={() => void toggleFullscreen()}><Icon name="exitFullscreen" size={15} /> <span>{t('act.close')}</span> <Kbd combo="Escape" /></button></div>
       )}
       <div className="write-body">
-        {navOpen && !fullscreen ? <Navigator /> : null}
+        {showNav && !fullscreen ? <Navigator /> : null}
+        {showNav && device !== 'desktop' ? <button type="button" className="nav-scrim" aria-label={t('act.close')} onClick={() => setState({ mobileNav: false })} /> : null}
         <div className="editor-scroll" id="editor-scroll">
           <EditorHost />
         </div>
+        {!fullscreen ? <ElementBar /> : null}
         {right && !fullscreen ? (
           <aside className="side-panel" aria-label={panelTitle[right]}>
             <header className="side-h"><h3>{panelTitle[right]}</h3><IconBtn icon="x" small title={t('act.close')} onClick={() => { setState({ right: null }); getEditor()?.focus(); }} /></header>

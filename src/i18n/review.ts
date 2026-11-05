@@ -6,6 +6,7 @@ export const REVIEW: Dict = {
   'nav.research': ['Investigación', 'Research', 'Pesquisa'],
   'nav.translation': ['Traducción', 'Translation', 'Tradução'],
   'nav.series': ['Serie', 'Series', 'Série'],
+  'nav.more': ['Más', 'More', 'Mais'],
 
   // Script review
   'dr.title': ['Revisor de guion', 'Script review', 'Revisor de roteiro'],

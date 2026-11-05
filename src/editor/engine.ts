@@ -27,6 +27,8 @@ export interface EditorConfig {
   zoom: number;
   /** Page view (true) or a single continuous sheet without breaks (false). */
   pageView: boolean;
+  /** Phones: text reflows to the screen width (no pages, proportional indents). */
+  reflow?: boolean;
   showSceneNumbers: boolean;
   focusMode: 'off' | 'scene' | 'paragraph';
   typewriter: boolean;
@@ -488,7 +490,8 @@ export class ScriptEditor {
     p.style.setProperty('--z', String(z));
     p.style.setProperty('--pw', `calc(${g.widthIn} * var(--in))`);
     p.dataset.paper = g.paper;
-    p.classList.toggle('no-pages', !this.cfg.pageView);
+    p.classList.toggle('no-pages', !this.cfg.pageView || !!this.cfg.reflow);
+    p.classList.toggle('reflow', !!this.cfg.reflow);
     p.classList.toggle('focus-scene', this.cfg.focusMode === 'scene');
     p.classList.toggle('focus-paragraph', this.cfg.focusMode === 'paragraph');
     p.classList.toggle('show-nums', this.cfg.showSceneNumbers);
@@ -500,9 +503,9 @@ export class ScriptEditor {
     for (const t of types) {
       const st = this.cfg.styles[t];
       const rules = [
-        `--bl: calc(var(--ml) + ${st.indent}ch)`,
-        `margin-left: calc(var(--ml) + ${st.indent}ch)`,
-        `width: ${st.width}ch`,
+        `--bl: calc(var(--ml) + calc(var(--cw) * ${st.indent}))`,
+        `margin-left: calc(var(--ml) + calc(var(--cw) * ${st.indent}))`,
+        `width: calc(var(--cw) * ${st.width})`,
         `margin-top: calc(var(--ln) * ${st.spaceBefore})`,
         `text-align: ${st.align}`,
         `line-height: calc(var(--ln) * ${st.lineSpacing})`,
@@ -516,19 +519,19 @@ export class ScriptEditor {
       if (st.suffix) css.push(`.sz-doc .t-${t}:not(:empty)::after{content:${JSON.stringify(st.suffix)};}`);
     }
     // Dual dialogue columns.
-    css.push(`.sz-doc .grp.dual{margin-left:var(--ml);width:60ch;display:flex;gap:${DUAL.rightOrigin - DUAL.colWidth}ch;margin-top:calc(var(--ln) * ${this.style('character').spaceBefore})}`);
-    css.push(`.sz-doc .grp.dual>.col{width:${DUAL.colWidth}ch;flex:none}`);
-    css.push(`.sz-doc .grp.dual .t-character{margin-left:${DUAL.character.indent}ch;width:${DUAL.character.width}ch;margin-top:0}`);
-    css.push(`.sz-doc .grp.dual .t-parenthetical{margin-left:${DUAL.parenthetical.indent}ch;width:${DUAL.parenthetical.width}ch}`);
-    css.push(`.sz-doc .grp.dual .t-dialogue{margin-left:${DUAL.dialogue.indent}ch;width:${DUAL.dialogue.width}ch}`);
+    css.push(`.sz-doc .grp.dual{margin-left:var(--ml);width:calc(var(--cw) * 60);display:flex;gap:calc(var(--cw) * ${DUAL.rightOrigin - DUAL.colWidth});margin-top:calc(var(--ln) * ${this.style('character').spaceBefore})}`);
+    css.push(`.sz-doc .grp.dual>.col{width:calc(var(--cw) * ${DUAL.colWidth});flex:none}`);
+    css.push(`.sz-doc .grp.dual .t-character{margin-left:calc(var(--cw) * ${DUAL.character.indent});width:calc(var(--cw) * ${DUAL.character.width});margin-top:0}`);
+    css.push(`.sz-doc .grp.dual .t-parenthetical{margin-left:calc(var(--cw) * ${DUAL.parenthetical.indent});width:calc(var(--cw) * ${DUAL.parenthetical.width})}`);
+    css.push(`.sz-doc .grp.dual .t-dialogue{margin-left:calc(var(--cw) * ${DUAL.dialogue.indent});width:calc(var(--cw) * ${DUAL.dialogue.width})}`);
     const tc = this.template.twoColumn;
     if (tc) {
       const v = this.style('video'), a = this.style('audio');
-      css.push(`.sz-doc .grp.av{margin-left:var(--ml);width:60ch;display:flex;gap:${a.indent - v.width}ch;margin-top:calc(var(--ln) * ${v.spaceBefore})}`);
-      css.push(`.sz-doc .grp.av>.col.L{width:${v.width}ch;flex:none}.sz-doc .grp.av>.col.R{width:${a.width}ch;flex:none}`);
+      css.push(`.sz-doc .grp.av{margin-left:var(--ml);width:calc(var(--cw) * 60);display:flex;gap:calc(var(--cw) * ${a.indent - v.width});margin-top:calc(var(--ln) * ${v.spaceBefore})}`);
+      css.push(`.sz-doc .grp.av>.col.L{width:calc(var(--cw) * ${v.width});flex:none}.sz-doc .grp.av>.col.R{width:calc(var(--cw) * ${a.width});flex:none}`);
       css.push(`.sz-doc .grp.av .b{margin-left:0;width:auto;margin-top:0}`);
     }
-    css.push(`.sz-doc{--ml:calc(${g.marginLeft} * var(--in));}`);
+    css.push(`.sz-doc{--cw:1ch;--ml:calc(${g.marginLeft} * var(--in));}`);
     this.styleEl.textContent = css.join('\n');
   }
 
@@ -757,7 +760,7 @@ export class ScriptEditor {
   private syncDecorations(layout: Layout): Set<string> {
     const changedBlocks = new Set<string>();
     const want = new Map<string, { kind: 'top' | 'break' | 'end'; pageIndex: number; label: string; prevUsed: number; more: boolean; contd: string; blockId: string; offset: number }>();
-    if (this.cfg.pageView) {
+    if (this.cfg.pageView && !this.cfg.reflow) {
       want.set('top', { kind: 'top', pageIndex: 0, label: layout.pages[0]?.label ?? '1', prevUsed: 0, more: false, contd: '', blockId: '', offset: 0 });
       for (const b of layout.breaks) {
         const contd = b.contd ? `${b.contd} ${this.tokens.contd}` : '';

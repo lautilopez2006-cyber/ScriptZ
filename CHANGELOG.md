@@ -1,5 +1,22 @@
 # Cambios
 
+## 0.2.1 — noviembre 2026
+
+### Teléfonos y tabletas
+- En el teléfono el guion se acomoda al ancho de la pantalla, con letra legible.
+- Barra de elementos sobre el teclado (escena, acción, personaje, diálogo…), para escribir sin la tecla Tab.
+- Navegación inferior con las secciones principales y un botón "Más" con el resto.
+- Los paneles y diálogos se abren como hojas desde abajo.
+- En la tableta la página entera entra en la pantalla y los paneles flotan sobre ella.
+- Botones más grandes en pantallas táctiles.
+- La versión web se instala como app desde Chrome o Safari y funciona sin conexión, desde cualquier carpeta del sitio.
+
+### Windows
+- Paquete MSIX listo para publicar en la Microsoft Store. Al instalarse desde la Store no aparece el aviso de seguridad de Windows.
+
+### Otros
+- El aviso de nuevas versiones consulta las publicaciones públicas de ScriptZ (solo en la versión de escritorio).
+
 ## 0.2.0 — noviembre 2026
 
 ### Ocho funciones nuevas
