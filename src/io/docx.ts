@@ -1,7 +1,8 @@
 // Word (.docx) export with real paragraph styles. Two modes:
 //  - flow: Word paginates (best for editing);
 //  - exact: page breaks, (MORE) and (CONT'D) exactly as ScriptZ/PDF.
-import { uid, type Block, type ElementType, type Project } from '../core/model';
+import { type Block, type ElementType, type Project, type TitlePage } from '../core/model';
+import { classifyParagraphs, splitTitlePage, type Para } from './detect';
 import { getTemplate, localeTokens, pageGeometry, resolveStyles, type ElementStyle } from '../core/format';
 import { layoutProject } from '../core/layout';
 import { upperSameLength } from '../core/text';
@@ -157,38 +158,42 @@ export async function toDocx(p: Project, mode: 'flow' | 'exact' = 'flow'): Promi
   ]);
 }
 
-/** Word import: our own styles by name, otherwise indentation heuristics. */
+/** Word import: our own styles by name, otherwise indentation and reading order (see detect.ts). */
 export function parseDocxXml(xml: string, stylesXml: string): Block[] {
+  return parseDocxParas(xml, stylesXml).blocks;
+}
+
+export function parseDocxParas(xml: string, stylesXml: string): { blocks: Block[]; title: Partial<TitlePage> } {
   const styleName = new Map<string, string>();
   for (const m of stylesXml.matchAll(/<w:style\b[^>]*w:styleId="([^"]+)"[^>]*>[\s\S]*?<w:name w:val="([^"]+)"/g)) styleName.set(m[1], m[2].toLowerCase());
+  // Indentation inherited from paragraph styles.
+  const styleInd = new Map<string, number>();
+  for (const m of stylesXml.matchAll(/<w:style\b[^>]*w:styleId="([^"]+)"[^>]*>([\s\S]*?)<\/w:style>/g)) { const l = /<w:ind[^>]*w:(?:left|start)="(-?\d+)"/.exec(m[2]); if (l) styleInd.set(m[1], Number(l[1])); }
   const byName: Record<string, ElementType> = {};
   for (const [type, name] of Object.entries(STYLE_NAMES)) byName[name.toLowerCase()] = type as ElementType;
-  Object.assign(byName, { 'scene heading': 'scene', 'encabezado de escena': 'scene', escena: 'scene', 'acción': 'action', accion: 'action', personaje: 'character', 'diálogo': 'dialogue', dialogo: 'dialogue', 'acotación': 'parenthetical', 'transición': 'transition' });
-  const out: Block[] = [];
+  Object.assign(byName, { 'scene heading': 'scene', 'encabezado de escena': 'scene', escena: 'scene', 'acción': 'action', accion: 'action', action: 'action', character: 'character', personaje: 'character', dialogue: 'dialogue', 'diálogo': 'dialogue', dialogo: 'dialogue', parenthetical: 'parenthetical', 'acotación': 'parenthetical', transition: 'transition', 'transición': 'transition' });
+  const paras: Para[] = [];
+  let blank = false;
   for (const pm of xml.matchAll(/<w:p\b[\s\S]*?<\/w:p>/g)) {
     const p = pm[0];
     const sidm = /<w:pStyle w:val="([^"]+)"/.exec(p);
     const name = sidm ? styleName.get(sidm[1]) ?? sidm[1].toLowerCase() : '';
-    const left = Number(/<w:ind[^>]*w:left="(-?\d+)"/.exec(p)?.[1] ?? 0);
+    const own = /<w:ind[^>]*w:(?:left|start)="(-?\d+)"/.exec(p)?.[1];
+    const first = Number(/<w:ind[^>]*w:firstLine="(-?\d+)"/.exec(p)?.[1] ?? 0);
+    const left = (own !== undefined ? Number(own) : sidm ? styleInd.get(sidm[1]) ?? 0 : 0) + Math.max(0, first);
     const center = /<w:jc w:val="center"/.test(p);
-    const rightAl = /<w:jc w:val="right"/.test(p);
+    const rightAl = /<w:jc w:val="(right|end)"/.test(p);
     let text = '';
     for (const r of p.matchAll(/<w:(t|br|tab)\b[^>]*?(?:\/>|>([\s\S]*?)<\/w:t>)/g)) text += r[1] === 't' ? (r[2] ?? '') : r[1] === 'br' ? '\n' : ' ';
     text = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
-    if (!text.trim()) continue;
-    let type: ElementType | undefined = byName[name];
-    if (!type) {
-      const cols = left / TW;
-      const up = text === text.toUpperCase() && /\p{L}/u.test(text);
-      if (/^(INT|EXT|I\/E)[.\s]/i.test(text.trim())) type = 'scene';
-      else if (rightAl || (/:\s*$/.test(text) && up && cols > 30)) type = 'transition';
-      else if (center && up) type = 'centered';
-      else if (cols >= 18 && up) type = 'character';
-      else if (cols >= 12 && /^\(/.test(text.trim())) type = 'parenthetical';
-      else if (cols >= 7) type = 'dialogue';
-      else type = 'action';
+    if (!text.trim()) { blank = true; continue; }
+    const style = byName[name];
+    for (const line of text.split('\n')) {
+      if (!line.trim()) continue;
+      paras.push({ text: line, indent: left / TW, center, right: rightAl, style, blankBefore: blank });
+      blank = false;
     }
-    out.push({ id: uid(), type, text: text.trim() });
   }
-  return out;
+  const { title, body } = splitTitlePage(paras);
+  return { blocks: classifyParagraphs(body), title };
 }

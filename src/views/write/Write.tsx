@@ -72,6 +72,8 @@ function Toolbar() {
     { label: t('ed.revMode'), icon: 'revisions', checked: revisions.active, onClick: () => runCommand('revisionMode') },
     { separator: true },
     { label: t('act.export'), icon: 'upload', onClick: () => runCommand('export'), shortcut: sc.export },
+    { label: t('sh.title'), icon: 'share', onClick: () => runCommand('pitch') },
+    { label: t('ct.title'), icon: 'star', onClick: () => runCommand('contest') },
     { label: t('act.print'), icon: 'printer', onClick: () => runCommand('print'), shortcut: sc.print },
   ];
   const panel = (id: string, label: string, icon: MenuItem['icon']): MenuItem => ({ label, icon, checked: right === id, onClick: () => togglePanel(id as never) });

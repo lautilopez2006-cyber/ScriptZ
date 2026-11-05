@@ -6,7 +6,7 @@ import { decodeEntities, findAll, first, kids, parseXml, textOf } from './xml';
 import { readZip } from './zip';
 import { parseFountain } from './fountain';
 import { parseFdx } from './fdx';
-import { parseDocxXml } from './docx';
+import { parseDocxParas } from './docx';
 
 export interface Imported { title: Partial<TitlePage>; blocks: Block[] }
 
@@ -115,7 +115,7 @@ export async function importZipApp(name: string, bytes: Uint8Array): Promise<Imp
   const docx = find(/^word\/document\.xml$/);
   if (docx) {
     const styles = files.get('word/styles.xml');
-    return { title: {}, blocks: parseDocxXml(dec.decode(files.get(docx)!), styles ? dec.decode(styles) : '') };
+    return parseDocxParas(dec.decode(files.get(docx)!), styles ? dec.decode(styles) : '');
   }
   // Celtx
   const celtx = find(/script[^/]*\.html?$/i) ?? find(/\.html?$/i);

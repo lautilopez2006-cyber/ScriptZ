@@ -30,6 +30,8 @@ export interface AppState {
   pages: number;
   fullscreen: boolean;
   collab: CollabStatus;
+  /** Cloud sync status (Dropbox / Google Drive). */
+  cloud: { state: 'off' | 'idle' | 'syncing' | 'error'; last: number; error: string; done: number; total: number };
   /** Bumped when the editor should re-read config (styles, template...). */
   editorEpoch: number;
   /** Suggestion mode (track changes) for this session. */
@@ -59,6 +61,7 @@ let state: AppState = {
   pages: 0,
   fullscreen: false,
   collab: { state: 'off', room: '', role: '', peers: [], message: '' },
+  cloud: { state: 'off', last: 0, error: '', done: 0, total: 0 },
   editorEpoch: 0,
   suggesting: false,
   mobileNav: false,

@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>ScriptZ</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0;display:grid;place-items:center;min-height:100vh;font:16px system-ui,sans-serif;background:#eceef3;color:#151b2b}p{opacity:.7}</style></head>
+<body><p id="m">Conectando…</p>
+<script>
+  // Login redirect: hand the code back to the ScriptZ window that opened this one, then close.
+  var q = new URLSearchParams(location.search);
+  var d = { type: 'sz-oauth', code: q.get('code'), error: q.get('error_description') || q.get('error') };
+  try { localStorage.setItem('sz.oauth.result', JSON.stringify(d)); } catch (e) {}
+  if (window.opener) { window.opener.postMessage(d, location.origin); }
+  document.getElementById('m').textContent = d.code ? 'Listo. Podés cerrar esta ventana.' : 'No se pudo conectar.';
+  setTimeout(function () { window.close(); }, 600);
+</script></body></html>

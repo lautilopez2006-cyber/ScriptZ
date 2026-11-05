@@ -7,6 +7,7 @@ import { t } from '../i18n';
 import { Button, Field, Modal, Spinner, cx, Kbd } from '../ui/kit';
 import { Icon } from '../ui/icons';
 import { TEMPLATES, SCRIPT_LOCALES, localeTokens } from '../core/format';
+import { STARTERS } from '../core/starters';
 import type { PaperSize, ScriptLocale } from '../core/model';
 
 const ExportDialog = lazy(() => import('../io/ExportDialog'));
@@ -15,6 +16,10 @@ const DocumentDialog = lazy(() => import('../views/document/DocumentDialog'));
 const Tour = lazy(() => import('../views/Tour'));
 const CallSheetModal = lazy(() => import('../views/production/CallSheetModal'));
 const SidesModal = lazy(() => import('../views/production/SidesModal'));
+const PasteImport = lazy(() => import('../io/PasteImport'));
+const CompareView = lazy(() => import('../views/revisions/CompareView'));
+const ShareDialog = lazy(() => import('../share/ShareDialog'));
+const ContestDialog = lazy(() => import('../views/document/ContestDialog'));
 
 function Prompt({ title, label, value, onSubmit, multiline }: { title: string; label: string; value?: string; onSubmit: (v: string) => void; multiline?: boolean }) {
   const [v, setV] = useState(value ?? '');
@@ -50,8 +55,10 @@ function NewProject() {
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
   const [episodeTitle, setEpisodeTitle] = useState('');
+  const [starter, setStarter] = useState('');
+  const starters = STARTERS.filter((x) => x.template === template);
   const series = template === 'tv' || template === 'multicam';
-  const create = () => void createProject({ title: title.trim(), author: author.trim(), template, locale, paper, series: series ? { show, season, episode, episodeTitle } : undefined });
+  const create = () => void createProject({ title: title.trim(), author: author.trim(), template, locale, paper, series: series ? { show, season, episode, episodeTitle } : undefined, starter: starters.some((x) => x.id === starter) ? starter : undefined });
   return (
     <Modal title={t('home.new')} onClose={closeModal} size="lg" footer={<><Button onClick={closeModal}>{t('act.cancel')}</Button><Button kind="primary" icon="plus" onClick={create}>{t('act.create')}</Button></>}>
       <div className="grid2">
@@ -61,10 +68,21 @@ function NewProject() {
       <h4 className="mt">{t('np.format')}</h4>
       <div className="tpl-grid" role="radiogroup">
         {TEMPLATES.map((tp) => (
-          <button key={tp.id} type="button" role="radio" aria-checked={template === tp.id} className={cx('tpl', template === tp.id && 'on')} onClick={() => setTemplate(tp.id)}>
+          <button key={tp.id} type="button" role="radio" aria-checked={template === tp.id} className={cx('tpl', template === tp.id && 'on')} onClick={() => { setTemplate(tp.id); setStarter(''); }}>
             <Icon name={TPL_ICON[tp.id] ?? 'file'} size={22} />
             <b>{t(tp.name)}</b>
             <small>{t(tp.description)}</small>
+          </button>
+        ))}
+      </div>
+      <h4 className="mt">{t('sx.startWith')}</h4>
+      <div className="starter-row" role="radiogroup">
+        <button type="button" role="radio" aria-checked={!starter} className={cx('starter', !starter && 'on')} onClick={() => setStarter('')}>
+          <span className="st-sheet blank" aria-hidden="true" /><b>{t('sx.blank')}</b><small>{t('sx.blank.d')}</small>
+        </button>
+        {starters.map((x) => (
+          <button key={x.id} type="button" role="radio" aria-checked={starter === x.id} className={cx('starter', starter === x.id && 'on')} onClick={() => setStarter(x.id)}>
+            <span className={'st-sheet s-' + x.id} aria-hidden="true"><i /><i /><i /><i /></span><b>{t(x.name)}</b><small>{t(x.desc)}{x.pages !== '—' ? ' · ' + t('sx.pages', { n: x.pages }) : ''}</small>
           </button>
         ))}
       </div>
@@ -152,6 +170,10 @@ export function Modals() {
       {modal.kind === 'tag' ? <TagDialog /> : null}
       {modal.kind === 'document' ? <DocumentDialog tab={(p as { tab?: string }).tab ?? 'format'} /> : null}
       {modal.kind === 'tour' ? <Tour /> : null}
+      {modal.kind === 'pasteImport' ? <PasteImport /> : null}
+      {modal.kind === 'pitch' ? <ShareDialog /> : null}
+      {modal.kind === 'contest' ? <ContestDialog /> : null}
+      {modal.kind === 'compare' ? <CompareView {...(p as unknown as Parameters<typeof CompareView>[0])} /> : null}
       {modal.kind === 'sides' ? <SidesModal dayId={(p as { dayId?: string }).dayId} /> : null}
       {modal.kind === 'image' ? <Lightbox src={(p as { src?: string }).src ?? ''} title={(p as { title?: string }).title ?? ''} /> : null}
       {modal.kind === 'callsheet' ? <CallSheetModal dayId={(p as { dayId?: string }).dayId ?? ''} /> : null}

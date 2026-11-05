@@ -29,6 +29,8 @@ export interface EditorConfig {
   pageView: boolean;
   /** Phones: text reflows to the screen width (no pages, proportional indents). */
   reflow?: boolean;
+  /** Browser spellcheck (off when ScriptZ's own checker is on). */
+  nativeSpellcheck?: boolean;
   showSceneNumbers: boolean;
   focusMode: 'off' | 'scene' | 'paragraph';
   typewriter: boolean;
@@ -61,7 +63,8 @@ export interface EditorHooks {
   /** May rewrite a commit (locked scenes, revision marks, suggestions); can also move the caret. */
   transformCommit?: (prev: Block[], next: Block[], sel: Sel | null, before: Sel | null) => Block[] | { blocks: Block[]; sel: Sel | null };
   onElementMenu?: (rect: DOMRect, current: ElementType) => void;
-  onContextMenu?: (e: MouseEvent, pos: Pos | null) => void;
+  /** Return true when the hook showed its own menu (the browser menu is then suppressed). */
+  onContextMenu?: (e: MouseEvent, pos: Pos | null) => boolean;
   onMarkClick?: (kind: 'cmt' | 'tag', id: string, e: MouseEvent) => void;
   onFocusChange?: (focused: boolean) => void;
 }
@@ -421,6 +424,18 @@ export class ScriptEditor {
     return new DOMRect(er.left, er.top, 1, er.height || 16);
   }
 
+  /** Model position under a screen point. */
+  posFromPoint(x: number, y: number): Pos | null {
+    const d = document as Document & { caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null; caretRangeFromPoint?: (x: number, y: number) => Range | null };
+    let node: Node | null = null, off = 0;
+    const cp = d.caretPositionFromPoint?.(x, y);
+    if (cp) { node = cp.offsetNode; off = cp.offset; } else { const r = d.caretRangeFromPoint?.(x, y); if (r) { node = r.startContainer; off = r.startOffset; } }
+    if (!node) return null;
+    const el = blockElOf(node, this.doc);
+    if (!el?.dataset.id) return null;
+    return { id: el.dataset.id, off: domToOffset(el, node, off) };
+  }
+
   rangeRects(a: Pos, b: Pos): DOMRect[] {
     const ra = this.domRange(a, b);
     return ra ? Array.from(ra.getClientRects()) : [];
@@ -496,7 +511,7 @@ export class ScriptEditor {
     p.classList.toggle('focus-paragraph', this.cfg.focusMode === 'paragraph');
     p.classList.toggle('show-nums', this.cfg.showSceneNumbers);
     this.doc.contentEditable = this.cfg.readOnly ? 'false' : 'true';
-    this.doc.spellcheck = !this.cfg.readOnly;
+    this.doc.spellcheck = !this.cfg.readOnly && this.cfg.nativeSpellcheck !== false;
     this.doc.lang = this.cfg.lang;
     const css: string[] = [];
     const types = Object.keys(this.cfg.styles) as ElementType[];
@@ -1432,9 +1447,8 @@ export class ScriptEditor {
     this.on(d, 'contextmenu', (e) => {
       if (!this.hooks.onContextMenu) return;
       const me = e as MouseEvent;
-      me.preventDefault();
-      const sel = this.readSelection();
-      this.hooks.onContextMenu(me, sel ? sel.focus : null);
+      const pos = this.posFromPoint(me.clientX, me.clientY) ?? this.readSelection()?.focus ?? null;
+      if (this.hooks.onContextMenu(me, pos)) me.preventDefault();
     });
     this.on(document, 'selectionchange', () => {
       if (this.suppressSelection) return;

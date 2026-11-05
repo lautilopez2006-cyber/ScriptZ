@@ -227,7 +227,7 @@ export async function adoptProject(p: Project, opts: { view?: AppStateView; mess
   if (opts.message) toast(opts.message, 'success');
 }
 
-export interface NewProjectOptions { title: string; author: string; template: string; locale: ScriptLocale; paper: PaperSize; series?: { show: string; season: number; episode: number; episodeTitle: string } }
+export interface NewProjectOptions { title: string; author: string; template: string; locale: ScriptLocale; paper: PaperSize; series?: { show: string; season: number; episode: number; episodeTitle: string }; starter?: string }
 
 export async function createProject(o: NewProjectOptions): Promise<void> {
   const p = emptyProject({ title: o.title, author: o.author, template: o.template, locale: o.locale, paper: o.paper });
@@ -245,6 +245,11 @@ export async function createProject(o: NewProjectOptions): Promise<void> {
     p.blocks = [block('scene', ''), block('video', ''), block('audio', '')];
   } else {
     p.blocks = [block(first, '')];
+  }
+  if (o.starter) {
+    const { starterBlocks } = await import('../core/starters');
+    const sb = starterBlocks(o.starter, o.locale);
+    if (sb.length) p.blocks = sb;
   }
   if (o.series) p.series = o.series;
   closeModal();

@@ -1,5 +1,18 @@
 # Cambios
 
+## 0.3.0 — noviembre 2026
+
+### Nueve funciones nuevas
+- **Puntos de partida.** Al crear un guion podés empezar con una estructura armada y notas: cortometraje, largo en tres actos, piloto de serie, sitcom, teatro, documental, radio/podcast o cómic.
+- **Pegar desde Google Docs o Word.** Pegás el guion y ScriptZ reconoce escenas, personajes, diálogos, acotaciones y transiciones, aunque el texto no tenga formato. Antes de importar ves una vista previa y podés corregir el tipo de cada párrafo. Lo mismo al abrir un .docx o .txt.
+- **Sincronización con Dropbox y Google Drive.** Tus guiones quedan en tu propia nube y te siguen a todos tus dispositivos. Si editaste el mismo guion en dos lugares, se guardan las dos versiones.
+- **Corrector ortográfico.** Funciona sin conexión, con diccionarios rioplatense (voseo), latinoamericano, de España, inglés, portugués, francés e italiano. No marca los nombres de tus personajes ni tus locaciones. Clic derecho para ver sugerencias, agregar o ignorar.
+- **Comparar versiones lado a lado.** Dos borradores alineados párrafo por párrafo, con los cambios resaltados palabra por palabra, mapa de cambios y navegación con el teclado. Se exporta a HTML.
+- **Lectura con voces.** Cada personaje tiene su voz, tono y velocidad. Y podés grabar a los actores línea por línea: la lectura usa su voz real.
+- **Compartir como página.** Un enlace con la presentación del guion (logline, sinopsis, personajes) y el guion para leer. El guion viaja dentro del enlace: no se sube nada. También se descarga como página .html.
+- **Formatos de concursos.** INCAA, Premio SGAE, Nicholl y BlueCat: revisa páginas, anonimato, numeración de escenas, idioma y logline, corrige lo que puede y exporta el PDF listo para enviar.
+- **Más idiomas.** La interfaz ahora está en español, inglés, portugués, francés e italiano.
+
 ## 0.2.1 — noviembre 2026
 
 ### Teléfonos y tabletas

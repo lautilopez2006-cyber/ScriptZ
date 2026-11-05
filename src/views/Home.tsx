@@ -67,6 +67,7 @@ export function HomeView() {
           <div className="ts-actions">
             <Button kind="primary" icon="plus" onClick={() => openModal('newProject')}>{t('home.new')}</Button>
             <Button icon="upload" onClick={importFile}>{t('home.import')}</Button>
+            <Button kind="ghost" icon="clipboard" onClick={() => openModal('pasteImport')}>{t('pi.button')}</Button>
           </div>
           <div className="ts-corner" aria-hidden="true"><span>{t('home.corner.left')}</span><span>{t('home.corner.right')}</span></div>
           <div className="ts-links">

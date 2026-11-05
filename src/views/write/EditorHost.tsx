@@ -4,13 +4,14 @@ import { ScriptEditor, type EditorConfig } from '../../editor/engine';
 import { resolveStyles, localeTokens, getTemplate } from '../../core/format';
 import type { Block, ElementType, Project } from '../../core/model';
 import { getState, setState, useApp } from '../../app/store';
-import { blocksFromEditor, registerEditor, transformCommit, noteActivity } from '../../app/actions';
+import { blocksFromEditor, registerEditor, transformCommit, noteActivity, setSettings } from '../../app/actions';
 import { smartContext, suggest, type Suggestions, type SmartContext } from '../../core/smart';
 import { characterStats } from '../../core/scenes';
 import { t, fmtDate } from '../../i18n';
-import { Kbd, cx } from '../../ui/kit';
+import { Kbd, cx, Menu, type MenuItem } from '../../ui/kit';
 import { openCommentFor } from './comments';
 import { getDevice, useDevice } from '../../ui/device';
+import { SpellController, resolveVariant, suggestionsFor } from '../../spell/spell';
 import { RemoteCursors } from './RemoteCursors';
 
 export function headerFooterFor(p: Project, which: 'header' | 'footer', pageIndex: number, label: string): { left: string; center: string; right: string } {
@@ -60,6 +61,7 @@ export function editorConfigFor(p: Project): EditorConfig {
     zoom: fit.zoom,
     pageView: s.pageView,
     reflow: fit.reflow,
+    nativeSpellcheck: !s.spell.enabled,
     showSceneNumbers: s.showSceneNumbers,
     focusMode: s.focusMode,
     typewriter: s.typewriter,
@@ -83,6 +85,8 @@ export function EditorHost() {
   const role = useApp((s) => s.collab.role);
   const hostRef = useRef<HTMLDivElement>(null);
   const edRef = useRef<ScriptEditor | null>(null);
+  const spellRef = useRef<SpellController | null>(null);
+  const [spellMenu, setSpellMenu] = useState<{ at: { x: number; y: number }; hit: { a: { id: string; off: number }; b: { id: string; off: number }; word: string }; list: string[] } | null>(null);
   const [popup, setPopup] = useState<Popup | null>(null);
   const [elMenu, setElMenu] = useState<ElMenu | null>(null);
   const popupRef = useRef<Popup | null>(null);
@@ -116,7 +120,7 @@ export function EditorHost() {
     const p = getState().project;
     if (!p || !hostRef.current) return;
     const ed = new ScriptEditor(hostRef.current, p.blocks, editorConfigFor(p), {
-      onChange: (blocks, info) => { if (info.local) blocksFromEditor(blocks); if (info.structural) smartRef.current = null; /* plain typing reuses the cached context (refreshed every 4 s) */ },
+      onChange: (blocks, info) => { spellRef.current?.typed(); if (info.local) blocksFromEditor(blocks); if (info.structural) smartRef.current = null; /* plain typing reuses the cached context (refreshed every 4 s) */ },
       onSelection: (sel, ctx) => {
         setState({ caret: ctx.block ? { blockId: ctx.block.id, type: ctx.block.type, sceneId: ctx.sceneId, page: ctx.page, pageCount: ctx.pageCount, marks: ctx.marks.map((m) => m.k), collapsed: ctx.collapsed, index: ctx.index } : null });
         // SmartType popup
@@ -132,6 +136,13 @@ export function EditorHost() {
       onLayout: (layout) => setState({ pages: layout.pages.length }),
       onElementMenu: (rect, current) => setElMenu({ rect, current, active: Math.max(0, getTemplate(getState().project!.template).order.indexOf(current)) }),
       onMarkClick: (kind, id) => { if (kind === 'cmt') openCommentFor(id); },
+      onContextMenu: (e, pos) => {
+        const hit = spellRef.current?.at(pos);
+        if (!hit) return false;
+        const at = { x: e.clientX, y: e.clientY };
+        void suggestionsFor(hit.word).then((list) => setSpellMenu({ at, hit, list }));
+        return true;
+      },
       keyHook: (e) => {
         noteActivity();
         const em = elMenuRef.current;
@@ -163,21 +174,42 @@ export function EditorHost() {
       onFocusChange: (f) => { if (!f) setTimeout(() => { if (document.activeElement !== ed.doc) setPopup(null); }, 150); },
     });
     edRef.current = ed;
+    const sp = new SpellController(ed, hostRef.current, () => ed.getBlocks());
+    spellRef.current = sp;
     registerEditor(ed);
     (window as unknown as { __sz: unknown }).__sz = ed;
     setTimeout(() => ed.focus(), 30);
-    return () => { registerEditor(null); ed.destroy(); edRef.current = null; };
+    return () => { registerEditor(null); sp.destroy(); spellRef.current = null; ed.destroy(); edRef.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
   // Keep config in sync.
   const fmtKey = project ? `${project.template}|${project.locale}|${JSON.stringify(project.styleOverrides)}|${JSON.stringify(project.page)}|${JSON.stringify(project.revisions)}|${Object.keys(project.breakdown.elements).length}` : '';
-  const cfgKey = useMemo(() => fmtKey + `|${settings.zoom}|${settings.pageView}|${settings.showSceneNumbers}|${settings.focusMode}|${settings.typewriter}|${JSON.stringify(settings.elementKeys)}|${JSON.stringify(settings.macros)}|${epoch}|${role}|${device}|${fitKey}`, [fmtKey, settings, epoch, role, device, fitKey]);
+  const cfgKey = useMemo(() => fmtKey + `|${settings.zoom}|${settings.pageView}|${settings.showSceneNumbers}|${settings.focusMode}|${settings.typewriter}|${settings.spell.enabled}|${JSON.stringify(settings.elementKeys)}|${JSON.stringify(settings.macros)}|${epoch}|${role}|${device}|${fitKey}`, [fmtKey, settings, epoch, role, device, fitKey]);
   useEffect(() => {
     const ed = edRef.current;
     const p = getState().project;
     if (ed && p) ed.setConfig(editorConfigFor(p));
   }, [cfgKey]);
+
+  // Spelling follows the settings and the script's language.
+  const spellKey = `${settings.spell.enabled}|${settings.spell.variant}|${settings.spell.personal.length}|${project?.locale}|${projectId}`;
+  useEffect(() => {
+    const p = getState().project;
+    const sp = spellRef.current;
+    if (!sp || !p) return;
+    const s = getState().settings.spell;
+    sp.configure({ enabled: s.enabled && role !== 'viewer', variant: resolveVariant(s.variant, p.locale), personal: s.personal });
+  }, [spellKey, role]);
+
+  const spellItems = (m: NonNullable<typeof spellMenu>): MenuItem[] => {
+    const replace = (w: string) => { const ed = edRef.current; if (!ed) return; ed.selectRange(m.hit.a, m.hit.b, false); ed.insertText(w); ed.focus(); };
+    const items: MenuItem[] = m.list.length ? m.list.map((w) => ({ label: w, onClick: () => replace(w) })) : [{ label: t('sp.none'), disabled: true, onClick: () => {} }];
+    items.push({ separator: true });
+    items.push({ label: t('sp.add', { w: m.hit.word }), icon: 'plus', onClick: () => { const s = getState().settings.spell; setSettings({ spell: { ...s, personal: [...new Set([...s.personal, m.hit.word.toLowerCase()])] } }); spellRef.current?.addWord(m.hit.word); } });
+    items.push({ label: t('sp.ignore'), icon: 'x', onClick: () => spellRef.current?.ignore(m.hit.word) });
+    return items;
+  };
 
   // Remote/other-view changes to blocks.
   useEffect(() => {
@@ -211,6 +243,7 @@ export function EditorHost() {
           <small className="suggest-h">↑↓ · Tab</small>
         </div>
       ) : null}
+      {spellMenu ? <Menu anchor={spellMenu.at} items={spellItems(spellMenu)} onClose={() => setSpellMenu(null)} minWidth={200} /> : null}
       {elMenu ? (
         <div className="suggest elmenu" style={{ left: elMenu.rect.left, top: elMenu.rect.bottom + 4 }} role="listbox" onMouseDown={(e) => e.preventDefault()}>
           {order.map((type, i) => (

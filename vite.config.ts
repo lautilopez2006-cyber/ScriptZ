@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   // Relative URLs: the same build runs inside the desktop app, at a site root or under a folder (scriptz-web/app/).
   base: './',
+  worker: { format: 'es' },
   clearScreen: false,
   server: { port: 1420, strictPort: true, host: '127.0.0.1' },
   envPrefix: ['VITE_', 'TAURI_ENV_*'],

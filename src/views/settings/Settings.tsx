@@ -12,12 +12,13 @@ import { checkForUpdate } from '../../platform/update';
 import { isTauri, openExternal, projectStore, saveFile, pickFile } from '../../platform';
 import { serializeProject } from '../../core/migrate';
 import { writeZip, readZip } from '../../io/zip';
-import { t } from '../../i18n';
+import { t, relTime } from '../../i18n';
 import { Button, Field, Kbd, NumberInput, Segmented, Tabs, Toggle, Spinner } from '../../ui/kit';
 import { Icon, Logo } from '../../ui/icons';
 import { testAi } from '../ai/ai';
+import { SPELL_VARIANTS, type SpellVariant } from '../../spell/spell';
 
-type Tab = 'general' | 'editor' | 'keys' | 'macros' | 'goals' | 'ai' | 'collab' | 'updates' | 'backup' | 'about';
+type Tab = 'general' | 'editor' | 'keys' | 'macros' | 'goals' | 'ai' | 'collab' | 'cloud' | 'updates' | 'backup' | 'about';
 
 export function KeyRecorder({ value, onChange }: { value: string; onChange: (combo: string) => void }) {
   const [rec, setRec] = useState(false);
@@ -44,7 +45,7 @@ export function KeyRecorder({ value, onChange }: { value: string; onChange: (com
 function General({ s }: { s: AppSettings }) {
   return (
     <div className="st-sec">
-      <Field label={t('st.uiLang')}><Segmented value={s.uiLang} onChange={(v: UiLang) => setSettings({ uiLang: v })} options={[{ value: 'es', label: 'Español' }, { value: 'en', label: 'English' }, { value: 'pt', label: 'Português' }]} /></Field>
+      <Field label={t('st.uiLang')}><Segmented value={s.uiLang} onChange={(v: UiLang) => setSettings({ uiLang: v })} options={[{ value: 'es', label: 'Español' }, { value: 'en', label: 'English' }, { value: 'pt', label: 'Português' }, { value: 'fr', label: 'Français' }, { value: 'it', label: 'Italiano' }]} /></Field>
       <Field label={t('st.theme')}>
         <div className="themes">
           {(['system', 'light', 'dark', 'sepia', 'night'] as ThemeName[]).map((th) => (
@@ -78,6 +79,18 @@ function Editor({ s }: { s: AppSettings }) {
       <Field label={t('ed.focus')}><Segmented value={s.focusMode} onChange={(v: AppSettings['focusMode']) => setSettings({ focusMode: v })} options={[{ value: 'off', label: t('ed.focus.off') }, { value: 'scene', label: t('ed.focus.scene') }, { value: 'paragraph', label: t('ed.focus.paragraph') }]} /></Field>
       <Toggle checked={s.showSceneNumbers} onChange={(v) => setSettings({ showSceneNumbers: v })} label={t('ed.sceneNumbers')} />
       <Toggle checked={s.showTags} onChange={(v) => setSettings({ showTags: v })} label={t('ed.showTags')} />
+      <h3 className="mt">{t('sp.heading')}</h3>
+      <Toggle checked={s.spell.enabled} onChange={(v) => setSettings({ spell: { ...s.spell, enabled: v } })} label={t('sp.enabled')} hint={t('sp.enabled.h')} />
+      <Field label={t('sp.variant')} hint={t('sp.variant.h')}>
+        <select className="select" value={s.spell.variant} disabled={!s.spell.enabled} onChange={(e) => setSettings({ spell: { ...s.spell, variant: e.target.value as SpellVariant } })}>
+          {SPELL_VARIANTS.map((v) => <option key={v} value={v}>{t('sp.v.' + v)}</option>)}
+        </select>
+      </Field>
+      {s.spell.personal.length ? (
+        <Field label={t('sp.personal', { n: s.spell.personal.length })}>
+          <div className="chips-wrap">{s.spell.personal.map((w) => <span key={w} className="chip">{w}<button type="button" aria-label={t('act.delete')} onClick={() => setSettings({ spell: { ...s.spell, personal: s.spell.personal.filter((x) => x !== w) } })}>×</button></span>)}</div>
+        </Field>
+      ) : null}
     </div>
   );
 }
@@ -172,6 +185,46 @@ function Collab({ s }: { s: AppSettings }) {
   );
 }
 
+function Cloud({ s }: { s: AppSettings }) {
+  const st = useApp((x) => x.cloud);
+  const [mod, setMod] = useState<typeof import('../../cloud/cloud') | null>(null);
+  useEffect(() => { void import('../../cloud/cloud').then(setMod); }, []);
+  const c = s.cloud;
+  const card = (id: 'dropbox' | 'gdrive', name: string, note: string, enabled: boolean) => (
+    <article className={'cl-card' + (c.provider === id ? ' on' : '')}>
+      <div className={'cl-logo ' + id} aria-hidden="true" />
+      <div className="grow">
+        <b>{name}</b>
+        <p className="muted small">{note}</p>
+      </div>
+      {c.provider === id ? <Button small kind="ghost" onClick={() => mod?.disconnect()}>{t('cl.disconnect')}</Button>
+        : <Button small kind="primary" disabled={!enabled || !mod || !!c.provider} onClick={() => void mod?.connect(id)}>{t('cl.connect')}</Button>}
+    </article>
+  );
+  return (
+    <div className="st-sec">
+      <p className="muted">{t('cl.intro')}</p>
+      {card('dropbox', 'Dropbox', t('cl.dropbox.h'), true)}
+      {card('gdrive', 'Google Drive', mod && !mod.googleAvailable() ? t('cl.gdrive.desktop') : t('cl.gdrive.h'), !!mod?.googleAvailable())}
+      {c.provider ? (
+        <div className="cl-status">
+          <span className={'cl-dot ' + st.state} />
+          <span className="grow">{st.state === 'syncing' ? (st.total ? t('cl.syncingN', { a: st.done, b: st.total }) : t('cl.syncing')) : st.state === 'error' ? (st.error === 'auth' ? t('cl.reconnect') : t('cl.error', { msg: st.error })) : st.last ? t('cl.last', { when: relTime(st.last) }) : t('cl.never')}</span>
+          {st.state === 'error' && st.error === 'auth' ? <Button small onClick={() => void mod?.connect(c.provider as 'dropbox' | 'gdrive')}>{t('cl.connect')}</Button> : null}
+          <Button small icon="refresh" disabled={st.state === 'syncing'} onClick={() => void mod?.syncNow()}>{t('cl.now')}</Button>
+        </div>
+      ) : null}
+      <Toggle checked={c.auto} onChange={(v) => setSettings({ cloud: { ...c, auto: v } })} label={t('cl.auto')} hint={t('cl.auto.h')} />
+      <details className="st-adv">
+        <summary>{t('cl.adv')}</summary>
+        <p className="muted small">{t('cl.adv.h')}</p>
+        <Field label={t('cl.dropboxKey')}><input className="input" value={c.dropboxKey} placeholder={t('cl.builtin')} onChange={(e) => setSettings({ cloud: { ...c, dropboxKey: e.target.value.trim() } })} /></Field>
+        <Field label={t('cl.googleId')}><input className="input" value={c.googleClientId} placeholder={t('cl.builtin')} onChange={(e) => setSettings({ cloud: { ...c, googleClientId: e.target.value.trim() } })} /></Field>
+      </details>
+    </div>
+  );
+}
+
 function Updates({ s }: { s: AppSettings }) {
   const [state, setStateL] = useState<string>('');
   const check = async () => {
@@ -258,7 +311,7 @@ export default function SettingsView() {
   const tabs: { value: Tab; label: string; icon: string }[] = [
     { value: 'general', label: t('st.t.general'), icon: 'sliders' }, { value: 'editor', label: t('st.t.editor'), icon: 'pen' }, { value: 'keys', label: t('st.t.keys'), icon: 'keyboard' },
     { value: 'macros', label: t('ed.macros'), icon: 'wand' }, { value: 'goals', label: t('st.t.goals'), icon: 'target' }, { value: 'ai', label: t('st.t.ai'), icon: 'sparkles' },
-    { value: 'collab', label: t('ed.collab'), icon: 'users' }, { value: 'updates', label: t('st.t.updates'), icon: 'refresh' }, { value: 'backup', label: t('st.t.backup'), icon: 'cloud' }, { value: 'about', label: t('st.t.about'), icon: 'info' },
+    { value: 'collab', label: t('ed.collab'), icon: 'users' }, { value: 'cloud', label: t('cl.tab'), icon: 'cloud' }, { value: 'updates', label: t('st.t.updates'), icon: 'refresh' }, { value: 'backup', label: t('st.t.backup'), icon: 'cloud' }, { value: 'about', label: t('st.t.about'), icon: 'info' },
   ];
   return (
     <div className="view settings">
@@ -273,6 +326,7 @@ export default function SettingsView() {
           {tab === 'goals' ? <Goals s={s} /> : null}
           {tab === 'ai' ? <Ai s={s} /> : null}
           {tab === 'collab' ? <Collab s={s} /> : null}
+          {tab === 'cloud' ? <Cloud s={s} /> : null}
           {tab === 'updates' ? <Updates s={s} /> : null}
           {tab === 'backup' ? <Backup /> : null}
           {tab === 'about' ? <About /> : null}

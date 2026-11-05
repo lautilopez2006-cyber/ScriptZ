@@ -7,6 +7,7 @@ import { loadProject, ProjectFormatError } from '../core/migrate';
 import { parseFountain } from './fountain';
 import { parseFdx } from './fdx';
 import { isZip } from './zip';
+import { classifyParagraphs, looksLikeFountain, parasFromText, splitTitlePage } from './detect';
 import { t } from '../i18n';
 
 export const IMPORT_EXTENSIONS = ['scriptz', 'json', 'fdx', 'fountain', 'spmd', 'txt', 'md', 'markdown', 'fadein', 'celtx', 'highland', 'wdz', 'pdf', 'docx'];
@@ -16,7 +17,7 @@ function guessTemplate(blocks: Block[]): string {
   return 'feature';
 }
 
-function projectFrom(name: string, blocks: Block[], title: Partial<TitlePage>): Project {
+export function projectFrom(name: string, blocks: Block[], title: Partial<TitlePage>): Project {
   const p = emptyProject();
   const base = name.replace(/\.[^.]+$/, '');
   p.title = (title.title || base).trim();
@@ -60,6 +61,10 @@ export async function parseFile(name: string, bytes: Uint8Array): Promise<Projec
   // Fountain / Markdown / plain text
   const src = text();
   if (src.trim().startsWith('{')) { try { return loadProject(src); } catch { /* not JSON */ } }
+  if (ext === 'txt' && !looksLikeFountain(src)) {
+    const { title, body } = splitTitlePage(parasFromText(src));
+    return projectFrom(name, classifyParagraphs(body), title);
+  }
   const r = parseFountain(src);
   return projectFrom(name, r.blocks, r.title as Partial<TitlePage>);
 }

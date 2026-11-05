@@ -1,11 +1,12 @@
 // User preferences (per device). Stored in localStorage; every read is defensive.
 import type { ElementType } from '../core/model';
 
-export type UiLang = 'es' | 'en' | 'pt';
+export type UiLang = 'es' | 'en' | 'pt' | 'fr' | 'it';
+const navLang = (nav: string): UiLang => (nav.startsWith('pt') ? 'pt' : nav.startsWith('en') ? 'en' : nav.startsWith('fr') ? 'fr' : nav.startsWith('it') ? 'it' : 'es');
 export type ThemeName = 'system' | 'light' | 'dark' | 'sepia' | 'night';
 
 export interface AiSettings { enabled: boolean; provider: 'anthropic' | 'openai'; apiKey: string; baseUrl: string; model: string }
-export interface ReadAloudSettings { narrator: string; rate: number; readActions: boolean; readHeadings: boolean; readParentheticals: boolean; voices: Record<string, string> }
+export interface ReadAloudSettings { narrator: string; rate: number; readActions: boolean; readHeadings: boolean; readParentheticals: boolean; voices: Record<string, string>; tune: Record<string, { pitch: number; rate: number }>; useTakes: boolean }
 
 export interface AppSettings {
   uiLang: UiLang;
@@ -28,6 +29,10 @@ export interface AppSettings {
   collab: { server: string; name: string; color: string };
   update: { repo: string; auto: boolean; lastCheck: number };
   readAloud: ReadAloudSettings;
+  /** Cloud sync. Keys are optional: the app ships its own; these let anyone use their own registered apps. */
+  cloud: { provider: '' | 'dropbox' | 'gdrive'; auto: boolean; dropboxKey: string; googleClientId: string };
+  /** Built-in spelling (Hunspell dictionaries). */
+  spell: { enabled: boolean; variant: import('../spell/spell').SpellVariant; personal: string[] };
   tourDone: boolean;
   defaultLocale: 'es-LA' | 'es-ES' | 'en' | 'pt-BR';
   defaultPaper: 'letter' | 'a4';
@@ -66,7 +71,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   ai: { enabled: false, provider: 'anthropic', apiKey: '', baseUrl: 'http://localhost:11434/v1', model: 'claude-haiku-5-5' },
   collab: { server: 'ws://127.0.0.1:4735', name: '', color: '#e8590c' },
   update: { repo: 'lautilopez2006-cyber/ScriptZ', auto: true, lastCheck: 0 },
-  readAloud: { narrator: '', rate: 1, readActions: true, readHeadings: true, readParentheticals: false, voices: {} },
+  readAloud: { narrator: '', rate: 1, readActions: true, readHeadings: true, readParentheticals: false, voices: {}, tune: {}, useTakes: true },
+  spell: { enabled: true, variant: 'auto', personal: [] },
+  cloud: { provider: '', auto: true, dropboxKey: '', googleClientId: '' },
   tourDone: false,
   defaultLocale: 'es-LA',
   defaultPaper: 'letter',
@@ -86,15 +93,17 @@ export function loadSettings(): AppSettings {
   s.collab = { ...DEFAULT_SETTINGS.collab, ...(raw.collab ?? {}) };
   s.update = { ...DEFAULT_SETTINGS.update, ...(raw.update ?? {}) };
   if (!s.update.repo) s.update.repo = DEFAULT_SETTINGS.update.repo;
-  s.readAloud = { ...DEFAULT_SETTINGS.readAloud, ...(raw.readAloud ?? {}), voices: { ...(raw.readAloud?.voices ?? {}) } };
-  if (!['es', 'en', 'pt'].includes(s.uiLang)) {
+  s.readAloud = { ...DEFAULT_SETTINGS.readAloud, ...(raw.readAloud ?? {}), voices: { ...(raw.readAloud?.voices ?? {}) }, tune: { ...(raw.readAloud?.tune ?? {}) } };
+  s.cloud = { ...DEFAULT_SETTINGS.cloud, ...(raw.cloud ?? {}) };
+  s.spell = { ...DEFAULT_SETTINGS.spell, ...(raw.spell ?? {}), personal: [...(raw.spell?.personal ?? [])] };
+  if (!['es', 'en', 'pt', 'fr', 'it'].includes(s.uiLang)) {
     const nav = (typeof navigator !== 'undefined' ? navigator.language : 'es').toLowerCase();
-    s.uiLang = nav.startsWith('pt') ? 'pt' : nav.startsWith('en') ? 'en' : 'es';
+    s.uiLang = navLang(nav);
   }
   if (!raw.uiLang && typeof navigator !== 'undefined') {
     const nav = navigator.language.toLowerCase();
-    s.uiLang = nav.startsWith('pt') ? 'pt' : nav.startsWith('en') ? 'en' : 'es';
-    s.defaultLocale = nav.startsWith('pt') ? 'pt-BR' : nav.startsWith('en') ? 'en' : nav === 'es-es' ? 'es-ES' : 'es-LA';
+    s.uiLang = navLang(nav);
+    s.defaultLocale = nav.startsWith('pt') ? 'pt-BR' : /^(en|fr|it)/.test(nav) ? 'en' : nav === 'es-es' ? 'es-ES' : 'es-LA';
     s.defaultPaper = /^(en-us|en-ca|es-mx|es-us|es-co|es-ve|es-cl|es-pe)/.test(nav) ? 'letter' : nav.startsWith('en') ? 'letter' : 'a4';
   }
   s.zoom = Math.min(2.5, Math.max(0.5, Number(s.zoom) || 1));

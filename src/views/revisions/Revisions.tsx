@@ -28,7 +28,11 @@ function Compare({ snaps }: { snaps: SnapshotSummary[] }) {
     if (s.kind === 'draft') return p.drafts[s.id]?.blocks ?? [];
     try { return (await projectStore().loadSnapshot(p.id, s.id)).blocks; } catch { return []; }
   };
-  const run = async () => setRes(compareBlocks(await blocksOf(parse(a)), await blocksOf(parse(b))));
+  const run = async () => {
+    const r = compareBlocks(await blocksOf(parse(a)), await blocksOf(parse(b)));
+    setRes(r);
+    openModal('compare', { res: r, labelA: label(a), labelB: label(b) });
+  };
   const label = (v: string) => { const s = parse(v); if (s.kind === 'current') return t('rv.current'); if (s.kind === 'draft') return p.drafts[s.id]?.name ?? '?'; const sn = snaps.find((x) => x.id === s.id); return sn ? fmtDate(sn.createdAtMs) : '?'; };
   const opts = [<option key="c" value="current">{t('rv.current')}</option>, ...drafts.map((d) => <option key={d.id} value={'draft:' + d.id}>{t('rv.draft')}: {d.name}</option>), ...snaps.map((s) => <option key={s.id} value={'snap:' + s.id}>{t('rv.backup')}: {fmtDate(s.createdAtMs)}</option>)];
   const exportReport = async () => {
@@ -48,6 +52,7 @@ function Compare({ snaps }: { snaps: SnapshotSummary[] }) {
         <span>→</span>
         <select className="select sm" value={b} onChange={(e) => setB(e.target.value)}>{opts}</select>
         <Button small kind="primary" icon="compare" onClick={() => void run()}>{t('rv.compare.go')}</Button>
+        {res ? <Button small icon="dual" onClick={() => openModal('compare', { res, labelA: label(a), labelB: label(b) })}>{t('cv.open')}</Button> : null}
         {res ? <Button small icon="download" onClick={() => void exportReport()}>{t('rv.cmp.export')}</Button> : null}
       </div>
       {res ? (
