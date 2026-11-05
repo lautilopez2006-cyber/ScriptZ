@@ -161,8 +161,9 @@ section { position: relative; overflow-x: clip; }
 .shots img.on { opacity: 1; transform: none; }
 .step-shot { display: none; }
 
-/* New in 0.2 */
+/* New in 0.3 */
 .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.feat-grid.g3 { grid-template-columns: repeat(3, 1fr); }
 .feat { position: relative; padding: 26px 22px 24px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); overflow: hidden; transform-style: preserve-3d; transition: transform .5s var(--ease-out), box-shadow .4s; will-change: transform; }
 .feat::before { content: ''; position: absolute; inset: 0; background: radial-gradient(260px circle at var(--gx, 50%) var(--gy, 0%), rgba(50, 71, 201, .12), transparent 60%); opacity: 0; transition: opacity .4s; pointer-events: none; }
 .feat:hover { box-shadow: 0 30px 50px -30px rgba(13, 17, 32, .45); }
@@ -252,7 +253,7 @@ footer a:hover { color: #fff; }
 
 /* ------------------------------------------------------------ responsive */
 @media (max-width: 1080px) {
-  .feat-grid, .dl-grid { grid-template-columns: repeat(2, 1fr); }
+  .feat-grid, .feat-grid.g3, .dl-grid { grid-template-columns: repeat(2, 1fr); }
   .nums { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 900px) {
@@ -272,7 +273,7 @@ footer a:hover { color: #fff; }
 @media (max-width: 600px) {
   body { font-size: 16px; }
   h1 { font-size: min(9.6vw, 44px); }
-  .feat-grid, .dl-grid, .nums { grid-template-columns: 1fr; }
+  .feat-grid, .feat-grid.g3, .dl-grid, .nums { grid-template-columns: 1fr; }
   .stage { height: 400px; }
   .sheet { left: 6%; width: 86%; padding: 9% 7% 8% 13%; }
   .stage .rv { left: 9%; width: 80%; }
@@ -320,7 +321,7 @@ footer a:hover { color: #fff; }
           <a class="btn ghost" href="app/" data-magnet>Usar en el navegador</a>
         </div>
         <div class="meta">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5 10 17 19 7"/></svg>Versión <b class="v">0.2.0</b></span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5 10 17 19 7"/></svg>Versión <b class="v">0.3.0</b></span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5 10 17 19 7"/></svg>Windows, macOS, Linux</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12.5 10 17 19 7"/></svg>Teléfonos y tabletas</span>
         </div>
@@ -417,19 +418,20 @@ footer a:hover { color: #fff; }
   <section class="sec" id="novedades" style="padding-top:0">
     <div class="wrap">
       <div class="sec-h reveal">
-        <span class="kicker"><i></i>Novedades de la versión <span class="v">0.2.0</span></span>
-        <h2>Ocho herramientas nuevas.</h2>
-        <p>Pensadas para escribir mejor, trabajar en equipo y llegar al rodaje con todo listo.</p>
+        <span class="kicker"><i></i>Novedades de la versión <span class="v">0.3.0</span></span>
+        <h2>Nueve herramientas nuevas.</h2>
+        <p>Para empezar más rápido, llevar tus guiones a todos lados y llegar a concursos y lecturas con todo listo.</p>
       </div>
-      <div class="feat-grid">
-        <article class="feat reveal" style="--c: var(--rv-green); --i:0"><span class="k">01</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"/></svg></div><h3>Revisor de guion</h3><p>Nombres escritos de dos formas, encabezados incompletos, personajes sin presentar. Se corrigen con un clic.</p></article>
-        <article class="feat reveal" style="--c: var(--rv-blue); --i:1"><span class="k">02</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg></div><h3>Modo sugerencias</h3><p>Cada cambio queda propuesto, con autor y hora, hasta que lo aceptás o lo rechazás.</p></article>
-        <article class="feat reveal" style="--c: var(--rv-yellow); --i:2"><span class="k">03</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></div><h3>Diálogos alternativos</h3><p>Probá varias versiones de una línea y pasá de una a otra sin perder ninguna.</p></article>
-        <article class="feat reveal" style="--c: var(--rv-gold); --i:3"><span class="k">04</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5"/></svg></div><h3>Espacio para series</h3><p>Episodios por temporada, personajes compartidos y la biblia de la serie.</p></article>
-        <article class="feat reveal" style="--c: var(--rv-cherry); --i:4"><span class="k">05</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6v18h12V7l-4-4ZM14 3v4h4M8 11l8 6M16 11l-8 6"/></svg></div><h3>Sides para actores</h3><p>Las páginas de cada jornada, con todo lo que no se filma tachado.</p></article>
-        <article class="feat reveal" style="--c: var(--rv-salmon); --i:5"><span class="k">06</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM2.5 20c.6-3.6 3.2-6 6.5-6s5.9 2.4 6.5 6M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.4c2 .8 3.2 2.8 3.5 5.6"/></svg></div><h3>Copias con nombre</h3><p>Un PDF por persona, con su nombre en la marca de agua y al pie de cada página.</p></article>
-        <article class="feat reveal" style="--c: #bfe3ec; --i:6"><span class="k">07</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"/></svg></div><h3>Guion bilingüe</h3><p>Original y traducción lado a lado, con aviso cuando la traducción queda vieja.</p></article>
-        <article class="feat reveal" style="--c: var(--rv-buff); --i:7"><span class="k">08</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg></div><h3>Tablero de investigación</h3><p>Imágenes, enlaces y notas vinculados a escenas, personajes y locaciones.</p></article>
+      <div class="feat-grid g3">
+        <article class="feat reveal" style="--c: var(--rv-green); --i:0"><span class="k">01</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg></div><h3>Puntos de partida</h3><p>Corto, largo en tres actos, piloto, sitcom, teatro, documental, radio o cómic: empezás con la estructura armada.</p></article>
+        <article class="feat reveal" style="--c: var(--rv-blue); --i:1"><span class="k">02</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9zM7 5.5H5V21h14V5.5h-2M8 12h8M8 16h5"/></svg></div><h3>Pegar desde Docs o Word</h3><p>Pegás el guion y ScriptZ reconoce escenas, personajes y diálogos, aunque el texto no tenga formato.</p></article>
+        <article class="feat reveal" style="--c: var(--rv-yellow); --i:2"><span class="k">03</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 8.5 4.8 4.8 0 0 1 17.5 18Z"/></svg></div><h3>Tu nube, en todos lados</h3><p>Sincronización con Dropbox y Google Drive. Si editás en dos lugares, no se pierde nada.</p></article>
+        <article class="feat reveal" style="--c: var(--rv-gold); --i:3"><span class="k">04</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 8.5 5h1L14 17M5.6 13h6.8M14 14l3 3 5-6"/></svg></div><h3>Corrector ortográfico</h3><p>Rioplatense, latinoamericano, de España y cuatro idiomas más. Sin conexión y sin marcar a tus personajes.</p></article>
+        <article class="feat reveal" style="--c: var(--rv-cherry); --i:4"><span class="k">05</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7v16H4zM13 4h7v16h-7M6.5 9h2M15.5 9h2M15.5 13h2"/></svg></div><h3>Versiones lado a lado</h3><p>Dos borradores alineados, con cada cambio resaltado palabra por palabra.</p></article>
+        <article class="feat reveal" style="--c: var(--rv-salmon); --i:5"><span class="k">06</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><h3>Lectura con voces</h3><p>Cada personaje con su voz, tono y velocidad. O grabá a tus actores línea por línea.</p></article>
+        <article class="feat reveal" style="--c: #bfe3ec; --i:6"><span class="k">07</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></div><h3>Compartir como página</h3><p>Un enlace con logline, sinopsis, personajes y el guion para leer. No se sube nada.</p></article>
+        <article class="feat reveal" style="--c: var(--rv-buff); --i:7"><span class="k">08</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4ZM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg></div><h3>Formatos de concursos</h3><p>INCAA, Premio SGAE, Nicholl y BlueCat: revisa los requisitos y exporta el PDF listo para enviar.</p></article>
+        <article class="feat reveal" style="--c: var(--rv-pink); --i:8"><span class="k">09</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#151b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"/></svg></div><h3>Cinco idiomas</h3><p>La app ahora habla español, inglés, portugués, francés e italiano.</p></article>
       </div>
       <div class="nums reveal" style="margin-top:56px">
         <div class="num"><b data-count="0" data-prefix="$">$0</b><span>para siempre, sin funciones bloqueadas</span></div>
@@ -482,7 +484,7 @@ footer a:hover { color: #fff; }
   <section class="sec" id="descargar">
     <div class="wrap">
       <div class="sec-h reveal">
-        <span class="kicker"><i></i>Descargar · versión <span class="v">0.2.0</span></span>
+        <span class="kicker"><i></i>Descargar · versión <span class="v">0.3.0</span></span>
         <h2>Elegí dónde escribir.</h2>
         <p>Los mismos guiones en todas partes. Si cambiás de equipo, abrís el archivo .scriptz y seguís.</p>
       </div>
@@ -532,7 +534,7 @@ footer a:hover { color: #fff; }
       <div class="faq reveal">
         <details><summary>¿Es gratis de verdad?</summary><div class="a"><div><p>Sí. No hay prueba gratuita, plan pago ni funciones bloqueadas. ScriptZ es gratis completo.</p></div></div></details>
         <details><summary>¿Por qué Windows dice que la app puede ser peligrosa?</summary><div class="a"><div><p>Windows muestra ese aviso con cualquier programa que no tenga una firma digital paga. No significa que tenga un problema: ScriptZ todavía no la tiene.</p><p>Para instalarlo igual, tocá <b>Más información</b> y después <b>Ejecutar de todas formas</b>. Muy pronto vas a poder instalarlo desde la Microsoft Store, sin ningún aviso. Si preferís evitarlo ahora, usá la versión del navegador: también se instala y funciona sin conexión.</p></div></div></details>
-        <details><summary>¿Dónde se guardan mis guiones?</summary><div class="a"><div><p>En tu equipo. Nada se envía a internet salvo que actives la colaboración en vivo o la IA opcional. Si querés tenerlos en la nube, guardalos en una carpeta de Google Drive, Dropbox u OneDrive.</p></div></div></details>
+        <details><summary>¿Dónde se guardan mis guiones?</summary><div class="a"><div><p>En tu equipo. Nada se envía a internet salvo que actives la colaboración en vivo o la IA opcional. Si querés tenerlos en la nube, ScriptZ se sincroniza con tu Dropbox o tu Google Drive, o podés guardarlos en una carpeta de OneDrive.</p></div></div></details>
         <details><summary>¿Puedo abrir mis guiones de Final Draft o Fade In?</summary><div class="a"><div><p>Sí. ScriptZ abre archivos .fdx, .fadein, Celtx, Highland, Fountain, Word y PDF, y exporta a Final Draft, Fountain, Word, PDF, EPUB y HTML.</p></div></div></details>
         <details><summary>¿Funciona sin internet?</summary><div class="a"><div><p>Sí, en todas sus versiones. Las de escritorio y la que instalás desde el navegador funcionan completas sin conexión.</p></div></div></details>
         <details><summary>¿Puedo escribir con otras personas?</summary><div class="a"><div><p>Sí. Podés invitar a otras personas a editar en vivo, dejar comentarios y proponer cambios en modo sugerencias. También podés compartir un enlace de solo lectura.</p></div></div></details>
