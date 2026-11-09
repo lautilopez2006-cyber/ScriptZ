@@ -1,4 +1,4 @@
-# ScriptZ
+# ScriptlZ
 
 **Estudio de escritura de guiones gratuito**: cine, series, teatro, radio, cómic y guion audiovisual. Funciona sin conexión en Windows, macOS, Linux, teléfonos y tabletas.
 
@@ -21,4 +21,4 @@ Este repositorio contiene el sitio web, la versión para navegador y los instala
 
 ## Privacidad
 
-ScriptZ no recopila datos. Ver [privacidad](privacidad.html).
+ScriptlZ no recopila datos. Ver [privacidad](privacidad.html).
