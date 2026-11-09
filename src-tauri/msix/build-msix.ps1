@@ -43,7 +43,7 @@ Push-Location $layout
 Remove-Item priconfig.xml -ErrorAction SilentlyContinue
 Pop-Location
 
-$name = "ScriptZ_$($Version -replace '^v','')_x64.msix"
+$name = "ScriptlZ_$($Version -replace '^v','')_x64.msix"
 & $makeappx pack /o /d $layout /p (Join-Path $Out $name)
 if ($LASTEXITCODE -ne 0) { throw "makeappx falló ($LASTEXITCODE)" }
 Write-Host "MSIX: $(Join-Path $Out $name) (identidad $IdentityName, $Publisher, versión $msixVersion)"
