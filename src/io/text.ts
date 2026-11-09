@@ -81,8 +81,8 @@ body{margin:0;background:#e9e7e2;font:12pt/12pt 'Courier Prime','Courier New',Co
 @media print{body{background:none}.pg{margin:0;box-shadow:none}}
 ${opts.forPrint ? '' : 'nav{position:fixed;left:0;top:0;bottom:0;width:260px;overflow:auto;background:#fff;border-right:1px solid #ddd;font:13px/1.4 system-ui,sans-serif;padding:12px}nav a{display:block;color:#333;text-decoration:none;padding:3px 6px;border-radius:5px}nav a:hover{background:#f1efe9}main{margin-left:260px}@media(max-width:900px){nav{display:none}main{margin:0}.pg{transform-origin:top left}}@media print{nav{display:none}main{margin:0}}'}`;
   const scenes = buildScenes(p.blocks);
-  const nav = opts.forPrint ? '' : `<nav><b>${esc(p.title || 'ScriptZ')}</b><br><br>${scenes.map((s) => `<a href="#s-${s.id}">${esc(s.label)}. ${esc(upperSameLength(s.heading))}</a>`).join('')}</nav>`;
-  return `<!doctype html><html lang="${localeTokens(p.locale).lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title || 'ScriptZ')}</title><meta name="generator" content="ScriptZ"><style>${css}</style></head><body>${nav}<main>${pages.join('')}</main></body></html>`;
+  const nav = opts.forPrint ? '' : `<nav><b>${esc(p.title || 'ScriptlZ')}</b><br><br>${scenes.map((s) => `<a href="#s-${s.id}">${esc(s.label)}. ${esc(upperSameLength(s.heading))}</a>`).join('')}</nav>`;
+  return `<!doctype html><html lang="${localeTokens(p.locale).lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title || 'ScriptlZ')}</title><meta name="generator" content="ScriptlZ"><style>${css}</style></head><body>${nav}<main>${pages.join('')}</main></body></html>`;
 }
 
 /** Reflowable screenplay XHTML body (EPUB). */
@@ -103,7 +103,7 @@ function reflowBody(p: Project): string {
 }
 
 export async function toEpub(p: Project): Promise<Uint8Array> {
-  const title = esc(p.title || 'ScriptZ');
+  const title = esc(p.title || 'ScriptlZ');
   const author = esc(p.titlePage.authors || p.author || '');
   const lang = localeTokens(p.locale).lang;
   const id = 'urn:uuid:' + p.id;
@@ -133,7 +133,7 @@ export function toMarkdown(p: Project): string {
     for (const m of fmt) { const w = m.k === 'b' ? '**' : '_'; s = s.slice(0, m.s) + w + s.slice(m.s, m.e) + w + s.slice(m.e); }
     return s;
   };
-  const out: string[] = [`# ${p.title || 'ScriptZ'}`, ''];
+  const out: string[] = [`# ${p.title || 'ScriptlZ'}`, ''];
   if (p.titlePage.authors || p.author) out.push(`*${p.titlePage.credit || ''} ${p.titlePage.authors || p.author}*`.replace('* ', '*'), '');
   if (p.logline) out.push(`> ${p.logline}`, '');
   for (const b of p.blocks) {

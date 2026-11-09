@@ -29,7 +29,7 @@ export interface EditorConfig {
   pageView: boolean;
   /** Phones: text reflows to the screen width (no pages, proportional indents). */
   reflow?: boolean;
-  /** Browser spellcheck (off when ScriptZ's own checker is on). */
+  /** Browser spellcheck (off when ScriptlZ's own checker is on). */
   nativeSpellcheck?: boolean;
   showSceneNumbers: boolean;
   focusMode: 'off' | 'scene' | 'paragraph';

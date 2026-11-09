@@ -25,7 +25,7 @@ export const PRODUCTION: Dict = {
   'pd.unscheduled': ['Sin programar', 'Unscheduled', 'Não programadas'],
   'pd.stripHint': ['Arrastrá las tiras entre jornadas. Blanco: INT día · Amarillo: EXT día · Azul: INT noche · Verde: EXT noche.', 'Drag strips between days. White: INT day · Yellow: EXT day · Blue: INT night · Green: EXT night.', 'Arraste as tiras entre diárias. Branco: INT dia · Amarelo: EXT dia · Azul: INT noite · Verde: EXT noite.'],
   'pd.noDays': ['Todavía no hay jornadas', 'No shooting days yet', 'Ainda não há diárias'],
-  'pd.noDays.h': ['Creá una jornada o dejá que ScriptZ arme un plan a partir del desglose.', 'Create a day or let ScriptZ build a plan from the breakdown.', 'Crie uma diária ou deixe o ScriptZ montar um plano a partir da decupagem.'],
+  'pd.noDays.h': ['Creá una jornada o dejá que ScriptlZ arme un plan a partir del desglose.', 'Create a day or let ScriptlZ build a plan from the breakdown.', 'Crie uma diária ou deixe o ScriptlZ montar um plano a partir da decupagem.'],
   'pd.generalCall': ['Llamado general', 'General call', 'Chamada geral'],
   'pd.crewCall': ['Llamado de equipo', 'Crew call', 'Chamada da equipe'],
   'pd.weather': ['Clima', 'Weather', 'Clima'],

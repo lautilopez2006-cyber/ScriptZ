@@ -23,7 +23,7 @@ export const IO: Dict = {
   'ex.f.epub': ['EPUB', 'EPUB', 'EPUB'],
   'ex.f.md': ['Markdown', 'Markdown', 'Markdown'],
   'ex.f.txt': ['Texto', 'Text', 'Texto'],
-  'ex.f.scriptz': ['ScriptZ (copia)', 'ScriptZ (copy)', 'ScriptZ (cópia)'],
+  'ex.f.scriptz': ['ScriptlZ (copia)', 'ScriptlZ (copy)', 'ScriptlZ (cópia)'],
   'ex.d.pdf': ['Listo para enviar o imprimir', 'Ready to send or print', 'Pronto para enviar ou imprimir'],
   'ex.d.fdx': ['Abrí en Final Draft, Fade In, WriterDuet…', 'Open in Final Draft, Fade In, WriterDuet…', 'Abra no Final Draft, Fade In, WriterDuet…'],
   'ex.d.docx': ['Para Word, Pages o Google Docs', 'For Word, Pages or Google Docs', 'Para Word, Pages ou Google Docs'],

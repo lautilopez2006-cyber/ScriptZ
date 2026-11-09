@@ -240,7 +240,7 @@ export async function saveFile(name: string, data: Uint8Array | string, filters:
 export async function chooseScriptzPath(defaultName: string): Promise<string | null> {
   if (!isTauri()) return null;
   const dialog = await import('@tauri-apps/plugin-dialog');
-  const p = await dialog.save({ defaultPath: defaultName, filters: [{ name: 'ScriptZ', extensions: ['scriptz'] }] });
+  const p = await dialog.save({ defaultPath: defaultName, filters: [{ name: 'ScriptlZ', extensions: ['scriptz'] }] });
   return p ?? null;
 }
 

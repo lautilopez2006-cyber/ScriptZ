@@ -1,7 +1,7 @@
 import type { Dict } from './index';
 
 export const COMMON: Dict = {
-  'app.name': ['ScriptZ', 'ScriptZ', 'ScriptZ'],
+  'app.name': ['ScriptlZ', 'ScriptlZ', 'ScriptlZ'],
   'app.tagline': ['Escribí guiones como un profesional. Gratis, para siempre.', 'Write screenplays like a pro. Free, forever.', 'Escreva roteiros como um profissional. Grátis, para sempre.'],
 
   // Navigation
@@ -177,7 +177,7 @@ export const COMMON: Dict = {
   // Errors
   'err.generic': ['Algo salió mal: {msg}', 'Something went wrong: {msg}', 'Algo deu errado: {msg}'],
   'err.invalidFile': ['El archivo no es un guion válido.', 'The file is not a valid script.', 'O arquivo não é um roteiro válido.'],
-  'err.newerVersion': ['Este archivo fue creado con una versión más nueva de ScriptZ.', 'This file was made with a newer ScriptZ.', 'Este arquivo foi criado com uma versão mais nova do ScriptZ.'],
+  'err.newerVersion': ['Este archivo fue creado con una versión más nueva de ScriptlZ.', 'This file was made with a newer ScriptlZ.', 'Este arquivo foi criado com uma versão mais nova do ScriptlZ.'],
   'err.unsupported': ['Formato no compatible.', 'Unsupported format.', 'Formato não suportado.'],
   'err.network': ['No se pudo conectar.', 'Could not connect.', 'Não foi possível conectar.'],
 

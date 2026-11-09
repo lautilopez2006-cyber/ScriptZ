@@ -1,4 +1,4 @@
-// Guided sample: an original short screenplay that exercises every ScriptZ feature.
+// Guided sample: an original short screenplay that exercises every ScriptlZ feature.
 import { block, emptyProject, uid, type Block, type ElementType, type Project } from '../core/model';
 import { adoptProject } from '../app/actions';
 import { getState } from '../app/store';
@@ -55,9 +55,9 @@ const ES: Line[] = [
 ];
 
 export function buildSample(): Project {
-  const p = emptyProject({ title: 'La última luz', author: 'Equipo ScriptZ', template: 'feature', locale: 'es-LA', paper: 'letter' });
+  const p = emptyProject({ title: 'La última luz', author: 'Equipo ScriptlZ', template: 'feature', locale: 'es-LA', paper: 'letter' });
   p.blocks = ES.map(([type, text, extra]) => block(type, text, extra ?? {}));
-  p.titlePage = { ...p.titlePage, title: 'La última luz', credit: 'Guion de', authors: 'Equipo ScriptZ', draft: 'Borrador de ejemplo', date: new Date().toLocaleDateString('es-AR'), contact: 'ejemplo@scriptz.app', copyright: 'Obra de ejemplo · Uso libre' };
+  p.titlePage = { ...p.titlePage, title: 'La última luz', credit: 'Guion de', authors: 'Equipo ScriptlZ', draft: 'Borrador de ejemplo', date: new Date().toLocaleDateString('es-AR'), contact: 'ejemplo@scriptz.app', copyright: 'Obra de ejemplo · Uso libre' };
   p.logline = 'Dos adolescentes descubren que un faro abandonado recibe señales de una costa que desapareció hace veinte años, y que esas señales podrían explicar qué le pasó al padre de una de ellas.';
   p.synopsis = 'En un pueblo costero, Mara y Tomás siguen una frecuencia imposible que llega todas las mañanas a las 6:12. La búsqueda los lleva al pasado de la familia de Mara.';
   p.theme = 'La memoria sobrevive a la distancia.';
@@ -83,7 +83,7 @@ export function buildSample(): Project {
   const action = p.blocks[2];
   const cid = uid();
   action.marks = [{ s: 0, e: 37, k: 'cmt', v: cid }];
-  p.comments[cid] = { id: cid, author: 'Equipo ScriptZ', body: 'Probá responder este comentario o resolverlo. Seleccioná cualquier texto y pulsá Ctrl+Alt+M para crear otro.', createdAt: new Date().toISOString(), resolved: false, replies: [], blockId: action.id, excerpt: action.text.slice(0, 37) };
+  p.comments[cid] = { id: cid, author: 'Equipo ScriptlZ', body: 'Probá responder este comentario o resolverlo. Seleccioná cualquier texto y pulsá Ctrl+Alt+M para crear otro.', createdAt: new Date().toISOString(), resolved: false, replies: [], blockId: action.id, excerpt: action.text.slice(0, 37) };
   const radioBlock = p.blocks[9];
   const radio = uid(), antenna = uid();
   p.breakdown.elements[radio] = { id: radio, category: 'props', name: 'Radio de válvulas', notes: 'Tiene que funcionar en cámara.' };

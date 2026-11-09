@@ -256,7 +256,7 @@ function Backup() {
       const entries = [];
       for (const s of list) { const p = await st.load(s.id); entries.push({ name: `${(p.title || p.id).replace(/[\\/:*?"<>|]+/g, '_')}-${p.id.slice(0, 8)}.scriptz`, data: serializeProject(p) }); }
       const zip = await writeZip(entries);
-      await saveFile(`ScriptZ-respaldo-${new Date().toISOString().slice(0, 10)}.zip`, zip, [{ name: 'ZIP', extensions: ['zip'] }]);
+      await saveFile(`ScriptlZ-respaldo-${new Date().toISOString().slice(0, 10)}.zip`, zip, [{ name: 'ZIP', extensions: ['zip'] }]);
     } catch (e) { toast(String((e as Error).message), 'error'); }
     setBusy(false);
   };
@@ -293,7 +293,7 @@ function Backup() {
 function About() {
   return (
     <div className="st-sec about">
-      <div className="row"><Logo size={48} /><div><h2>ScriptZ {APP_LABEL}</h2><p className="muted">{t('app.tagline')}</p></div></div>
+      <div className="row"><Logo size={48} /><div><h2>ScriptlZ {APP_LABEL}</h2><p className="muted">{t('app.tagline')}</p></div></div>
       <p>{t('st.ab.free')}</p>
       <h4>{t('st.ab.licenses')}</h4>
       <ul className="small">

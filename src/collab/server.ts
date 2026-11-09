@@ -1,4 +1,4 @@
-// ScriptZ collaboration server — Node 18+, no dependencies.
+// ScriptlZ collaboration server — Node 18+, no dependencies.
 // Build: npm run build:server  →  server/collab-server.mjs
 // Run:   node server/collab-server.mjs [--port 4735] [--host 0.0.0.0] [--data ./scriptz-rooms] [--cert cert.pem --key key.pem]
 import { officialProject } from '../core/suggest';
@@ -188,7 +188,7 @@ async function handle(req: http.IncomingMessage, res: http.ServerResponse) {
     return;
   }
   res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
-  res.end('ScriptZ collaboration server is running.\n');
+  res.end('ScriptlZ collaboration server is running.\n');
 }
 
 const server = CERT && KEY ? https.createServer({ cert: fs.readFileSync(CERT), key: fs.readFileSync(KEY) }, handle) : http.createServer(handle);
@@ -220,7 +220,7 @@ server.on('upgrade', (req, sock) => {
 setInterval(() => { for (const r of rooms.values()) for (const c of r.conns) { try { c.sock.write(Buffer.from([0x89, 0])); } catch { /* ignore */ } } }, 25000).unref();
 
 server.listen(PORT, HOST, () => {
-  console.log(`ScriptZ collaboration server on ${CERT ? 'https/wss' : 'http/ws'}://${HOST}:${PORT}  ·  data: ${DATA}`);
+  console.log(`ScriptlZ collaboration server on ${CERT ? 'https/wss' : 'http/ws'}://${HOST}:${PORT}  ·  data: ${DATA}`);
 });
 
 for (const sig of ['SIGINT', 'SIGTERM'] as const) process.on(sig, () => { for (const r of rooms.values()) { r.dirty = true; try { persist(r); } catch { /* ignore */ } } process.exit(0); });

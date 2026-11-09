@@ -2,15 +2,15 @@
 # Usage: pwsh src-tauri/msix/build-msix.ps1 -Version 0.2.0 [-IdentityName ...] [-Publisher "CN=..."] [-PublisherDisplayName ...]
 param(
   [Parameter(Mandatory = $true)][string]$Version,
-  [string]$IdentityName = 'ScriptZ.ScriptZ',
-  [string]$Publisher = 'CN=ScriptZ',
-  [string]$PublisherDisplayName = 'ScriptZ',
+  [string]$IdentityName = 'ScriptlZ.ScriptlZ',
+  [string]$Publisher = 'CN=ScriptlZ',
+  [string]$PublisherDisplayName = 'ScriptlZ',
   [string]$Out = 'src-tauri/target/msix'
 )
 $ErrorActionPreference = 'Stop'
-if (-not $IdentityName) { $IdentityName = 'ScriptZ.ScriptZ' }
-if (-not $Publisher) { $Publisher = 'CN=ScriptZ' }
-if (-not $PublisherDisplayName) { $PublisherDisplayName = 'ScriptZ' }
+if (-not $IdentityName) { $IdentityName = 'ScriptlZ.ScriptlZ' }
+if (-not $Publisher) { $Publisher = 'CN=ScriptlZ' }
+if (-not $PublisherDisplayName) { $PublisherDisplayName = 'ScriptlZ' }
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $layout = Join-Path $Out 'layout'
 Remove-Item -Recurse -Force $Out -ErrorAction SilentlyContinue
@@ -19,7 +19,7 @@ New-Item -ItemType Directory -Force -Path $layout | Out-Null
 # The app is a single executable (the web UI is embedded).
 $exe = Get-ChildItem 'src-tauri/target/release' -Filter *.exe | Where-Object { $_.Name -notmatch 'build|setup|uninstall' } | Sort-Object Length -Descending | Select-Object -First 1
 if (-not $exe) { throw 'No se encontró el ejecutable en src-tauri/target/release' }
-Copy-Item $exe.FullName (Join-Path $layout 'ScriptZ.exe')
+Copy-Item $exe.FullName (Join-Path $layout 'ScriptlZ.exe')
 Copy-Item -Recurse (Join-Path $here 'Assets') (Join-Path $layout 'Assets')
 
 # MSIX versions have four parts and the last one must be 0 for the Store.

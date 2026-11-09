@@ -1,4 +1,4 @@
-// Stroke icon set (24×24, currentColor). Hand-drawn for ScriptZ; no external dependency.
+// Stroke icon set (24×24, currentColor). Hand-drawn for ScriptlZ; no external dependency.
 import type { CSSProperties } from 'react';
 
 const P: Record<string, string> = {

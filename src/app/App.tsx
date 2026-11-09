@@ -89,8 +89,8 @@ function Sidebar() {
   const project = useApp((s) => !!s.project);
   const [moreOpen, setMoreOpen] = useState(false);
   return (
-    <nav className="sidebar" aria-label="ScriptZ">
-      <button type="button" className="brand" onClick={() => setView('home')} title="ScriptZ">
+    <nav className="sidebar" aria-label="ScriptlZ">
+      <button type="button" className="brand" onClick={() => setView('home')} title="ScriptlZ">
         <Logo size={30} />
       </button>
       <div className="nav-items">
@@ -197,7 +197,7 @@ export function App() {
     });
   }, []);
   useEffect(() => {
-    document.title = project ? `${title || t('w.untitled')} — ScriptZ` : 'ScriptZ';
+    document.title = project ? `${title || t('w.untitled')} — ScriptlZ` : 'ScriptlZ';
   }, [project, title]);
   useEffect(() => { if (view !== 'write') void saveNow(); }, [view]);
   const active = project ? view : view === 'settings' || view === 'series' ? view : 'home';

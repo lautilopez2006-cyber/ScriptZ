@@ -200,7 +200,7 @@ export class PdfDoc {
     const now = new Date();
     const pad = (n: number) => String(n).padStart(2, '0');
     const date = `D:${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`;
-    set(infoObj, `<< /Title ${pdfString(this.info.title)} /Author ${pdfString(this.info.author)} /Subject ${pdfString(this.info.subject ?? '')} /Creator ${pdfString(this.info.creator ?? 'ScriptZ')} /Producer ${pdfString('ScriptZ')} /CreationDate (${date}) >>`);
+    set(infoObj, `<< /Title ${pdfString(this.info.title)} /Author ${pdfString(this.info.author)} /Subject ${pdfString(this.info.subject ?? '')} /Creator ${pdfString(this.info.creator ?? 'ScriptlZ')} /Producer ${pdfString('ScriptlZ')} /CreationDate (${date}) >>`);
     // Serialise
     const chunks: Uint8Array[] = [enc.encode('%PDF-1.7\n%âãÏÓ\n')];
     const offsets: number[] = [];

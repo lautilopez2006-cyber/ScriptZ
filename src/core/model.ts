@@ -1,4 +1,4 @@
-// ScriptZ document model (schema v2). Pure data: no DOM, no platform code.
+// ScriptlZ document model (schema v2). Pure data: no DOM, no platform code.
 
 export type ElementType =
   | 'scene' | 'action' | 'character' | 'dialogue' | 'parenthetical' | 'transition'

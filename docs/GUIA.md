@@ -1,4 +1,4 @@
-# Guía de uso de ScriptZ 0.1
+# Guía de uso de ScriptlZ 0.1
 
 ## Lo básico
 - **Enter** pasa al elemento lógico siguiente. Por ejemplo, de Personaje a Diálogo y de Diálogo a Personaje. Sobre un párrafo vacío, **Enter** abre el menú de elementos.
@@ -6,10 +6,10 @@
 - **Ctrl+1…9** elige un elemento directo: 1 Encabezado, 2 Acción, 3 Personaje, 4 Acotación, 5 Diálogo, 6 Transición, 7 Plano, 8 General y 9 Nota.
 - Todo se puede cambiar en **Ajustes → Atajos**.
 - **Ctrl+K** abre la paleta de comandos con todas las acciones de la app.
-- ScriptZ guarda solo, cada pocos segundos, y hace una copia de seguridad cada 10 minutos de trabajo.
+- ScriptlZ guarda solo, cada pocos segundos, y hace una copia de seguridad cada 10 minutos de trabajo.
 
 ## Escribir más rápido
-- **Autocompletado:** al escribir un encabezado, ScriptZ propone INT./EXT., las locaciones ya usadas y el momento del día. En Personaje propone los nombres existentes y las extensiones (V.O.), (O.S.), (CONT.).
+- **Autocompletado:** al escribir un encabezado, ScriptlZ propone INT./EXT., las locaciones ya usadas y el momento del día. En Personaje propone los nombres existentes y las extensiones (V.O.), (O.S.), (CONT.).
 - **Macros** (Ajustes → Macros): un atajo inserta un texto frecuente y, si querés, crea un párrafo de un tipo.
 - **Diálogo dual:** con el cursor en el segundo personaje, pulsá **Ctrl+D**.
 - **Marcadores:** **Ctrl+Shift+B** guarda una posición. Aparecen en el navegador lateral.
@@ -45,4 +45,4 @@
 
 ## Sincronizar en la nube
 - En la app de escritorio, usá **Guardar como…** y elegí una carpeta de Google Drive, Dropbox u OneDrive.
-- ScriptZ actualiza ese archivo en cada guardado y avisa si otra computadora lo cambió.
+- ScriptlZ actualiza ese archivo en cada guardado y avisa si otra computadora lo cambió.

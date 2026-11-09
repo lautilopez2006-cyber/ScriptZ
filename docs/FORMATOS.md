@@ -2,7 +2,7 @@
 
 | Formato | Importa | Exporta | Notas |
 |---|:-:|:-:|---|
-| ScriptZ (.scriptz) | ✓ | ✓ | JSON legible. Conserva todo: historia, producción, revisiones y comentarios |
+| ScriptlZ (.scriptz) | ✓ | ✓ | JSON legible. Conserva todo: historia, producción, revisiones y comentarios |
 | Final Draft (.fdx) | ✓ | ✓ | Elementos, diálogo dual, negrita/cursiva/subrayado, números de escena, portada, resúmenes y revisiones |
 | Fountain | ✓ | ✓ | Énfasis, diálogo dual, notas, secciones y portada |
 | Word (.docx) | ✓ | ✓ | *Flujo*: estilos de Word editables. *Exacto*: misma paginación que el PDF |

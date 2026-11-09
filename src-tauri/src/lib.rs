@@ -161,7 +161,7 @@ fn verify_binding(app: &tauri::AppHandle, id: &str, bytes: &[u8]) -> Result<(), 
             let saved_revision = external.get("revision").and_then(Value::as_u64).unwrap_or(0);
             let current_revision = local.get("revision").and_then(Value::as_u64).unwrap_or(0);
             if saved_revision > current_revision || (saved_revision == current_revision && external != local) {
-                return Err("El archivo externo fue actualizado fuera de ScriptZ. No se sobrescribió; guardá una copia nueva.".into());
+                return Err("El archivo externo fue actualizado fuera de ScriptlZ. No se sobrescribió; guardá una copia nueva.".into());
             }
         }
     }
@@ -197,7 +197,7 @@ fn link_project_file(app: tauri::AppHandle, id: String, path: String) -> Result<
             let entry = entry.map_err(|e| e.to_string())?;
             if entry.file_name() == current_binding_name { continue; }
             if fs::read_to_string(entry.path()).ok().map(|s| PathBuf::from(s.trim())) == Some(destination.clone()) {
-                return Err("Este archivo ya pertenece a otro proyecto de ScriptZ".into());
+                return Err("Este archivo ya pertenece a otro proyecto de ScriptlZ".into());
             }
         }
     }
@@ -205,7 +205,7 @@ fn link_project_file(app: tauri::AppHandle, id: String, path: String) -> Result<
         // Never overwrite unknown or damaged user files via Guardar como.
         let existing = fs::read(&destination).map_err(|e| e.to_string())?;
         let parsed: Value = serde_json::from_slice(&existing)
-            .map_err(|_| "El archivo de destino no es un ScriptZ válido; elegí otra ubicación".to_string())?;
+            .map_err(|_| "El archivo de destino no es un ScriptlZ válido; elegí otra ubicación".to_string())?;
         if parsed.get("id").and_then(Value::as_str) != Some(id.as_str()) {
             return Err("Ese archivo corresponde a otro guion. Elegí otro nombre.".into());
         }
@@ -628,7 +628,7 @@ pub fn run() {
             get_project_file_path, link_project_file, sync_project_file, render_script_audio, list_windows_voices
         ])
         .run(tauri::generate_context!())
-        .expect("No se pudo iniciar ScriptZ");
+        .expect("No se pudo iniciar ScriptlZ");
 }
 
 #[cfg(test)]

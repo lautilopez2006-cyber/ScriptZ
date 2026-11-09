@@ -1,4 +1,4 @@
-// Load any ScriptZ document (schema 1 from the 0.x/1.x drafts, or schema 2) into a valid v2 Project.
+// Load any ScriptlZ document (schema 1 from the 0.x/1.x drafts, or schema 2) into a valid v2 Project.
 import {
   ALL_ELEMENT_TYPES, BREAKDOWN_CATEGORIES, CARD_COLORS, defaultPage, defaultTitlePage, emptyProject, uid,
   type Block, type BreakdownCategory, type CardColor, type ElementType, type Mark, type Project, type SeriesBible,
@@ -69,7 +69,7 @@ function color(v: unknown): CardColor {
   return OLD_COLORS[s] ?? 'none';
 }
 
-/** Migrate from schema 1 (ScriptZ drafts up to 1.3.6). */
+/** Migrate from schema 1 (ScriptlZ drafts up to 1.3.6). */
 function fromV1(raw: Json): Project {
   const p = emptyProject();
   p.id = typeof raw.id === 'string' && ID_RE.test(raw.id) ? raw.id : p.id;

@@ -39,7 +39,7 @@ export async function scriptToPdf(p: Project, fonts: PdfFonts, opts: PdfOptions 
   const styles = resolveStyles(p);
   const tokens = localeTokens(p.locale);
   const layout = layoutProject(p);
-  const doc = new PdfDoc({ title: p.title || 'ScriptZ', author: p.titlePage.authors || p.author, subject: p.logline, creator: 'ScriptZ' });
+  const doc = new PdfDoc({ title: p.title || 'ScriptlZ', author: p.titlePage.authors || p.author, subject: p.logline, creator: 'ScriptlZ' });
   const F = {
     r: doc.addFont('F1', fonts.regular), b: doc.addFont('F2', fonts.bold), i: doc.addFont('F3', fonts.italic), bi: doc.addFont('F4', fonts.boldItalic),
     fr: doc.addFont('F5', fonts.fallback), fb: doc.addFont('F6', fonts.fallbackBold),

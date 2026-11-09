@@ -1,9 +1,9 @@
 [package]
 name = "scriptz"
-version = "0.3.0"
-description = "ScriptZ — free screenwriting studio"
+version = "0.3.1"
+description = "ScriptlZ — free screenwriting studio"
 license = "MIT"
-authors = ["ScriptZ"]
+authors = ["ScriptlZ"]
 edition = "2021"
 rust-version = "1.77.2"
 

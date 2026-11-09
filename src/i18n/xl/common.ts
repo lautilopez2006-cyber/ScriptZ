@@ -1,6 +1,6 @@
 // French and Italian: [fr, it]. Keys missing here fall back to English.
 export const XL_COMMON: Record<string, [string, string]> = {
-  'app.name': ['ScriptZ', 'ScriptZ'],
+  'app.name': ['ScriptlZ', 'ScriptlZ'],
   'app.tagline': ['Écrivez des scénarios comme un pro. Gratuit, pour toujours.', 'Scrivi sceneggiature da professionista. Gratis, per sempre.'],
   'nav.home': ['Accueil', 'Home'],
   'nav.write': ['Écrire', 'Scrivi'],
@@ -160,7 +160,7 @@ export const XL_COMMON: Record<string, [string, string]> = {
   'save.snapshot': ['Version de sauvegarde créée', 'Versione di backup creata'],
   'err.generic': ['Une erreur est survenue : {msg}', 'Qualcosa è andato storto: {msg}'],
   'err.invalidFile': ['Ce fichier n’est pas un scénario valide.', 'Il file non è una sceneggiatura valida.'],
-  'err.newerVersion': ['Ce fichier a été créé avec une version plus récente de ScriptZ.', 'Questo file è stato creato con una versione più recente di ScriptZ.'],
+  'err.newerVersion': ['Ce fichier a été créé avec une version plus récente de ScriptlZ.', 'Questo file è stato creato con una versione più recente di ScriptlZ.'],
   'err.unsupported': ['Format non pris en charge.', 'Formato non supportato.'],
   'err.network': ['Connexion impossible.', 'Impossibile connettersi.'],
   'pal.placeholder': ['Tapez une commande…', 'Digita un comando…'],

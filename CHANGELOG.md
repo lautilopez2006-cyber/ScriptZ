@@ -1,10 +1,14 @@
 # Cambios
 
+## 0.3.1 — noviembre 2026
+- La app pasa a llamarse **ScriptlZ**.
+- La sincronización con Dropbox y Google Drive queda activada.
+
 ## 0.3.0 — noviembre 2026
 
 ### Nueve funciones nuevas
 - **Puntos de partida.** Al crear un guion podés empezar con una estructura armada y notas: cortometraje, largo en tres actos, piloto de serie, sitcom, teatro, documental, radio/podcast o cómic.
-- **Pegar desde Google Docs o Word.** Pegás el guion y ScriptZ reconoce escenas, personajes, diálogos, acotaciones y transiciones, aunque el texto no tenga formato. Antes de importar ves una vista previa y podés corregir el tipo de cada párrafo. Lo mismo al abrir un .docx o .txt.
+- **Pegar desde Google Docs o Word.** Pegás el guion y ScriptlZ reconoce escenas, personajes, diálogos, acotaciones y transiciones, aunque el texto no tenga formato. Antes de importar ves una vista previa y podés corregir el tipo de cada párrafo. Lo mismo al abrir un .docx o .txt.
 - **Sincronización con Dropbox y Google Drive.** Tus guiones quedan en tu propia nube y te siguen a todos tus dispositivos. Si editaste el mismo guion en dos lugares, se guardan las dos versiones.
 - **Corrector ortográfico.** Funciona sin conexión, con diccionarios rioplatense (voseo), latinoamericano, de España, inglés, portugués, francés e italiano. No marca los nombres de tus personajes ni tus locaciones. Clic derecho para ver sugerencias, agregar o ignorar.
 - **Comparar versiones lado a lado.** Dos borradores alineados párrafo por párrafo, con los cambios resaltados palabra por palabra, mapa de cambios y navegación con el teclado. Se exporta a HTML.
@@ -28,7 +32,7 @@
 - Paquete MSIX listo para publicar en la Microsoft Store. Al instalarse desde la Store no aparece el aviso de seguridad de Windows.
 
 ### Otros
-- El aviso de nuevas versiones consulta las publicaciones públicas de ScriptZ (solo en la versión de escritorio).
+- El aviso de nuevas versiones consulta las publicaciones públicas de ScriptlZ (solo en la versión de escritorio).
 
 ## 0.2.0 — noviembre 2026
 
@@ -68,7 +72,7 @@
 
 ### Instalador con identidad propia
 - Ícono nuevo: una página de guion encuadernada con broches de bronce y "SZ" subrayado en lápiz azul. Reemplaza al cuadrado violeta.
-- Instalador de Windows con imágenes propias de ScriptZ y selector de idioma (español, inglés, portugués).
+- Instalador de Windows con imágenes propias de ScriptlZ y selector de idioma (español, inglés, portugués).
 
 ## 0.1.1 — noviembre 2026
 

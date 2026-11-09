@@ -21,7 +21,7 @@ export default function SharePage() {
     const pages = layoutProject(p).pages.length;
     return { p, stats: shareStats(p, pages), html: toHtml(p) };
   }, [data]);
-  useEffect(() => { if (view) document.title = view.p.title || 'ScriptZ'; }, [view]);
+  useEffect(() => { if (view) document.title = view.p.title || 'ScriptlZ'; }, [view]);
   if (err) return <div className="sp-err"><Logo size={44} /><h1>{t('sh.broken')}</h1><p>{t('sh.broken.h')}</p><a className="btn" href="./">{t('sh.openApp')}</a></div>;
   if (!view || !data) return <div className="sp-err"><Spinner /></div>;
   const { p, stats, html } = view;
@@ -45,7 +45,7 @@ export default function SharePage() {
   return (
     <div className="sp">
       <header className="sp-bar">
-        <a className="sp-brand" href="./"><Logo size={26} />ScriptZ</a>
+        <a className="sp-brand" href="./"><Logo size={26} />ScriptlZ</a>
         <span className="grow" />
         {data.pitch.allowDownload ? <Button small icon="download" onClick={() => void pdf()} disabled={busy}>{busy ? <Spinner /> : t('sh.pdf')}</Button> : null}
         {data.pitch.allowCopy ? <Button small kind="primary" icon="plus" onClick={() => void copy()}>{t('sh.saveCopy')}</Button> : null}

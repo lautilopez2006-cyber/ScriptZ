@@ -1,5 +1,5 @@
-// Cloud storage providers. Both keep ScriptZ files in a folder the app owns:
-// Dropbox → "Apps/ScriptZ" (app-folder access), Google Drive → only files ScriptZ created (drive.file).
+// Cloud storage providers. Both keep ScriptlZ files in a folder the app owns:
+// Dropbox → "Apps/ScriptZ" (app-folder access), Google Drive → only files ScriptlZ created (drive.file).
 export interface RemoteFile { id: string; name: string; modified: string; rev: string }
 
 export interface CloudProvider {
@@ -12,8 +12,8 @@ export interface CloudProvider {
 
 /** App credentials. They are public identifiers (no secrets); the user can also set their own in Settings. */
 export const CLOUD_APPS = {
-  dropboxKey: '',
-  googleClientId: '',
+  dropboxKey: 'o97quz8vxe0gdm5',
+  googleClientId: '265699365327-u5am9hclo7tc5ofgh75kbgmd2lddtcvv.apps.googleusercontent.com',
 };
 
 export class CloudAuthError extends Error { constructor(msg = 'auth') { super(msg); this.name = 'CloudAuthError'; } }

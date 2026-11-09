@@ -119,7 +119,7 @@ export const XL_STORY: Record<string, [string, string]> = {
   'rv.restoreDraft.t': ['Le scénario actuel est remplacé par « {name} ». Une sauvegarde est faite avant.', 'La sceneggiatura attuale viene sostituita da “{name}”. Prima viene salvato un backup.'],
   'rv.asProject': ['Ouvrir comme projet', 'Apri come progetto'],
   'rv.backups': ['Sauvegardes', 'Backup'],
-  'rv.backups.h': ['ScriptZ enregistre une copie automatique toutes les 10 minutes de travail. Les 20 dernières copies automatiques et 30 manuelles sont conservées.', 'ScriptZ salva una copia automatica ogni 10 minuti di lavoro. Si conservano le ultime 20 copie automatiche e 30 manuali.'],
+  'rv.backups.h': ['ScriptlZ enregistre une copie automatique toutes les 10 minutes de travail. Les 20 dernières copies automatiques et 30 manuelles sont conservées.', 'ScriptlZ salva una copia automatica ogni 10 minuti di lavoro. Si conservano le ultime 20 copie automatiche e 30 manuali.'],
   'rv.backupNow': ['Sauvegarder maintenant', 'Fai un backup ora'],
   'rv.backup': ['Sauvegarde', 'Backup'],
   'rv.auto': ['automatique', 'automatico'],

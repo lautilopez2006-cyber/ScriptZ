@@ -1,4 +1,4 @@
-// ScriptZ collaboration server (generated from src/collab/server.ts). Run: node collab-server.mjs [--port 4735] [--host 0.0.0.0] [--data ./scriptz-rooms] [--cert cert.pem --key key.pem]
+// ScriptlZ collaboration server (generated from src/collab/server.ts). Run: node collab-server.mjs [--port 4735] [--host 0.0.0.0] [--data ./scriptz-rooms] [--cert cert.pem --key key.pem]
 
 // src/collab/server.ts
 import http from "node:http";
@@ -1612,8 +1612,8 @@ body{margin:0;background:#e9e7e2;font:12pt/12pt 'Courier Prime','Courier New',Co
 @media print{body{background:none}.pg{margin:0;box-shadow:none}}
 ${opts.forPrint ? "" : "nav{position:fixed;left:0;top:0;bottom:0;width:260px;overflow:auto;background:#fff;border-right:1px solid #ddd;font:13px/1.4 system-ui,sans-serif;padding:12px}nav a{display:block;color:#333;text-decoration:none;padding:3px 6px;border-radius:5px}nav a:hover{background:#f1efe9}main{margin-left:260px}@media(max-width:900px){nav{display:none}main{margin:0}.pg{transform-origin:top left}}@media print{nav{display:none}main{margin:0}}"}`;
   const scenes = buildScenes(p.blocks);
-  const nav = opts.forPrint ? "" : `<nav><b>${esc(p.title || "ScriptZ")}</b><br><br>${scenes.map((s) => `<a href="#s-${s.id}">${esc(s.label)}. ${esc(upperSameLength(s.heading))}</a>`).join("")}</nav>`;
-  return `<!doctype html><html lang="${localeTokens(p.locale).lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title || "ScriptZ")}</title><meta name="generator" content="ScriptZ"><style>${css}</style></head><body>${nav}<main>${pages.join("")}</main></body></html>`;
+  const nav = opts.forPrint ? "" : `<nav><b>${esc(p.title || "ScriptlZ")}</b><br><br>${scenes.map((s) => `<a href="#s-${s.id}">${esc(s.label)}. ${esc(upperSameLength(s.heading))}</a>`).join("")}</nav>`;
+  return `<!doctype html><html lang="${localeTokens(p.locale).lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title || "ScriptlZ")}</title><meta name="generator" content="ScriptlZ"><style>${css}</style></head><body>${nav}<main>${pages.join("")}</main></body></html>`;
 }
 
 // src/collab/server.ts
@@ -1872,7 +1872,7 @@ async function handle(req, res) {
     return;
   }
   res.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
-  res.end("ScriptZ collaboration server is running.\n");
+  res.end("ScriptlZ collaboration server is running.\n");
 }
 var server = CERT && KEY ? https.createServer({ cert: fs.readFileSync(CERT), key: fs.readFileSync(KEY) }, handle) : http.createServer(handle);
 server.on("upgrade", (req, sock) => {
@@ -1921,7 +1921,7 @@ setInterval(() => {
   }
 }, 25e3).unref();
 server.listen(PORT, HOST, () => {
-  console.log(`ScriptZ collaboration server on ${CERT ? "https/wss" : "http/ws"}://${HOST}:${PORT}  \xB7  data: ${DATA}`);
+  console.log(`ScriptlZ collaboration server on ${CERT ? "https/wss" : "http/ws"}://${HOST}:${PORT}  \xB7  data: ${DATA}`);
 });
 for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => {
   for (const r of rooms.values()) {

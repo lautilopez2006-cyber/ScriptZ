@@ -59,10 +59,10 @@ export function HomeView() {
   const intro = useMemo(() => { try { const seen = sessionStorage.getItem('sz-intro'); sessionStorage.setItem('sz-intro', '1'); return !seen; } catch { return false; } }, []);
   return (
     <div className="home">
-      <section className="title-sheet" aria-label="ScriptZ">
+      <section className="title-sheet" aria-label="ScriptlZ">
         <div className={cx('ts-paper', intro && 'intro')}>
           <div className="brads" aria-hidden="true"><i className="brad" /><i className="hole" /><i className="brad" /></div>
-          <h1 className="ts-title">ScriptZ</h1>
+          <h1 className="ts-title">ScriptlZ</h1>
           <Typed text={t('app.tagline')} animate={intro} />
           <div className="ts-actions">
             <Button kind="primary" icon="plus" onClick={() => openModal('newProject')}>{t('home.new')}</Button>

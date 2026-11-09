@@ -154,7 +154,7 @@ export function parasFromHtml(html: string): Para[] {
     const cs = (el.getAttribute('style') ?? '').toLowerCase();
     const indent = toCols(st.marginLeft || /margin-left:\s*([^;]+)/.exec(cs)?.[1]) + Math.max(0, toCols(st.textIndent || /text-indent:\s*([^;]+)/.exec(cs)?.[1])) + toCols(st.paddingLeft);
     const align = (st.textAlign || (el.getAttribute('align') ?? '')).toLowerCase();
-    // Word puts each script element in a named class (MsoNormal, ScriptZ-Dialogo…).
+    // Word puts each script element in a named class (MsoNormal, ScriptlZ-Dialogo…).
     const cls = (el.getAttribute('class') ?? '').toLowerCase();
     let style: ElementType | undefined;
     if (/scene|escena/.test(cls)) style = 'scene';

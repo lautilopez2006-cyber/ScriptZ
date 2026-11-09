@@ -1,4 +1,4 @@
-// Paste a script from Google Docs, Word or any text editor: ScriptZ detects each element and shows a
+// Paste a script from Google Docs, Word or any text editor: ScriptlZ detects each element and shows a
 // preview where any paragraph can be corrected before importing.
 import { useMemo, useState, type ClipboardEvent } from 'react';
 import { closeModal, getState } from '../app/store';

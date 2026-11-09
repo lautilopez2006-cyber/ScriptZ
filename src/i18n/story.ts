@@ -128,7 +128,7 @@ export const STORY: Dict = {
   'rv.restoreDraft.t': ['El guion actual se reemplaza por «{name}». Antes se guarda una copia de seguridad.', 'The current script is replaced by “{name}”. A backup is saved first.', 'O roteiro atual será substituído por “{name}”. Um backup é salvo antes.'],
   'rv.asProject': ['Abrir como proyecto', 'Open as project', 'Abrir como projeto'],
   'rv.backups': ['Copias de seguridad', 'Backups', 'Backups'],
-  'rv.backups.h': ['ScriptZ guarda una copia automática cada 10 minutos de trabajo. Se conservan las últimas 20 automáticas y 30 manuales.', 'ScriptZ saves an automatic copy every 10 minutes of work. The last 20 automatic and 30 manual copies are kept.', 'O ScriptZ salva uma cópia automática a cada 10 minutos de trabalho. São mantidas as últimas 20 automáticas e 30 manuais.'],
+  'rv.backups.h': ['ScriptlZ guarda una copia automática cada 10 minutos de trabajo. Se conservan las últimas 20 automáticas y 30 manuales.', 'ScriptlZ saves an automatic copy every 10 minutes of work. The last 20 automatic and 30 manual copies are kept.', 'O ScriptlZ salva uma cópia automática a cada 10 minutos de trabalho. São mantidas as últimas 20 automáticas e 30 manuais.'],
   'rv.backupNow': ['Copia ahora', 'Back up now', 'Copiar agora'],
   'rv.backup': ['Copia', 'Backup', 'Cópia'],
   'rv.auto': ['automática', 'automatic', 'automática'],

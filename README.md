@@ -1,4 +1,4 @@
-# ScriptZ 0.3
+# ScriptlZ 0.3
 
 **Estudio de escritura de guiones gratuito, sin suscripciones ni funciones bloqueadas.**
 Cine, series, multicámara, teatro, radio/podcast, cómic y guion audiovisual a dos columnas.
@@ -42,14 +42,14 @@ npm install
 npm run dev        # http://127.0.0.1:1420
 npm run build      # genera dist/ para publicar en cualquier hosting estático
 ```
-En Windows también podés usar `INICIAR_VERSION_WEB.bat`. Publicada con HTTPS, ScriptZ se instala como app desde el navegador (también en celulares y tablets) y funciona sin conexión.
+En Windows también podés usar `INICIAR_VERSION_WEB.bat`. Publicada con HTTPS, ScriptlZ se instala como app desde el navegador (también en celulares y tablets) y funciona sin conexión.
 
 ### Colaboración en tiempo real
 ```bash
 npm run build:server               # solo si modificaste el código del servidor
 node server/collab-server.mjs      # puerto 4735; opciones: --port --host --data --cert --key
 ```
-En ScriptZ: **Colaboración → Empezar a compartir** y pasá la invitación. Más detalles en [docs/COLABORACION.md](docs/COLABORACION.md).
+En ScriptlZ: **Colaboración → Empezar a compartir** y pasá la invitación. Más detalles en [docs/COLABORACION.md](docs/COLABORACION.md).
 
 ## Desarrollo
 

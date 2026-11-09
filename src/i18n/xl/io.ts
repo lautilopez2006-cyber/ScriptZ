@@ -21,7 +21,7 @@ export const XL_IO: Record<string, [string, string]> = {
   'ex.f.epub': ['EPUB', 'EPUB'],
   'ex.f.md': ['Markdown', 'Markdown'],
   'ex.f.txt': ['Texte', 'Testo'],
-  'ex.f.scriptz': ['ScriptZ (copie)', 'ScriptZ (copia)'],
+  'ex.f.scriptz': ['ScriptlZ (copie)', 'ScriptlZ (copia)'],
   'ex.d.pdf': ['Prêt à envoyer ou imprimer', 'Pronto da inviare o stampare'],
   'ex.d.fdx': ['À ouvrir dans Final Draft, Fade In, WriterDuet…', 'Da aprire in Final Draft, Fade In, WriterDuet…'],
   'ex.d.docx': ['Pour Word, Pages ou Google Docs', 'Per Word, Pages o Google Docs'],
