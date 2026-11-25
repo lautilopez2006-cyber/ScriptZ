@@ -6,7 +6,7 @@ export const XL_VIEWS: Record<string, [string, string]> = {
   'home.stack.action': ['Mara allume la lanterne. De l’autre côté de la mer, quelqu’un répond.', 'Mara accende la lanterna. Dall’altra parte del mare, qualcuno risponde.'],
   'home.stack.line': ['Je sais qui envoie les signaux.', 'So chi manda i segnali.'],
   'home.stack.rev': ['Révision jaune', 'Revisione gialla'],
-  'home.corner.left': ['Version 0.3.1', 'Versione 0.3.1'],
+  'home.corner.left': ['Version 0.3.2', 'Versione 0.3.2'],
   'home.corner.right': ['Gratuit · fonctionne hors ligne', 'Gratis · funziona offline'],
   'home.sample': ['Ouvrir l’exemple guidé', 'Apri l’esempio guidato'],
   'home.library': ['Vos scénarios', 'Le tue sceneggiature'],

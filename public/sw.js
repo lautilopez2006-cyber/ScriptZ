@@ -1,5 +1,5 @@
 // ScriptlZ service worker: offline app shell (network-first for HTML, cache-first for hashed assets).
-const CACHE = 'scriptz-v0.3.1';
+const CACHE = 'scriptz-v0.3.2';
 self.addEventListener('install', (e) => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './index.html', './manifest.webmanifest', './icon-192.png']).catch(() => undefined))); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', (e) => {

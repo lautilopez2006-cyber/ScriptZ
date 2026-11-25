@@ -2,15 +2,15 @@
 # Usage: pwsh src-tauri/msix/build-msix.ps1 -Version 0.2.0 [-IdentityName ...] [-Publisher "CN=..."] [-PublisherDisplayName ...]
 param(
   [Parameter(Mandatory = $true)][string]$Version,
-  [string]$IdentityName = 'ScriptlZ.ScriptlZ',
-  [string]$Publisher = 'CN=ScriptlZ',
-  [string]$PublisherDisplayName = 'ScriptlZ',
+  [string]$IdentityName = 'LZoperator.ScriptlZ',
+  [string]$Publisher = 'CN=ACB5B77E-3D00-4BE5-BA27-57A59B8AFBE3',
+  [string]$PublisherDisplayName = 'LZoperator',
   [string]$Out = 'src-tauri/target/msix'
 )
 $ErrorActionPreference = 'Stop'
-if (-not $IdentityName) { $IdentityName = 'ScriptlZ.ScriptlZ' }
-if (-not $Publisher) { $Publisher = 'CN=ScriptlZ' }
-if (-not $PublisherDisplayName) { $PublisherDisplayName = 'ScriptlZ' }
+if (-not $IdentityName) { $IdentityName = 'LZoperator.ScriptlZ' }
+if (-not $Publisher) { $Publisher = 'CN=ACB5B77E-3D00-4BE5-BA27-57A59B8AFBE3' }
+if (-not $PublisherDisplayName) { $PublisherDisplayName = 'LZoperator' }
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $layout = Join-Path $Out 'layout'
 Remove-Item -Recurse -Force $Out -ErrorAction SilentlyContinue

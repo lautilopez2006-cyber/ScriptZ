@@ -1,5 +1,8 @@
 # Cambios
 
+## 0.3.2 — noviembre 2026
+- Paquete para la Microsoft Store con la identidad de LZoperator.
+
 ## 0.3.1 — noviembre 2026
 - La app pasa a llamarse **ScriptlZ**.
 - La sincronización con Dropbox y Google Drive queda activada.
